@@ -206,6 +206,40 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         set => Changed(() => Settings.StartMinimized = value);
     }
 
+    public bool CheckForUpdates
+    {
+        get => Settings.CheckForUpdates;
+        set => Changed(() => Settings.CheckForUpdates = value);
+    }
+
+    private UpdateInfo? _update;
+    private string _updateStatus = $"You're on version {UpdateChecker.CurrentVersion}.";
+
+    public string UpdateStatus => _updateStatus;
+    public bool HasUpdate => _update != null;
+    public string? UpdateUrl => _update?.Url;
+
+    public void SetUpdate(UpdateInfo? update, bool checkedNow)
+    {
+        _update = update;
+        _updateStatus = update != null
+            ? $"Version {update.Version} is available (you have {UpdateChecker.CurrentVersion})."
+            : checkedNow
+                ? $"You're on the latest version ({UpdateChecker.CurrentVersion})."
+                : $"You're on version {UpdateChecker.CurrentVersion}.";
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UpdateStatus)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasUpdate)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UpdateUrl)));
+    }
+
+    public async Task CheckForUpdatesNowAsync()
+    {
+        _updateStatus = "Checking...";
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UpdateStatus)));
+        SetUpdate(await UpdateChecker.CheckAsync(), checkedNow: true);
+    }
+
     public bool StartWithWindows
     {
         get

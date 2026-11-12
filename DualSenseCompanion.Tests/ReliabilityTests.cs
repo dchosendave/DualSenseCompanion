@@ -168,3 +168,42 @@ public class SettingsTests
         Assert.Equal(0.9f, settings.LeftStick.Deadzone);
     }
 }
+
+public class UpdateCheckerTests
+{
+    [Theory]
+    [InlineData("v1.2.3", "1.2.3")]
+    [InlineData("1.2.3", "1.2.3")]
+    [InlineData("V2.0", "2.0.0")]
+    [InlineData("v1.3.0-beta.1", "1.3.0")]
+    public void ParsesReleaseTags(string tag, string expected)
+    {
+        Assert.True(UpdateChecker.TryParseVersion(tag, out var version));
+        Assert.Equal(Version.Parse(expected), version);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("latest")]
+    public void RejectsTagsWithoutVersion(string tag)
+    {
+        Assert.False(UpdateChecker.TryParseVersion(tag, out _));
+    }
+
+    [Theory]
+    [InlineData("1.2.0", "1.1.0", true)]
+    [InlineData("1.1.1", "1.1.0", true)]
+    [InlineData("1.1.0", "1.1.0", false)]
+    [InlineData("1.0.9", "1.1.0", false)]
+    public void ComparesVersions(string latest, string current, bool newer)
+    {
+        Assert.Equal(newer, UpdateChecker.IsNewer(Version.Parse(latest), Version.Parse(current)));
+    }
+
+    [Fact]
+    public void AssemblyVersionIsSet()
+    {
+        //Without <Version> in the project the update check would compare against 1.0.0 forever
+        Assert.True(UpdateChecker.CurrentVersion > new Version(1, 0, 0));
+    }
+}
