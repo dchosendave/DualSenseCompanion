@@ -1,0 +1,141 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:DualSenseCompanion.UI"
+             x:Class="DualSenseCompanion.UI.Pages.SettingsPage">
+  <UserControl.Resources>
+    <ui:EqualsConverter x:Key="Is" />
+  </UserControl.Resources>
+
+  <StackPanel>
+    <TextBlock Classes="pageTitle" Text="Settings" />
+    <TextBlock Classes="pageSubtitle" Text="Emulation, rumble and how the app starts." />
+    <Border Classes="notice" Margin="0,10,0,0" IsVisible="{Binding IsNative}">
+      <TextBlock FontSize="12" TextWrapping="Wrap" Text="Native DualSense mode is on, so games control the lightbar, triggers and rumble. Changes here are sent right away, but a game can override them. Pick Xbox or DS4 on the Home page to keep them." />
+    </Border>
+
+    <Border Classes="section" Margin="0,12,0,0">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="cardTitle" Text="Appearance" />
+        <Border Classes="segments">
+          <StackPanel Orientation="Horizontal">
+            <RadioButton Classes="segment" GroupName="Theme" Content="Match Windows" AutomationProperties.Name="Theme: match Windows"
+                         IsChecked="{Binding Theme, Converter={StaticResource Is}, ConverterParameter=System}" />
+            <RadioButton Classes="segment" GroupName="Theme" Content="Light" AutomationProperties.Name="Theme: light"
+                         IsChecked="{Binding Theme, Converter={StaticResource Is}, ConverterParameter=Light}" />
+            <RadioButton Classes="segment" GroupName="Theme" Content="Dark" AutomationProperties.Name="Theme: dark"
+                         IsChecked="{Binding Theme, Converter={StaticResource Is}, ConverterParameter=Dark}" />
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="cardTitle" Text="Games see a" />
+        <Border Classes="segments">
+          <StackPanel Orientation="Horizontal">
+            <RadioButton Classes="segment" GroupName="SetEmulation" Content="Xbox 360 controller"
+                         IsChecked="{Binding Emulation, Converter={StaticResource Is}, ConverterParameter=Xbox360}" />
+            <RadioButton Classes="segment" GroupName="SetEmulation" Content="DualShock 4 controller"
+                         IsChecked="{Binding Emulation, Converter={StaticResource Is}, ConverterParameter=DualShock4}" />
+            <RadioButton Classes="segment" GroupName="SetEmulation" Content="Native DualSense"
+                         IsChecked="{Binding Emulation, Converter={StaticResource Is}, ConverterParameter=Native}" />
+          </StackPanel>
+        </Border>
+        <TextBlock Classes="caption" Text="Xbox 360 works in almost every game. DualShock 4 shows PlayStation button prompts and passes gyro and touchpad to games, emulators and Steam that support them. Native DualSense hands the real controller to games with built-in DualSense support, so they get haptics and their own adaptive trigger effects. The app then stops its own lightbar, trigger and rumble updates, but changes you make here are still sent." />
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="cardTitle" Text="Rumble" />
+        <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Strength" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding RumbleStrength, StringFormat={}{0:0}%}" /></Grid>
+        <Slider Minimum="0" Maximum="100" Value="{Binding RumbleStrength}" AutomationProperties.Name="Rumble strength" />
+        <Button Content="Test rumble" Click="TestRumble_Click" />
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="cardTitle" Text="Self-test" />
+        <TextBlock Classes="caption" Text="Checks that your controller sends input and accepts lightbar, rumble and trigger commands. The lightbar flashes red then green and the controller rumbles briefly. Don't touch the triggers while it runs." />
+        <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,4,0,0">
+          <Button Name="SelfTestButton" Classes="accent" Content="Run self-test" Click="SelfTest_Click" />
+          <TextBlock Name="SelfTestSummary" Classes="caption" VerticalAlignment="Center" />
+        </StackPanel>
+        <ItemsControl Name="SelfTestResults" Margin="0,4,0,0" AutomationProperties.Name="Self-test results">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid ColumnDefinitions="20,*" Margin="0,3">
+                <TextBlock Classes="icon" Text="{Binding Icon}" Foreground="{Binding IconBrush}" FontSize="12" Margin="0,2,0,0"
+                           AutomationProperties.Name="{Binding Spoken}" />
+                <StackPanel Grid.Column="1">
+                  <TextBlock Classes="label" Text="{Binding Name}" />
+                  <TextBlock Classes="caption" Text="{Binding Detail}" />
+                </StackPanel>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="cardTitle" Text="Startup" />
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel>
+            <TextBlock Classes="label" Text="Start with Windows" />
+            <TextBlock Classes="caption" Text="Starts quietly in the system tray when you sign in." />
+          </StackPanel>
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding StartWithWindows}" AutomationProperties.Name="Start with Windows" />
+        </Grid>
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel>
+            <TextBlock Classes="label" Text="Always start in the tray" />
+            <TextBlock Classes="caption" Text="Don't open this window when the app starts. Click the tray icon to open it." />
+          </StackPanel>
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding StartMinimized}" AutomationProperties.Name="Always start in the tray" />
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="cardTitle" Text="Updates" />
+        <TextBlock Classes="caption" Text="{Binding UpdateStatus}" />
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <Button Classes="accent" Content="Download update" Click="DownloadUpdate_Click" IsVisible="{Binding HasUpdate}" />
+          <Button Name="CheckUpdatesButton" Content="Check now" Click="CheckUpdates_Click" />
+        </StackPanel>
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel>
+            <TextBlock Classes="label" Text="Check for updates when the app starts" />
+            <TextBlock Classes="caption" Text="Asks GitHub for the latest release. Nothing about you or your PC is sent." />
+          </StackPanel>
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding CheckForUpdates}" AutomationProperties.Name="Check for updates when the app starts" />
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="cardTitle" Text="Files" />
+        <TextBlock Classes="caption" Text="Settings are saved automatically. You can also edit them by hand and reload." />
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <Button Content="Open settings file" Click="OpenSettings_Click" />
+          <Button Content="Reload settings file" Click="ReloadSettings_Click" />
+          <Button Content="Open settings folder" Click="OpenFolder_Click" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel>
+        <TextBlock Classes="cardTitle" Text="About" />
+        <TextBlock Name="VersionText" Classes="caption" />
+        <TextBlock Classes="caption" Margin="0,2,0,0" Text="Built on ViGEmBus, HidHide, HidSharp, NAudio and Avalonia. Not affiliated with Sony Interactive Entertainment." />
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

@@ -1,30 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- The app window, tray icon and startup. Everything else lives in DualSenseCompanion.Core. -->
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>true</UseWPF>
     <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>DualSenseCompanion.Program</StartupObject>
-    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
-    <ApplicationIcon>icon_6Q2_icon.ico</ApplicationIcon>
-    <PackageId>DualSenseCompanion</PackageId>
-    <Title>DualSenseCompanion</Title>
-    <Authors>Sar1911</Authors>
-    <Company>Sar1911</Company>
-    <Product>DualSenseCompanion</Product>
-    <Description>The only app you'll need for PC gaming with the PS5 controller.</Description>
     <AssemblyName>DualSenseCompanion</AssemblyName>
     <RootNamespace>DualSenseCompanion</RootNamespace>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Version>1.3.0</Version>
+    <ApplicationIcon>icon_6Q2_icon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <!-- Reflection bindings like WPF; the live views update from code, so binding speed does not matter -->
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <!-- WinForms only for the tray icon, which can show Windows notifications -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <Product>DualSense Companion</Product>
+    <Description>A companion app for the DualSense (PS5) controller on Windows.</Description>
+    <Authors>Sar1911</Authors>
   </PropertyGroup>
 
   <!--
     Release package: one self-contained .exe that runs without installing .NET.
     dotnet publish DualSenseCompanion -c Release -p:SingleFile=true -o publish
+    Not trimmed: HidSharp, WMI and the audio COM interop rely on reflection.
   -->
   <PropertyGroup Condition="'$(SingleFile)' == 'true'">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -33,27 +32,37 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <DebugType>embedded</DebugType>
+    <CopyDebugSymbolFilesFromPackages>false</CopyDebugSymbolFilesFromPackages>
+    <!-- Only the .exe: no symbol files from native packages next to it -->
+    <AllowedReferenceRelatedFileExtensions>.xml</AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="icon_6Q2_icon.ico" />
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
   </ItemGroup>
 
-  <!-- WPF and WinForms share type names (Application, MessageBox, Color...); import WinForms explicitly where used -->
+  <ItemGroup>
+    <ProjectReference Include="..\DualSenseCompanion.Core\DualSenseCompanion.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="icon_6Q2_icon.ico" />
+  </ItemGroup>
+
+  <!-- Avalonia and WinForms share type names; import WinForms explicitly where used -->
   <ItemGroup>
     <Using Remove="System.Windows.Forms" />
     <Using Remove="System.Drawing" />
-    <Using Include="System.IO" />
-    <Using Include="System.Net.Http" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="HidSharp" Version="2.1.0" />
-    <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-    <PackageReference Include="Nefarius.Drivers.HidHide" Version="2.4.1" />
-    <PackageReference Include="Nefarius.ViGEm.Client" Version="1.21.256" />
-    <PackageReference Include="System.Management" Version="9.0.3" />
-    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.3" />
-  </ItemGroup>
+  <!-- SkiaSharp and HarfBuzz ship native symbol files that still land next to the .exe; players don't need them -->
+  <Target Name="RemoveStraySymbols" AfterTargets="Publish" Condition="'$(SingleFile)' == 'true'">
+    <ItemGroup>
+      <StraySymbols Include="$(PublishDir)*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(StraySymbols)" />
+  </Target>
 
 </Project>

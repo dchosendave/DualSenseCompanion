@@ -1,0 +1,76 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DualSenseCompanion.CompanionApp"
+             RequestedThemeVariant="Default">
+
+  <Application.Resources>
+    <ResourceDictionary>
+      <!-- Palette: white DualSense shell with the lightbar blue, and a charcoal dark mode. -->
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="PageBrush" Color="#FFFFFF" />
+          <SolidColorBrush x:Key="SidebarBrush" Color="#F7F7F9" />
+          <SolidColorBrush x:Key="SurfaceBrush" Color="#F3F4F6" />
+          <SolidColorBrush x:Key="HoverBrush" Color="#ECEEF2" />
+          <SolidColorBrush x:Key="AccentBrush" Color="#2F6BFF" />
+          <SolidColorBrush x:Key="AccentSoftBrush" Color="#EAF0FF" />
+          <SolidColorBrush x:Key="TextBrush" Color="#1D1D1F" />
+          <SolidColorBrush x:Key="TextSecondaryBrush" Color="#6E6E73" />
+          <SolidColorBrush x:Key="LineBrush" Color="#E5E5EA" />
+          <SolidColorBrush x:Key="TrackBrush" Color="#DCDFE5" />
+          <SolidColorBrush x:Key="WarningBackBrush" Color="#FFF7E6" />
+          <SolidColorBrush x:Key="WarningBorderBrush" Color="#F5D9A8" />
+          <SolidColorBrush x:Key="WarningTextBrush" Color="#7A5200" />
+          <SolidColorBrush x:Key="GoodBackBrush" Color="#EAF7EE" />
+          <SolidColorBrush x:Key="GoodBorderBrush" Color="#A7D9B5" />
+          <SolidColorBrush x:Key="GoodTextBrush" Color="#146C2E" />
+          <SolidColorBrush x:Key="StatusIdleBrush" Color="#9B9FA8" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="PageBrush" Color="#1C1C1E" />
+          <SolidColorBrush x:Key="SidebarBrush" Color="#202022" />
+          <SolidColorBrush x:Key="SurfaceBrush" Color="#2C2C2E" />
+          <SolidColorBrush x:Key="HoverBrush" Color="#2E2E31" />
+          <SolidColorBrush x:Key="AccentBrush" Color="#4C82FF" />
+          <SolidColorBrush x:Key="AccentSoftBrush" Color="#1F2B48" />
+          <SolidColorBrush x:Key="TextBrush" Color="#F5F5F7" />
+          <SolidColorBrush x:Key="TextSecondaryBrush" Color="#98989D" />
+          <SolidColorBrush x:Key="LineBrush" Color="#38383A" />
+          <SolidColorBrush x:Key="TrackBrush" Color="#3A3A3C" />
+          <SolidColorBrush x:Key="WarningBackBrush" Color="#33290F" />
+          <SolidColorBrush x:Key="WarningBorderBrush" Color="#5E4A1C" />
+          <SolidColorBrush x:Key="WarningTextBrush" Color="#F5D28A" />
+          <SolidColorBrush x:Key="GoodBackBrush" Color="#16301F" />
+          <SolidColorBrush x:Key="GoodBorderBrush" Color="#2E6B43" />
+          <SolidColorBrush x:Key="GoodTextBrush" Color="#8EE3A8" />
+          <SolidColorBrush x:Key="StatusIdleBrush" Color="#6E6E73" />
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+
+      <LinearGradientBrush x:Key="LightbarBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Color="#6C97FF" Offset="0" />
+        <GradientStop Color="#2F6BFF" Offset="0.5" />
+        <GradientStop Color="#6C97FF" Offset="1" />
+      </LinearGradientBrush>
+
+      <!-- Glow for pressed buttons in the live controller drawing -->
+      <DropShadowEffect x:Key="AccentGlow" OffsetX="0" OffsetY="0" BlurRadius="14" Opacity="0.85" Color="#2F6BFF" />
+
+      <FontFamily x:Key="UiFont">Segoe UI Variable Text, Segoe UI</FontFamily>
+      <FontFamily x:Key="DisplayFont">Segoe UI Variable Display, Segoe UI</FontFamily>
+      <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <Application.Styles>
+    <!-- Fluent controls, with the lightbar blue as the accent color. -->
+    <FluentTheme>
+      <FluentTheme.Palettes>
+        <ColorPaletteResources x:Key="Light" Accent="#2F6BFF" />
+        <ColorPaletteResources x:Key="Dark" Accent="#4C82FF" />
+      </FluentTheme.Palettes>
+    </FluentTheme>
+
+    <StyleInclude Source="avares://DualSenseCompanion/Styles.axaml" />
+  </Application.Styles>
+</Application>

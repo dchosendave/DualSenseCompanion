@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:DualSenseCompanion.UI"
+             x:Class="DualSenseCompanion.UI.Pages.SticksPage">
+  <StackPanel>
+    <TextBlock Classes="pageTitle" Text="Sticks" />
+    <TextBlock Classes="pageSubtitle" Text="Grey dot: where your stick is. Blue dot: what the game receives. Move a stick while you adjust." />
+
+    <Grid ColumnDefinitions="*,*" Margin="0,12,0,0">
+      <Border Classes="section" Margin="0,0,12,0">
+        <StackPanel Spacing="2">
+          <TextBlock Classes="cardTitle" Text="Left stick" />
+          <ui:StickPlot Name="LeftPlot" Width="130" Height="130" Margin="0,6,0,8" HorizontalAlignment="Center" />
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Deadzone" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding LeftDeadzone, StringFormat={}{0:P0}}" /></Grid>
+          <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding LeftDeadzone}" AutomationProperties.Name="Left stick deadzone" />
+          <TextBlock Classes="caption" Text="Ignores small movement. Raise it if the stick drifts." Margin="0,0,0,6" />
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Outer deadzone" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding LeftOuterDeadzone, StringFormat={}{0:P0}}" /></Grid>
+          <Slider Minimum="0" Maximum="0.3" SmallChange="0.01" Value="{Binding LeftOuterDeadzone}" AutomationProperties.Name="Left stick outer deadzone" />
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Anti-deadzone" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding LeftAntiDeadzone, StringFormat={}{0:P0}}" /></Grid>
+          <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding LeftAntiDeadzone}" AutomationProperties.Name="Left stick anti-deadzone" />
+          <TextBlock Classes="caption" Text="Cancels a game's own deadzone so small movements register." Margin="0,0,0,6" />
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Response curve" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding LeftCurve, StringFormat={}{0:0.0}}" /></Grid>
+          <Slider Minimum="0.5" Maximum="3" SmallChange="0.1" Value="{Binding LeftCurve}" AutomationProperties.Name="Left stick response curve" />
+          <TextBlock Classes="caption" Text="1.0 is linear. Higher gives finer control near the center." />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Column="1" Classes="section" Margin="12,0,0,0">
+        <StackPanel Spacing="2">
+          <TextBlock Classes="cardTitle" Text="Right stick" />
+          <ui:StickPlot Name="RightPlot" Width="130" Height="130" Margin="0,6,0,8" HorizontalAlignment="Center" />
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Deadzone" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding RightDeadzone, StringFormat={}{0:P0}}" /></Grid>
+          <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding RightDeadzone}" AutomationProperties.Name="Right stick deadzone" />
+          <TextBlock Classes="caption" Text="Ignores small movement. Raise it if the stick drifts." Margin="0,0,0,6" />
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Outer deadzone" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding RightOuterDeadzone, StringFormat={}{0:P0}}" /></Grid>
+          <Slider Minimum="0" Maximum="0.3" SmallChange="0.01" Value="{Binding RightOuterDeadzone}" AutomationProperties.Name="Right stick outer deadzone" />
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Anti-deadzone" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding RightAntiDeadzone, StringFormat={}{0:P0}}" /></Grid>
+          <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding RightAntiDeadzone}" AutomationProperties.Name="Right stick anti-deadzone" />
+          <TextBlock Classes="caption" Text="Cancels a game's own deadzone so small movements register." Margin="0,0,0,6" />
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Response curve" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding RightCurve, StringFormat={}{0:0.0}}" /></Grid>
+          <Slider Minimum="0.5" Maximum="3" SmallChange="0.1" Value="{Binding RightCurve}" AutomationProperties.Name="Right stick response curve" />
+          <TextBlock Classes="caption" Text="1.0 is linear. Higher gives finer control near the center." />
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Classes="section">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="cardTitle" Text="Triggers" />
+        <Grid ColumnDefinitions="40,*,24,40,*" Margin="0,4,0,0">
+          <TextBlock Classes="label" Text="L2" FontWeight="SemiBold" />
+          <Grid Grid.Column="1" Name="L2Bar" Height="5">
+            <Border Classes="track" />
+            <Border Name="L2Fill" Classes="fill" Width="0" />
+          </Grid>
+          <TextBlock Grid.Column="3" Classes="label" Text="R2" FontWeight="SemiBold" />
+          <Grid Grid.Column="4" Name="R2Bar" Height="5">
+            <Border Classes="track" />
+            <Border Name="R2Fill" Classes="fill" Width="0" />
+          </Grid>
+        </Grid>
+        <Grid ColumnDefinitions="*,Auto" Margin="0,6,0,0"><TextBlock Classes="label" Text="Trigger deadzone" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding TriggerDeadzone, StringFormat={}{0:P0}}" /></Grid>
+        <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding TriggerDeadzone}" AutomationProperties.Name="Trigger deadzone" />
+        <TextBlock Classes="caption" Text="Light presses below this amount are ignored." />
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

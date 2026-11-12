@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:DualSenseCompanion.UI"
+             x:Class="DualSenseCompanion.UI.Pages.HomePage">
+  <UserControl.Resources>
+    <ui:EqualsConverter x:Key="Is" />
+  </UserControl.Resources>
+
+  <StackPanel>
+    <TextBlock Classes="pageTitle" Text="Your controller" />
+    <TextBlock Name="Subtitle" Classes="pageSubtitle" Text="Press any button to see it light up." />
+
+    <!-- Problems that cause double input or fights over the controller -->
+    <ItemsControl Name="Warnings" Margin="0,8,0,0" AutomationProperties.Name="Warnings">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Border Classes="notice" Margin="0,0,0,6">
+            <StackPanel>
+              <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12.5" />
+              <TextBlock Text="{Binding Detail}" FontSize="12" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <!-- Live controller -->
+    <Border Classes="section" Margin="0,12,0,0">
+      <Grid>
+        <ui:ControllerView Name="Controller" Height="300" />
+        <Border Name="ConnectHint" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="12,6">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBlock Classes="icon" Text="&#xE839;" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" />
+            <TextBlock Text="Connect your controller with a USB cable or Bluetooth" FontSize="12.5" />
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
+
+    <Grid ColumnDefinitions="*,*,*">
+      <Border Classes="section" Margin="0,0,10,0">
+        <StackPanel>
+          <TextBlock Classes="caption" Text="CONNECTION" FontWeight="SemiBold" />
+          <TextBlock Name="ConnectionText" Text="Not connected" FontFamily="{StaticResource DisplayFont}" FontSize="18" FontWeight="SemiBold" Margin="0,4,0,0" />
+          <TextBlock Name="ConnectionDetail" Classes="caption" Text="Waiting for a DualSense" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Column="1" Classes="section" Margin="5,0">
+        <StackPanel>
+          <TextBlock Classes="caption" Text="BATTERY" FontWeight="SemiBold" />
+          <TextBlock Name="BatteryText" Text="—" FontFamily="{StaticResource DisplayFont}" FontSize="18" FontWeight="SemiBold" Margin="0,4,0,6" />
+          <Grid Name="BatteryBar" Height="4">
+            <Border Classes="track" />
+            <Border Name="BatteryFill" Classes="fill" Width="0" />
+          </Grid>
+          <TextBlock Name="BatteryDetail" Classes="caption" Margin="0,4,0,0" Text="Shown once connected" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Column="2" Classes="section" Margin="10,0,0,0">
+        <StackPanel>
+          <TextBlock Classes="caption" Text="GAMES SEE A" FontWeight="SemiBold" />
+          <Border Classes="segments" Margin="0,6">
+            <StackPanel Orientation="Horizontal">
+              <RadioButton Classes="segment" GroupName="HomeEmulation" Content="Xbox"
+                           IsChecked="{Binding Emulation, Converter={StaticResource Is}, ConverterParameter=Xbox360}" />
+              <RadioButton Classes="segment" GroupName="HomeEmulation" Content="DS4"
+                           IsChecked="{Binding Emulation, Converter={StaticResource Is}, ConverterParameter=DualShock4}" />
+              <RadioButton Classes="segment" GroupName="HomeEmulation" Content="DualSense"
+                           IsChecked="{Binding Emulation, Converter={StaticResource Is}, ConverterParameter=Native}" />
+            </StackPanel>
+          </Border>
+          <TextBlock Classes="caption" Text="Xbox works everywhere. DualShock 4 adds gyro and touchpad. DualSense is for games with built-in DualSense support." />
+        </StackPanel>
+      </Border>
+    </Grid>
+  </StackPanel>
+</UserControl>

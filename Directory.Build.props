@@ -1,0 +1,8 @@
+<Project>
+  <!-- One version for the app and its libraries; the update check compares against it. -->
+  <PropertyGroup>
+    <Version>1.4.0</Version>
+    <!-- Release package: symbols go inside the .exe and libraries, not next to them -->
+    <DebugType Condition="'$(SingleFile)' == 'true'">embedded</DebugType>
+  </PropertyGroup>
+</Project>

@@ -111,6 +111,12 @@ Values (virtual controller): `A, B, X, Y, LeftShoulder, RightShoulder, LeftThumb
 
 Requires the .NET 8 SDK (or newer) on Windows.
 
+The solution has three projects:
+
+- `DualSenseCompanion.Core`: controller input and output, emulation, features, settings and drivers. No UI.
+- `DualSenseCompanion`: the app window and tray icon, built with [Avalonia](https://avaloniaui.net/) and its Fluent theme.
+- `DualSenseCompanion.Tests`: unit tests for Core.
+
 ```
 dotnet build
 dotnet test
@@ -134,9 +140,10 @@ GitHub Actions builds and tests every push and pull request and uploads the `.ex
 1. ViGEm (Virtual Gamepad Emulation Driver): the virtual Xbox 360 and DualShock 4 controllers.
 2. HidHide: hiding the real controller from games.
 3. HidSharp: HID device communication in C#.
-4. Linux kernel (hid-playstation.c): DualSense protocol documentation.
-5. NAudio: Windows microphone control.
-6. Nielk1's trigger effect documentation: adaptive trigger effect formats.
-7. The open-source community: shared knowledge on DualSense input and output.
+4. Avalonia: the app's interface (Fluent theme).
+5. Linux kernel (hid-playstation.c): DualSense protocol documentation.
+6. NAudio: Windows microphone control.
+7. Nielk1's trigger effect documentation: adaptive trigger effect formats.
+8. The open-source community: shared knowledge on DualSense input and output.
 
 Not affiliated with Sony Interactive Entertainment.

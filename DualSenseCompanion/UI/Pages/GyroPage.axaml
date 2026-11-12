@@ -1,0 +1,136 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:DualSenseCompanion.UI"
+             x:Class="DualSenseCompanion.UI.Pages.GyroPage">
+  <UserControl.Resources>
+    <ui:EqualsConverter x:Key="Is" />
+  </UserControl.Resources>
+
+  <StackPanel>
+    <TextBlock Classes="pageTitle" Text="Gyro aiming" />
+    <TextBlock Classes="pageSubtitle" Text="Aim by moving the controller, for precise fine-tuning on top of the right stick." />
+
+    <Border Classes="section" Margin="0,12,0,0">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="cardTitle" Text="Mode" />
+        <Border Classes="segments">
+          <StackPanel Orientation="Horizontal">
+            <RadioButton Classes="segment" GroupName="GyroMode" Content="Off" IsChecked="{Binding GyroMode, Converter={StaticResource Is}, ConverterParameter=Off}" />
+            <RadioButton Classes="segment" GroupName="GyroMode" Content="Mouse" IsChecked="{Binding GyroMode, Converter={StaticResource Is}, ConverterParameter=Mouse}" />
+            <RadioButton Classes="segment" GroupName="GyroMode" Content="Right stick" IsChecked="{Binding GyroMode, Converter={StaticResource Is}, ConverterParameter=RightStick}" />
+          </StackPanel>
+        </Border>
+        <TextBlock Classes="caption" Text="Mouse is the most precise but only works in games that accept mouse and controller together. Right stick works in every game." />
+      </StackPanel>
+    </Border>
+
+    <StackPanel IsEnabled="{Binding GyroEnabled}">
+      <Border Classes="section">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="cardTitle" Text="When is gyro active?" />
+          <Border Classes="segments">
+            <StackPanel Orientation="Horizontal">
+              <RadioButton Classes="segment" GroupName="GyroAct" Content="Always" IsChecked="{Binding GyroActivation, Converter={StaticResource Is}, ConverterParameter=Always}" />
+              <RadioButton Classes="segment" GroupName="GyroAct" Content="While holding a button" IsChecked="{Binding GyroActivation, Converter={StaticResource Is}, ConverterParameter=WhileHeld}" />
+              <RadioButton Classes="segment" GroupName="GyroAct" Content="Toggle with a button" IsChecked="{Binding GyroActivation, Converter={StaticResource Is}, ConverterParameter=Toggle}" />
+            </StackPanel>
+          </Border>
+          <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding GyroNeedsButton}">
+            <StackPanel>
+              <TextBlock Classes="label" Text="Button" />
+              <TextBlock Classes="caption" Text="Holding L2 to aim down sights is a popular choice." />
+            </StackPanel>
+            <ComboBox Grid.Column="1" Width="170" ItemsSource="{x:Static ui:SettingsViewModel.GyroButtonNames}"
+                      DisplayMemberBinding="{Binding Name}" SelectedValueBinding="{Binding Value}" SelectedValue="{Binding GyroButton}"
+                      AutomationProperties.Name="Gyro activation button" />
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="section">
+        <StackPanel Spacing="2">
+          <TextBlock Classes="cardTitle" Text="Feel" />
+
+          <StackPanel IsVisible="{Binding GyroIsMouse}">
+            <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Sensitivity" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding GyroMouseSensitivity, StringFormat={}{0:0.0} px per degree}" /></Grid>
+            <Slider Minimum="1" Maximum="60" Value="{Binding GyroMouseSensitivity}" AutomationProperties.Name="Gyro sensitivity" />
+          </StackPanel>
+
+          <StackPanel IsVisible="{Binding GyroIsStick}">
+            <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Turn speed for full stick" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding GyroStickSpeed, StringFormat={}{0:0}° per second}" /></Grid>
+            <Slider Minimum="30" Maximum="720" Value="{Binding GyroStickSpeed}" AutomationProperties.Name="Turn speed for full stick" />
+            <TextBlock Classes="caption" Text="Lower is more sensitive." Margin="0,0,0,6" />
+            <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Anti-deadzone" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding GyroStickAntiDeadzone, StringFormat={}{0:P0}}" /></Grid>
+            <Slider Minimum="0" Maximum="0.4" Value="{Binding GyroStickAntiDeadzone}" AutomationProperties.Name="Gyro anti-deadzone" />
+            <TextBlock Classes="caption" Text="Raise it if small motions don't move your aim in a game." Margin="0,0,0,6" />
+          </StackPanel>
+
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Steadiness" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding GyroSmoothing, StringFormat={}{0:0.0}° per second}" /></Grid>
+          <Slider Minimum="0" Maximum="6" Value="{Binding GyroSmoothing}" AutomationProperties.Name="Gyro steadiness" />
+          <TextBlock Classes="caption" Text="Softens very small movements so hand shake doesn't move the aim." Margin="0,0,0,8" />
+
+          <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+            <StackPanel>
+              <TextBlock Classes="label" Text="Horizontal aim" />
+              <TextBlock Classes="caption" Text="Turn the controller like a flashlight, or tilt it like a steering wheel." />
+            </StackPanel>
+            <Border Grid.Column="1" Classes="segments" VerticalAlignment="Center">
+              <StackPanel Orientation="Horizontal">
+                <RadioButton Classes="segment" GroupName="GyroAxis" Content="Turn" IsChecked="{Binding GyroHorizontalAxis, Converter={StaticResource Is}, ConverterParameter=Yaw}" />
+                <RadioButton Classes="segment" GroupName="GyroAxis" Content="Tilt" IsChecked="{Binding GyroHorizontalAxis, Converter={StaticResource Is}, ConverterParameter=Roll}" />
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Classes="label" Text="Invert horizontal" />
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding GyroInvertX}" AutomationProperties.Name="Invert horizontal gyro" />
+          </Grid>
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Classes="label" Text="Invert vertical" />
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding GyroInvertY}" AutomationProperties.Name="Invert vertical gyro" />
+          </Grid>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+
+    <Border Classes="section">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="cardTitle" Text="Live motion" />
+        <TextBlock Classes="caption" Text="Rotation speed right now. With the controller lying still all three should stay near zero; if not, calibrate." />
+
+        <Grid ColumnDefinitions="90,*,90" RowDefinitions="24,24,24" Margin="0,6,0,0">
+          <TextBlock Classes="label" Text="Up / down" />
+          <Grid Name="PitchTrack" Grid.Column="1" Height="4">
+            <Border Classes="track" />
+            <Border Width="1" Background="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+            <Border Name="PitchFill" Classes="fill" Width="0" />
+          </Grid>
+          <TextBlock Name="PitchText" Grid.Column="2" Classes="value" Text="0" />
+
+          <TextBlock Grid.Row="1" Classes="label" Text="Turn" />
+          <Grid Name="YawTrack" Grid.Row="1" Grid.Column="1" Height="4">
+            <Border Classes="track" />
+            <Border Width="1" Background="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+            <Border Name="YawFill" Classes="fill" Width="0" />
+          </Grid>
+          <TextBlock Name="YawText" Grid.Row="1" Grid.Column="2" Classes="value" Text="0" />
+
+          <TextBlock Grid.Row="2" Classes="label" Text="Tilt" />
+          <Grid Name="RollTrack" Grid.Row="2" Grid.Column="1" Height="4">
+            <Border Classes="track" />
+            <Border Width="1" Background="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+            <Border Name="RollFill" Classes="fill" Width="0" />
+          </Grid>
+          <TextBlock Name="RollText" Grid.Row="2" Grid.Column="2" Classes="value" Text="0" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Spacing="10">
+          <Button Classes="accent" Content="Calibrate" Click="Calibrate_Click" />
+          <TextBlock Name="CalibrateHint" Classes="caption" VerticalAlignment="Center"
+                     Text="Put the controller on a table and don't touch it for a second." />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

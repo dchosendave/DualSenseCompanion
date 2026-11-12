@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DualSenseCompanion.UI.Pages.TestPage">
+  <StackPanel>
+    <TextBlock Classes="pageTitle" Text="Controller test" />
+    <TextBlock Classes="pageSubtitle" Text="Check a new or used controller. Every input turns green once it works; the health check measures drift, wear and range." />
+
+    <Border Classes="section" Margin="0,12,0,0">
+      <StackPanel>
+        <TextBlock Classes="cardTitle" Text="Controller info" />
+        <TextBlock Name="InfoEmpty" Classes="caption" Text="Connect a controller to see its details." />
+        <Grid Name="InfoGrid" Margin="0,4,0,0" IsVisible="False" ColumnDefinitions="170,*" />
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel>
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel>
+            <TextBlock Classes="cardTitle" Text="Button checklist" />
+            <TextBlock Name="ChecklistProgress" Classes="caption" Text="0 of 0 tested" />
+          </StackPanel>
+          <Button Grid.Column="1" Content="Start over" VerticalAlignment="Center" Click="ResetChecklist_Click" />
+        </Grid>
+        <Grid Name="ChecklistBar" Height="4" Margin="0,8,0,4">
+          <Border Classes="track" />
+          <Border Name="ChecklistFill" Classes="fill" Width="0" Background="#16A34A" />
+        </Grid>
+        <StackPanel Name="Groups" Margin="0,4,0,0" />
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel>
+        <TextBlock Classes="cardTitle" Text="Health check" />
+        <TextBlock Classes="caption" Text="Takes about 15 seconds: the controller lies still, you rotate both sticks, then press both triggers fully." />
+
+        <Border Name="StepPanel" Margin="0,8,0,0" Padding="10,8" Background="{DynamicResource SurfaceBrush}" CornerRadius="4" IsVisible="False">
+          <StackPanel>
+            <TextBlock Name="StepTitle" FontWeight="SemiBold" />
+            <TextBlock Name="StepDetail" Classes="caption" />
+            <Grid Name="StepBar" Height="4" Margin="0,6,0,0">
+              <Border Classes="track" />
+              <Border Name="StepFill" Classes="fill" Width="0" />
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Spacing="10">
+          <Button Name="HealthButton" Classes="accent" Content="Start health check" Click="StartHealth_Click" />
+          <TextBlock Name="Verdict" Classes="caption" VerticalAlignment="Center" FontWeight="SemiBold" />
+        </StackPanel>
+
+        <ItemsControl Name="HealthResults" Margin="0,6,0,0" AutomationProperties.Name="Health check results">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid ColumnDefinitions="20,*" Margin="0,3">
+                <TextBlock Classes="icon" Text="{Binding Icon}" Foreground="{Binding IconBrush}" FontSize="12" Margin="0,2,0,0"
+                           AutomationProperties.Name="{Binding Spoken}" />
+                <StackPanel Grid.Column="1">
+                  <TextBlock Classes="label" Text="{Binding Name}" />
+                  <TextBlock Classes="caption" Text="{Binding Detail}" />
+                </StackPanel>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

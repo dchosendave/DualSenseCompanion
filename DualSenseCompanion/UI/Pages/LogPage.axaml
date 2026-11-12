@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DualSenseCompanion.UI.Pages.LogPage">
+  <StackPanel>
+    <Grid ColumnDefinitions="*,Auto">
+      <StackPanel>
+        <TextBlock Classes="pageTitle" Text="Log" />
+        <TextBlock Classes="pageSubtitle" Text="What the app is doing. Useful when something doesn't work." />
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Bottom">
+        <Button Content="Copy" Click="Copy_Click" />
+        <Button Content="Open log file" Click="OpenFile_Click" />
+      </StackPanel>
+    </Grid>
+
+    <Border Classes="section" Margin="0,12,0,0">
+      <TextBox Name="LogText" Height="480" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+               FontFamily="Cascadia Mono, Consolas" FontSize="12" AutomationProperties.Name="Log" />
+    </Border>
+  </StackPanel>
+</UserControl>

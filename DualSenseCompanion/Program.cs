@@ -1,7 +1,7 @@
-using System.Windows;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Threading;
 using DualSenseCompanion.App;
-using DualSenseCompanion.UI;
-using DualSenseCompanion.UI.Pages;
 using Microsoft.Win32;
 using WinForms = System.Windows.Forms;
 
@@ -47,8 +47,8 @@ public static class Program
         //Only the first instance owns the log; a second launch must not rotate it
         Log.Initialize();
 
+        //The tray icon's menu uses WinForms visual styles
         WinForms.Application.EnableVisualStyles();
-        WinForms.Application.SetHighDpiMode(WinForms.HighDpiMode.PerMonitorV2);
         AppDomain.CurrentDomain.UnhandledException += (s, e) => Console.WriteLine($"Fatal error: {e.ExceptionObject}");
 
         Console.WriteLine("DualSense Companion starting...");
@@ -74,8 +74,8 @@ public static class Program
         catch (Exception ex)
         {
             Console.WriteLine($"Could not create the virtual controller: {ex}");
-            WinForms.MessageBox.Show($"Could not create the virtual controller.\n\n{ex.Message}\n\nMake sure the ViGEmBus driver is installed, then restart DualSense Companion.\n\nDetails: {Log.FilePath}",
-                "DualSense Companion", WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Error);
+            NativeDialog.ShowError($"Could not create the virtual controller.\n\n{ex.Message}\n\nMake sure the ViGEmBus driver is installed, then restart DualSense Companion.\n\nDetails: {Log.FilePath}",
+                "DualSense Companion");
             CloakManager.UnhidePS5Controller();
             return 1;
         }
@@ -89,115 +89,37 @@ public static class Program
 
         service.Start();
 
-        var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-        app.Resources.MergedDictionaries.Add(new ResourceDictionary
-        {
-            Source = new Uri("pack://application:,,,/DualSenseCompanion;component/UI/Theme.xaml"),
-        });
+        CompanionApp.Service = service;
+        CompanionApp.StartMinimized = settings.StartMinimized ||
+                                      args.Contains(Autostart.MinimizedArgument, StringComparer.OrdinalIgnoreCase);
 
-        //Light or dark palette, inserted ahead of the styles
-        ThemeManager.Apply(settings.Theme);
-        app.DispatcherUnhandledException += (s, e) =>
-        {
-            Console.WriteLine($"Unexpected UI error: {e.Exception}");
-            e.Handled = true;
-        };
-
-        var window = new MainWindow(service);
-        using var tray = new TrayIcon(service, app.Dispatcher);
-        bool toldAboutTray = false;
-
-        void ShowWindow() => window.BringToFront();
-
-        tray.OpenRequested += ShowWindow;
-        tray.PageRequested += page =>
-        {
-            window.Navigate(page);
-            ShowWindow();
-        };
-        tray.SettingsChanged += window.OnSettingsReplaced;
-        void ExitApp()
-        {
-            window.AllowClose = true;
-            window.Close();
-            app.Shutdown();
-        }
-
-        tray.ExitRequested += ExitApp;
-
-        SettingsPage.SettingsReloaded += window.OnSettingsReplaced;
-
-        window.HiddenToTray += () =>
-        {
-            if (!toldAboutTray)
-            {
-                toldAboutTray = true;
-                tray.ShowMessage("Still running in the tray so your controller keeps working. Right-click the icon to exit.");
-            }
-        };
-
-        //A second launch signals this event
+        //A second launch signals one of these events
         using var showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ShowEventName);
-        var showThread = new Thread(() =>
-        {
-            while (showEvent.WaitOne())
-            {
-                if (app.Dispatcher.HasShutdownStarted)
-                {
-                    return;
-                }
-
-                app.Dispatcher.BeginInvoke(ShowWindow);
-            }
-        })
-        { IsBackground = true, Name = "Show window listener" };
-        showThread.Start();
-
         using var exitEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ExitEventName);
-        var exitThread = new Thread(() =>
-        {
-            if (exitEvent.WaitOne() && !app.Dispatcher.HasShutdownStarted)
-            {
-                app.Dispatcher.BeginInvoke(ExitApp);
-            }
-        })
-        { IsBackground = true, Name = "Exit listener" };
-        exitThread.Start();
+        StartListener(showEvent, () => CompanionApp.Current?.ShowMainWindow(), "Show window listener");
+        StartListener(exitEvent, () => CompanionApp.Current?.ExitApp(), "Exit listener");
 
-        bool startMinimized = settings.StartMinimized ||
-                              args.Contains(Autostart.MinimizedArgument, StringComparer.OrdinalIgnoreCase);
-
-        if (startMinimized)
-        {
-            tray.ShowMessage("Running in the system tray. Click the icon to open.");
-        }
-        else
-        {
-            window.Show();
-        }
-
-        if (settings.CheckForUpdates)
-        {
-            _ = Task.Run(async () =>
-            {
-                var update = await UpdateChecker.CheckAsync();
-
-                if (update != null)
-                {
-                    await app.Dispatcher.InvokeAsync(() =>
-                    {
-                        window.ViewModel.SetUpdate(update, checkedNow: true);
-                        tray.ShowMessage($"Version {update.Version} is available. Open Settings to download it.");
-                    });
-                }
-            });
-        }
-
-        app.Run();
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args, ShutdownMode.OnExplicitShutdown);
 
         Console.WriteLine("Exiting...");
         service.Dispose();
         CloakManager.UnhidePS5Controller();
         return 0;
+    }
+
+    public static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<CompanionApp>().UsePlatformDetect();
+
+    private static void StartListener(EventWaitHandle handle, Action onSignal, string name)
+    {
+        var thread = new Thread(() =>
+        {
+            while (handle.WaitOne())
+            {
+                Dispatcher.UIThread.Post(onSignal);
+            }
+        })
+        { IsBackground = true, Name = name };
+
+        thread.Start();
     }
 }
