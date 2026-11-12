@@ -46,8 +46,8 @@ public static class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Could not create the virtual controller: {ex.Message}");
-            MessageBox.Show($"Could not create the virtual controller.\n\n{ex.Message}\n\nMake sure the ViGEmBus driver is installed, then restart DualSense Companion.",
+            Console.WriteLine($"Could not create the virtual controller: {ex}");
+            MessageBox.Show($"Could not create the virtual controller.\n\n{ex.Message}\n\nMake sure the ViGEmBus driver is installed, then restart DualSense Companion.\n\nDetails: {Log.FilePath}",
                 "DualSense Companion", MessageBoxButtons.OK, MessageBoxIcon.Error);
             CloakManager.UnhidePS5Controller();
             return 1;

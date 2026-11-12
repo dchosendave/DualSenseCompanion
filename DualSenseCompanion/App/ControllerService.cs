@@ -112,9 +112,18 @@ public sealed class ControllerService : IDisposable
         _settings.Normalize();
         _settings.Save();
 
-        if (_settings.Emulation != _padMode)
+        if (_settings.Emulation != _padMode || _pad == null)
         {
-            CreatePad();
+            try
+            {
+                CreatePad();
+            }
+            catch (Exception ex)
+            {
+                //Leave _padMode unchanged so the next settings change retries
+                Console.WriteLine($"Could not switch the virtual controller: {ex}");
+                Notification?.Invoke($"Could not create the virtual controller: {ex.Message}");
+            }
         }
 
         _outputSignal.Set();
@@ -142,9 +151,7 @@ public sealed class ControllerService : IDisposable
             _rumbleLarge = 0;
             _rumbleSmall = 0;
 
-            IVirtualPad pad = _settings.Emulation == EmulationMode.DualShock4
-                ? new DualShock4Pad(_client)
-                : new Xbox360Pad(_client);
+            IVirtualPad pad = ConnectPadWithRetry(_settings.Emulation);
 
             pad.RumbleReceived += (large, small) =>
             {
@@ -165,6 +172,27 @@ public sealed class ControllerService : IDisposable
         }
 
         UpdateStatus(s => s with { Emulation = _pad!.Name });
+    }
+
+    //The ViGEm driver can briefly refuse new controllers, e.g. right after boot or a driver install
+    private IVirtualPad ConnectPadWithRetry(EmulationMode mode)
+    {
+        const int attempts = 5;
+
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                return mode == EmulationMode.DualShock4
+                    ? new DualShock4Pad(_client)
+                    : new Xbox360Pad(_client);
+            }
+            catch (Exception ex) when (attempt < attempts)
+            {
+                Console.WriteLine($"Virtual controller connect failed (attempt {attempt}/{attempts}), retrying: {ex.Message}");
+                Thread.Sleep(attempt * 1000);
+            }
+        }
     }
 
     private void InputLoop()
