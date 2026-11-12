@@ -1,5 +1,7 @@
 # DualSense Companion
 
+> This is a fork of [Sar1911/DualSenseCompanion](https://github.com/Sar1911/DualSenseCompanion) by **Sarthak Sharma**, who wrote the original app: Xbox 360 emulation for the DualSense, USB and Bluetooth support, rumble, hiding the real controller with HidHide, and the driver setup. Everything here builds on his work.
+
 A companion app for the DualSense (PS5) controller on Windows. It lets you play almost every PC game with your PS5 controller and unlocks DualSense features like gyro aiming, adaptive triggers and the lightbar.
 
 The app window shows a live view of your controller that lights up as you press buttons, plus pages for the lightbar, sticks, adaptive triggers, gyro, touchpad, button mapping and settings. Changes apply instantly and are saved automatically.
@@ -137,13 +139,15 @@ GitHub Actions builds and tests every push and pull request and uploads the `.ex
 
 ## Thanks
 
-1. ViGEm (Virtual Gamepad Emulation Driver): the virtual Xbox 360 and DualShock 4 controllers.
-2. HidHide: hiding the real controller from games.
-3. HidSharp: HID device communication in C#.
-4. Avalonia: the app's interface (Fluent theme).
-5. Linux kernel (hid-playstation.c): DualSense protocol documentation.
-6. NAudio: Windows microphone control.
-7. Nielk1's trigger effect documentation: adaptive trigger effect formats.
-8. The open-source community: shared knowledge on DualSense input and output.
+1. **Sarthak Sharma ([Sar1911](https://github.com/Sar1911))**: the original DualSense Companion this fork is built on.
+2. ViGEm (Virtual Gamepad Emulation Driver): the virtual Xbox 360 and DualShock 4 controllers.
+3. HidHide: hiding the real controller from games.
+4. HidSharp: HID device communication in C#.
+5. Avalonia: the app's interface (Fluent theme).
+6. Fluent UI System Icons (Microsoft, MIT): the sidebar icons. See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+7. Linux kernel (hid-playstation.c): DualSense protocol documentation.
+8. NAudio: Windows microphone control.
+9. Nielk1's trigger effect documentation: adaptive trigger effect formats.
+10. The open-source community: shared knowledge on DualSense input and output.
 
 Not affiliated with Sony Interactive Entertainment.

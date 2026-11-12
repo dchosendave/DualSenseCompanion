@@ -134,7 +134,7 @@
       <StackPanel>
         <TextBlock Classes="cardTitle" Text="About" />
         <TextBlock Name="VersionText" Classes="caption" />
-        <TextBlock Classes="caption" Margin="0,2,0,0" Text="Built on ViGEmBus, HidHide, HidSharp, NAudio and Avalonia. Not affiliated with Sony Interactive Entertainment." />
+        <TextBlock Classes="caption" Margin="0,2,0,0" Text="Based on the original DualSense Companion by Sarthak Sharma (Sar1911). Built on ViGEmBus, HidHide, HidSharp, NAudio and Avalonia, with Fluent UI System Icons. Not affiliated with Sony Interactive Entertainment." />
       </StackPanel>
     </Border>
   </StackPanel>

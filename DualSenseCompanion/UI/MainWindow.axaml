@@ -5,16 +5,15 @@
         Width="1040" Height="700" MinWidth="860" MinHeight="560"
         WindowStartupLocation="CenterScreen"
         Icon="avares://DualSenseCompanion/icon_6Q2_icon.ico"
-        ExtendClientAreaToDecorationsHint="True"
-        TransparencyLevelHint="Mica"
-        TransparencyBackgroundFallback="{DynamicResource SidebarBrush}"
-        Background="Transparent"
+        WindowDecorations="BorderOnly"
+        Background="{DynamicResource PageBrush}"
+        TextOptions.TextRenderingMode="SubpixelAntialias"
         FontFamily="{StaticResource UiFont}"
         FontSize="13">
 
   <Grid ColumnDefinitions="210,*">
-    <!-- Sidebar: Windows 11 Mica shows through -->
-    <DockPanel Name="Sidebar" Background="Transparent">
+    <!-- Sidebar: solid, so text stays sharp -->
+    <DockPanel Name="Sidebar" Background="{DynamicResource SidebarBrush}">
       <StackPanel DockPanel.Dock="Top" Margin="20,16,16,14" PointerPressed="TitleBar_PointerPressed" Background="Transparent">
         <TextBlock FontFamily="{StaticResource DisplayFont}" FontSize="15">
           <Run Text="DualSense" FontWeight="SemiBold" /><Run Text=" Companion" Foreground="{DynamicResource TextSecondaryBrush}" />
@@ -38,22 +37,27 @@
       </Border>
 
       <StackPanel Name="Nav" AutomationProperties.Name="Pages" KeyboardNavigation.TabNavigation="Once">
-        <RadioButton Classes="nav" Tag="&#xE80F;" Content="Home" Name="NavHome" />
-        <RadioButton Classes="nav" Tag="&#xE73A;" Content="Controller test" Name="NavTest" />
-        <RadioButton Classes="nav" Tag="&#xE706;" Content="Lightbar &amp; LEDs" Name="NavLightbar" />
-        <RadioButton Classes="nav" Tag="&#xE7FC;" Content="Sticks" Name="NavSticks" />
-        <RadioButton Classes="nav" Tag="&#xE945;" Content="Adaptive triggers" Name="NavTriggers" />
-        <RadioButton Classes="nav" Tag="&#xE7AD;" Content="Gyro aiming" Name="NavGyro" />
-        <RadioButton Classes="nav" Tag="&#xE720;" Content="Touchpad &amp; mic" Name="NavTouchpad" />
-        <RadioButton Classes="nav" Tag="&#xE8AB;" Content="Button mapping" Name="NavButtons" />
-        <RadioButton Classes="nav" Tag="&#xE713;" Content="Settings" Name="NavSettings" />
-        <RadioButton Classes="nav" Tag="&#xE9D9;" Content="Log" Name="NavLog" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconHome}" Content="Home" Name="NavHome" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconTest}" Content="Controller test" Name="NavTest" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconLightbar}" Content="Lightbar &amp; LEDs" Name="NavLightbar" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconSticks}" Content="Sticks" Name="NavSticks" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconTriggers}" Content="Adaptive triggers" Name="NavTriggers" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconGyro}" Content="Gyro aiming" Name="NavGyro" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconMic}" Content="Touchpad &amp; mic" Name="NavTouchpad" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconMapping}" Content="Button mapping" Name="NavButtons" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconSettings}" Content="Settings" Name="NavSettings" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconLog}" Content="Log" Name="NavLog" />
       </StackPanel>
     </DockPanel>
 
-    <!-- Content: solid page color, with room at the top for the window buttons -->
+    <!-- Content, with the title bar strip and window buttons on top -->
     <Grid Grid.Column="1" Background="{DynamicResource PageBrush}" RowDefinitions="32,*">
       <Border Background="Transparent" PointerPressed="TitleBar_PointerPressed" />
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <Button Classes="chrome" Content="&#xE921;" Click="Minimize_Click" ToolTip.Tip="Minimize" AutomationProperties.Name="Minimize" />
+        <Button Name="MaximizeButton" Classes="chrome" Content="&#xE922;" Click="Maximize_Click" ToolTip.Tip="Maximize" AutomationProperties.Name="Maximize" />
+        <Button Classes="chrome close" Content="&#xE8BB;" Click="Close_Click" ToolTip.Tip="Close to tray" AutomationProperties.Name="Close to tray" />
+      </StackPanel>
       <ScrollViewer Name="Scroller" Grid.Row="1" Padding="24,0,20,16">
         <ContentControl Name="PageHost" MaxWidth="920" />
       </ScrollViewer>

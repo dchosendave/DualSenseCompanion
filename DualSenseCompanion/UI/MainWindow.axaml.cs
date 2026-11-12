@@ -261,6 +261,25 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Minimize_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void Maximize_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => ToggleMaximize();
+
+    private void Close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
+
+    private void ToggleMaximize() =>
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == WindowStateProperty)
+        {
+            MaximizeButton.Content = WindowState == WindowState.Maximized ? "\uE923" : "\uE922";
+        }
+    }
+
     //The window has no system title bar: the top strips drag it, double-click maximizes
     private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
@@ -271,7 +290,7 @@ public partial class MainWindow : Window
 
         if (e.ClickCount == 2)
         {
-            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            ToggleMaximize();
         }
         else
         {

@@ -5,6 +5,10 @@
 
   <Application.Resources>
     <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://DualSenseCompanion/Icons.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+
       <!-- Palette: white DualSense shell with the lightbar blue, and a charcoal dark mode. -->
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">

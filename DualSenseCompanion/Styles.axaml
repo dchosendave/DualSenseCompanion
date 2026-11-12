@@ -70,8 +70,8 @@
           <Border Name="bar" Width="3" Height="16" CornerRadius="1.5" HorizontalAlignment="Left" Margin="6,0,0,0"
                   Background="{DynamicResource AccentBrush}" IsVisible="False" />
           <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center" Spacing="10">
-            <TextBlock Name="glyph" Classes="icon" Text="{TemplateBinding Tag}" FontSize="14" VerticalAlignment="Center"
-                       Foreground="{TemplateBinding Foreground}" />
+            <PathIcon Name="glyph" Data="{TemplateBinding Tag}" Width="16" Height="16" VerticalAlignment="Center"
+                      Foreground="{TemplateBinding Foreground}" />
             <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" VerticalAlignment="Center"
                               Foreground="{TemplateBinding Foreground}" FontSize="13" />
           </StackPanel>
@@ -95,7 +95,7 @@
   <Style Selector="RadioButton.nav:checked /template/ Border#bar">
     <Setter Property="IsVisible" Value="True" />
   </Style>
-  <Style Selector="RadioButton.nav:checked /template/ TextBlock#glyph">
+  <Style Selector="RadioButton.nav:checked /template/ PathIcon#glyph">
     <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
   </Style>
 
@@ -181,6 +181,27 @@
     <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
     <Setter Property="CornerRadius" Value="2" />
     <Setter Property="HorizontalAlignment" Value="Left" />
+  </Style>
+
+  <!-- Window buttons in the title bar strip -->
+  <Style Selector="Button.chrome">
+    <Setter Property="Width" Value="46" />
+    <Setter Property="Height" Value="32" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
+    <Setter Property="FontSize" Value="10" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.chrome:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+  </Style>
+  <Style Selector="Button.chrome.close:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#E81123" />
+    <Setter Property="Foreground" Value="#FFFFFF" />
   </Style>
 
   <!-- Compact controls -->
