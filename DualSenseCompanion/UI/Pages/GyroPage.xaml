@@ -97,7 +97,7 @@
             </Border>
         </StackPanel>
 
-        <Border Style="{StaticResource CoreCard}">
+        <Border Style="{StaticResource Card}">
             <StackPanel>
                 <TextBlock Style="{StaticResource CardTitle}" Text="Live motion" Foreground="{StaticResource TextBrush}" />
                 <TextBlock Style="{StaticResource Caption}" Foreground="{StaticResource TextSecondaryBrush}"

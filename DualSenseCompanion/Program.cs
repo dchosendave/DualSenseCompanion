@@ -17,8 +17,6 @@ public static class Program
     [STAThread]
     public static int Main(string[] args)
     {
-        Log.Initialize();
-
         //Two copies would fight over the same controller; a second launch just opens the window of the first
         using var singleInstance = new Mutex(true, MutexName, out bool isFirstInstance);
 
@@ -40,17 +38,20 @@ public static class Program
             return 0;
         }
 
-        WinForms.Application.EnableVisualStyles();
-        WinForms.Application.SetHighDpiMode(WinForms.HighDpiMode.PerMonitorV2);
-        AppDomain.CurrentDomain.UnhandledException += (s, e) => Console.WriteLine($"Fatal error: {e.ExceptionObject}");
-
-        Console.WriteLine("DualSense Companion starting...");
-
         if (exitRequested)
         {
             //Nothing is running, so there is nothing to close
             return 0;
         }
+
+        //Only the first instance owns the log; a second launch must not rotate it
+        Log.Initialize();
+
+        WinForms.Application.EnableVisualStyles();
+        WinForms.Application.SetHighDpiMode(WinForms.HighDpiMode.PerMonitorV2);
+        AppDomain.CurrentDomain.UnhandledException += (s, e) => Console.WriteLine($"Fatal error: {e.ExceptionObject}");
+
+        Console.WriteLine("DualSense Companion starting...");
 
         if (!DependencyManager.CheckAndInstallDependencies())
         {

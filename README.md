@@ -1,46 +1,63 @@
 # DualSense Companion
 
-A companion app for the DualSense (PS5) controller on Windows. It emulates an Xbox 360 or DualShock 4 controller so you can play almost every PC game with your PS5 controller, and unlocks DualSense features like gyro aiming, adaptive triggers and the lightbar.
+A companion app for the DualSense (PS5) controller on Windows. It lets you play almost every PC game with your PS5 controller and unlocks DualSense features like gyro aiming, adaptive triggers and the lightbar.
 
-It has a full settings window styled after the white DualSense: a live view of your controller that lights up as you press buttons, plus pages for the lightbar, sticks, adaptive triggers, gyro, touchpad, button mapping and more. Changes apply instantly and are saved automatically.
+The app window shows a live view of your controller that lights up as you press buttons, plus pages for the lightbar, sticks, adaptive triggers, gyro, touchpad, button mapping and settings. Changes apply instantly and are saved automatically.
 
-Closing the window keeps the app running in the system tray so your controller keeps working. Click the tray icon to open the window again, or right-click it for quick actions and Exit.
+Closing the window keeps the app running in the system tray so your controller keeps working. Click the tray icon to open the window again, or right-click it for quick actions and **Exit**.
+
+## Getting started
+
+1. Download `DualSenseCompanion.exe` from the [latest release](https://github.com/dchosendave/DualSenseCompanion/releases/latest). It's a single file and doesn't need .NET installed.
+2. Run it. On first start it offers to install the two drivers it needs, **ViGEmBus** (creates the virtual controller) and **HidHide** (hides the real one so games don't see two). HidHide needs a restart.
+3. Connect your controller with a USB cable or Bluetooth. Press buttons on the **Home** page to check that everything responds.
+4. Optional: **Settings > Self-test** checks input and confirms the controller accepts lightbar, rumble and trigger commands.
+
+## What games see
+
+| Mode | Use it for |
+|---|---|
+| **Xbox 360** (default) | Almost every PC game. |
+| **DualShock 4** | Games, emulators and Steam Input that support PlayStation controllers. Shows PlayStation button prompts and passes gyro, accelerometer and touchpad through natively. |
+| **Native DualSense** | Games with built-in DualSense support (haptics, their own trigger effects). No virtual controller is created and the real controller stays visible. The app stops sending lightbar, trigger and rumble updates so it doesn't fight the game; changes you make in the app are still sent once. |
+
+The virtual controller driver (ViGEmBus) can only create Xbox 360 and DualShock 4 controllers, which is why there is no emulated DualSense mode.
 
 ## Features
 
-**Controller emulation**
-- Xbox 360 controller emulation (works with almost every game).
-- DualShock 4 emulation with gyro, accelerometer and touchpad passed through natively (for games, emulators and Steam Input that support PlayStation controllers).
-- USB and Bluetooth, DualSense and DualSense Edge.
-- Automatic reconnect: unplug, switch between USB and Bluetooth, or let the battery die, and it picks the controller up again.
-- Automatic hiding of the real controller (via HidHide) to prevent double input, safely restored on exit, crash, Ctrl+C or logoff.
-
 **DualSense features**
-- **Gyro aiming**: as mouse movement (best precision) or added to the right stick (works in every game). Always on, while holding a button, or toggled. Adjustable sensitivity, invert, turn/tilt axis, automatic drift correction and manual calibration.
+- **Gyro aiming**: as mouse movement (best precision) or added to the right stick (works in every game). Always on, while holding a button, or toggled. Adjustable sensitivity and steadiness, invert, turn or tilt for horizontal aim, automatic drift correction and calibration, with a live motion readout.
 - **Adaptive triggers**: soft, medium or hard resistance, weapon-style click, or vibration, separately for L2 and R2.
 - **Lightbar**: custom color, battery level (green to red), set by the game (DualShock 4 mode) or off, with brightness control.
 - **Player LEDs**: player 1-4 or all.
-- **Battery level**: shown in the tray tooltip and menu; low-battery notification and red pulsing lightbar.
-- **Mic mute button**: mutes/unmutes all Windows microphones, with the button LED showing the state.
-- **Touchpad as mouse**: move with one finger, click = left click, two-finger click = right click, two-finger drag = scroll.
-- **Rumble** with adjustable strength.
+- **Battery**: shown in the app and tray; low-battery notification and red pulsing lightbar.
+- **Mic mute button**: mutes and unmutes all Windows microphones, with the button LED showing the state.
+- **Touchpad as mouse**: one finger moves the pointer, click is left click, two-finger click is right click, two-finger drag scrolls.
+- **Rumble** with adjustable strength and a test button.
 
 **Tuning**
-- Stick deadzone, outer deadzone, anti-deadzone and response curve, per stick, with a live preview.
+- Stick deadzone, outer deadzone, anti-deadzone and response curve per stick, with a live plot of the physical stick and what the game receives.
 - Trigger deadzone.
 - Button remapping.
 
-**App**
-- Settings window with live controller view, stick and trigger visualizers, live gyro readout and button mapping editor.
-- System tray icon with quick actions; launching the app again just opens the window.
-- Start with Windows.
-- Dependency check on startup (asks before installing ViGEmBus / HidHide).
+**Reliability**
+- USB and Bluetooth, DualSense and DualSense Edge.
+- Automatic reconnect when you unplug, switch between USB and Bluetooth, or the battery dies.
+- The real controller is hidden only while the app runs. It is restored on exit, logoff and crashes; if the app is force-closed, it is restored the next time the app starts.
+- Built-in self-test.
+- Starts with Windows (optional, starts in the tray).
+
+## Command line
+
+| Command | Effect |
+|---|---|
+| `DualSenseCompanion.exe` | Starts the app, or opens the window of the copy that's already running. |
+| `DualSenseCompanion.exe --minimized` | Starts in the tray (used by Start with Windows). |
+| `DualSenseCompanion.exe --exit` | Closes the running copy cleanly. |
 
 ## Settings file
 
-Everything can be changed in the app window. Settings are stored in `%AppData%\DualSenseCompanion\settings.json`; to edit the file by hand use **Settings > Open settings file**, save, then **Reload settings file**.
-
-The file format:
+Settings are stored in `%AppData%\DualSenseCompanion\settings.json`. Everything can be changed in the app; to edit the file by hand use **Settings > Open settings file**, save, then **Reload settings file**.
 
 ```jsonc
 "LeftStick": {
@@ -60,30 +77,42 @@ The file format:
 `ButtonMap` keys (DualSense): `Cross, Circle, Square, Triangle, L1, R1, L3, R3, Create, Options, PS, DpadUp, DpadDown, DpadLeft, DpadRight, Touchpad, Mute`.
 Values (virtual controller): `A, B, X, Y, LeftShoulder, RightShoulder, LeftThumb, RightThumb, Back, Start, Guide, Up, Down, Left, Right, Touchpad` (DualShock 4 only) or `None`. In DualShock 4 mode A/B/X/Y are Cross/Circle/Square/Triangle, Back is Share and Start is Options.
 
-Gyro tuning in the file: `MouseSensitivity` (pixels per degree), `StickFullSpeed` (degrees per second for full stick), `StickAntiDeadzone`, `SmoothingThreshold`.
+## Troubleshooting
 
-The log is written to `%AppData%\DualSenseCompanion\log.txt`.
+- **Something doesn't work**: run **Settings > Self-test** and check the **Log** page. The log is in `%AppData%\DualSenseCompanion\log.txt`; the previous run's log is kept as `log.old.txt`.
+- **Controller missing in other apps**: start DualSense Companion once and exit it from the tray; it restores anything left hidden. You can also remove it in the HidHide Configuration Client.
+- **Games see two controllers**: HidHide isn't installed or wasn't restarted after installing.
 
 ## Building
 
-Requires the .NET 8 SDK on Windows.
+Requires the .NET 8 SDK (or newer) on Windows.
 
 ```
 dotnet build
 dotnet test
-dotnet publish DualSenseCompanion -c Release -r win-x64 --self-contained false -o publish
 ```
+
+Release build, a single self-contained `DualSenseCompanion.exe`:
+
+```
+dotnet publish DualSenseCompanion -c Release -p:SingleFile=true -o publish
+```
+
+GitHub Actions builds and tests every push and pull request and uploads the `.exe` as an artifact. Pushing a tag such as `v1.1.0` publishes a GitHub release with the `.exe` attached.
 
 ## Roadmap
 
 1. Support for up to 4 controllers.
 2. Headphone jack support for game audio.
 
-A huge thanks goes to:
-1. ViGEm (Virtual Gamepad Emulation Driver) – For providing the essential Xbox 360 controller emulation.
-2. HidHide – For allowing HID device filtering and hiding.
-3. HidSharp – For handling HID device communication in C#.
-4. Linux Kernel (hid-playstation.c) – For documentation on DualSense Controller.
-5. NAudio – For Windows microphone control.
-6. Nielk1's trigger effect documentation – For the adaptive trigger effect formats.
-7. The awesome Open-Source Developers & Community Discussions – For shared knowledge on DualSense input/output handling.
+## Thanks
+
+1. ViGEm (Virtual Gamepad Emulation Driver): the virtual Xbox 360 and DualShock 4 controllers.
+2. HidHide: hiding the real controller from games.
+3. HidSharp: HID device communication in C#.
+4. Linux kernel (hid-playstation.c): DualSense protocol documentation.
+5. NAudio: Windows microphone control.
+6. Nielk1's trigger effect documentation: adaptive trigger effect formats.
+7. The open-source community: shared knowledge on DualSense input and output.
+
+Not affiliated with Sony Interactive Entertainment.

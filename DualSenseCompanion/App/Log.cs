@@ -7,11 +7,15 @@ public static class Log
 {
     private const int MaxRecentLines = 1000;
 
+    //Rotate to log.old.txt past this size so a long session can't fill the disk
+    private const long MaxFileBytes = 2 * 1024 * 1024;
+
     private static readonly object _lock = new object();
     private static readonly Queue<string> _recent = new Queue<string>();
     private static StreamWriter? _file;
 
     public static string FilePath { get; } = Path.Combine(Settings.Directory, "log.txt");
+    public static string PreviousFilePath { get; } = Path.Combine(Settings.Directory, "log.old.txt");
 
     public static event Action<string>? LineAdded;
 
@@ -20,7 +24,9 @@ public static class Log
         try
         {
             Directory.CreateDirectory(Settings.Directory);
-            _file = new StreamWriter(FilePath, append: false, Encoding.UTF8) { AutoFlush = true };
+
+            //Keep the previous run's log: it's the one that matters after a crash
+            RotateFile();
         }
         catch
         {
@@ -46,6 +52,11 @@ public static class Log
             try
             {
                 _file?.WriteLine(line);
+
+                if (_file != null && _file.BaseStream.Length > MaxFileBytes)
+                {
+                    RotateFile();
+                }
             }
             catch
             {
@@ -54,6 +65,19 @@ public static class Log
         }
 
         LineAdded?.Invoke(line);
+    }
+
+    private static void RotateFile()
+    {
+        _file?.Dispose();
+        _file = null;
+
+        if (File.Exists(FilePath))
+        {
+            File.Move(FilePath, PreviousFilePath, overwrite: true);
+        }
+
+        _file = new StreamWriter(FilePath, append: false, Encoding.UTF8) { AutoFlush = true };
     }
 
     public static string[] RecentLines()

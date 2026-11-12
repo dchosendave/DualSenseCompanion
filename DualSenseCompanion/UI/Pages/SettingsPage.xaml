@@ -31,7 +31,7 @@
                     </StackPanel>
                 </Border>
                 <TextBlock Style="{StaticResource Caption}" Margin="0,6,0,0"
-                           Text="Xbox 360 works in almost every game. DualShock 4 shows PlayStation button prompts and passes gyro and touchpad to games, emulators and Steam that support them. Native DualSense hands the real controller to games with built-in DualSense support, so they get haptics and their own adaptive trigger effects; the lightbar, trigger and rumble settings here are paused in that mode." />
+                           Text="Xbox 360 works in almost every game. DualShock 4 shows PlayStation button prompts and passes gyro and touchpad to games, emulators and Steam that support them. Native DualSense hands the real controller to games with built-in DualSense support, so they get haptics and their own adaptive trigger effects. The app then stops its own lightbar, trigger and rumble updates, but changes you make here are still sent." />
             </StackPanel>
         </Border>
 
@@ -103,7 +103,7 @@
             </StackPanel>
         </Border>
 
-        <Border Style="{StaticResource CoreCard}">
+        <Border Style="{StaticResource Card}">
             <StackPanel>
                 <TextBlock Style="{StaticResource CardTitle}" Foreground="{StaticResource TextBrush}" Text="About" />
                 <TextBlock x:Name="VersionText" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
