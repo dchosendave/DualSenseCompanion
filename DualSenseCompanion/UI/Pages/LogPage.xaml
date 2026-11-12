@@ -14,9 +14,9 @@
         </Grid>
 
         <Border Style="{StaticResource Card}" Margin="0,12,0,10" Padding="6">
-            <TextBox x:Name="LogText" Height="480" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+            <TextBox x:Name="LogText" AutomationProperties.Name="Log" Height="480" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
                      Background="Transparent" BorderThickness="0" Padding="10,6"
-                     Foreground="#3A3D46" FontFamily="Cascadia Mono, Consolas" FontSize="12" />
+                     Foreground="{DynamicResource TextBrush}" FontFamily="Cascadia Mono, Consolas" FontSize="12" />
         </Border>
     </StackPanel>
 </UserControl>

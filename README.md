@@ -6,6 +6,19 @@ The app window shows a live view of your controller that lights up as you press 
 
 Closing the window keeps the app running in the system tray so your controller keeps working. Click the tray icon to open the window again, or right-click it for quick actions and **Exit**.
 
+![Home page with the live controller view](docs/screenshots/home.png)
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/controller-test.png" alt="Controller test page with the button checklist" /></td>
+    <td><img src="docs/screenshots/home-dark.png" alt="Home page in dark mode" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/lightbar.png" alt="Lightbar and LED settings" /></td>
+    <td><img src="docs/screenshots/sticks-dark.png" alt="Stick deadzone settings with live plots, dark mode" /></td>
+  </tr>
+</table>
+
 ## Getting started
 
 1. Download `DualSenseCompanion.exe` from the [latest release](https://github.com/dchosendave/DualSenseCompanion/releases/latest). It's a single file and doesn't need .NET installed.
@@ -38,11 +51,16 @@ The virtual controller driver (ViGEmBus) can only create Xbox 360 and DualShock 
 **Controller test**
 - Button checklist: every button, trigger, stick direction, touchpad input and the gyro turns green once it works.
 - Health check: measures stick drift, stick jitter, stick range, trigger travel and gyro noise, with advice when something is off.
+- Controller info: model, Bluetooth address, firmware and hardware versions.
 
 **Tuning**
 - Stick deadzone, outer deadzone, anti-deadzone and response curve per stick, with a live plot of the physical stick and what the game receives.
 - Trigger deadzone.
 - Button remapping.
+
+**App**
+- Light and dark mode, following Windows by default.
+- Keyboard navigation (Tab, arrow keys within option groups, Ctrl+1 to Ctrl+0 for pages) and screen-reader names for every control.
 
 **Reliability**
 - USB and Bluetooth, DualSense and DualSense Edge.

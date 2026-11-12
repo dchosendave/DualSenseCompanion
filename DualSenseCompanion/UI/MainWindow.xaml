@@ -4,7 +4,8 @@
         Title="DualSense Companion"
         Width="1040" Height="700" MinWidth="860" MinHeight="560"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource PageBrush}"
+        Background="{DynamicResource PageBrush}"
+        Foreground="{DynamicResource TextBrush}"
         FontFamily="{StaticResource UiFont}"
         Icon="pack://application:,,,/DualSenseCompanion;component/icon_6Q2_icon.ico"
         UseLayoutRounding="True"
@@ -14,39 +15,39 @@
         <WindowChrome CaptionHeight="32" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
 
-    <Grid x:Name="Root">
+    <Grid x:Name="Root" Background="{DynamicResource PageBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar: the black core -->
-        <Border Background="{StaticResource ShellBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+        <Border Background="{DynamicResource ShellBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Margin="20,14,16,14">
-                    <TextBlock FontFamily="{StaticResource DisplayFont}" FontSize="15" Foreground="{StaticResource TextBrush}">
-                        <Run Text="DualSense" FontWeight="SemiBold" /><Run Text=" Companion" Foreground="{StaticResource TextSecondaryBrush}" />
+                    <TextBlock FontFamily="{StaticResource DisplayFont}" FontSize="15" Foreground="{DynamicResource TextBrush}">
+                        <Run Text="DualSense" FontWeight="SemiBold" /><Run Text=" Companion" Foreground="{DynamicResource TextSecondaryBrush}" />
                     </TextBlock>
                     <Border Height="2" Width="28" CornerRadius="1" HorizontalAlignment="Left" Margin="0,8,0,0"
-                            Background="{StaticResource AccentBrush}" />
+                            Background="{DynamicResource AccentBrush}" />
                 </StackPanel>
 
                 <!-- Connection status -->
-                <Border DockPanel.Dock="Bottom" Padding="16,10" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                <Border DockPanel.Dock="Bottom" Padding="16,10" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="#5B5F69" VerticalAlignment="Center" Margin="0,0,7,0" />
-                            <TextBlock x:Name="StatusTitle" Text="Not connected" Foreground="{StaticResource TextBrush}" FontWeight="SemiBold" FontSize="12.5" />
+                            <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="{DynamicResource StatusIdleBrush}" VerticalAlignment="Center" Margin="0,0,7,0" />
+                            <TextBlock x:Name="StatusTitle" AutomationProperties.LiveSetting="Polite" Text="Not connected" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" FontSize="12.5" />
                         </StackPanel>
-                        <TextBlock x:Name="StatusDetail" Text="Plug in or pair your controller" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11.5" Margin="14,1,0,0" TextWrapping="Wrap" />
+                        <TextBlock x:Name="StatusDetail" AutomationProperties.LiveSetting="Polite" Text="Plug in or pair your controller" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11.5" Margin="14,1,0,0" TextWrapping="Wrap" />
                         <Grid x:Name="StatusBatteryRow" Margin="14,6,0,0" Visibility="Collapsed">
-                            <Border Height="3" CornerRadius="1.5" Background="{StaticResource TrackBrush}" />
-                            <Border x:Name="StatusBatteryFill" Height="3" CornerRadius="1.5" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                            <Border Height="3" CornerRadius="1.5" Background="{DynamicResource TrackBrush}" />
+                            <Border x:Name="StatusBatteryFill" Height="3" CornerRadius="1.5" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <StackPanel x:Name="Nav">
+                <StackPanel x:Name="Nav" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle" AutomationProperties.Name="Pages">
                     <RadioButton Style="{StaticResource NavButton}" Tag="&#xE80F;" Content="Home" x:Name="NavHome" />
                     <RadioButton Style="{StaticResource NavButton}" Tag="&#xE73A;" Content="Controller test" x:Name="NavTest" />
                     <RadioButton Style="{StaticResource NavButton}" Tag="&#xE706;" Content="Lightbar &amp; LEDs" x:Name="NavLightbar" />
@@ -70,9 +71,9 @@
 
             <!-- Title bar buttons -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
-                <Button Style="{StaticResource TitleBarButton}" Content="&#xE921;" Click="Minimize_Click" ToolTip="Minimize" />
-                <Button x:Name="MaximizeButton" Style="{StaticResource TitleBarButton}" Content="&#xE922;" Click="Maximize_Click" ToolTip="Maximize" />
-                <Button Style="{StaticResource CloseButton}" Content="&#xE8BB;" Click="Close_Click" ToolTip="Close to tray" />
+                <Button Style="{StaticResource TitleBarButton}" Content="&#xE921;" Click="Minimize_Click" ToolTip="Minimize" AutomationProperties.Name="Minimize" />
+                <Button x:Name="MaximizeButton" Style="{StaticResource TitleBarButton}" Content="&#xE922;" Click="Maximize_Click" ToolTip="Maximize" AutomationProperties.Name="Maximize" />
+                <Button Style="{StaticResource CloseButton}" Content="&#xE8BB;" Click="Close_Click" ToolTip="Close to tray" AutomationProperties.Name="Close to tray" />
             </StackPanel>
 
             <ScrollViewer x:Name="Scroller" Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24,0,20,16" Focusable="False">

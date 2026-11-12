@@ -13,18 +13,18 @@
                     <ui:StickPlot x:Name="LeftPlot" Width="130" Height="130" Margin="0,6,0,8" HorizontalAlignment="Center" />
 
                     <Grid><TextBlock Style="{StaticResource Label}" Text="Deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding LeftDeadzone, StringFormat={}{0:P0}}" /></Grid>
-                    <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding LeftDeadzone}" />
+                    <Slider AutomationProperties.Name="Left stick deadzone" Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding LeftDeadzone}" />
                     <TextBlock Style="{StaticResource Caption}" Text="Ignores small movement. Raise it if the stick drifts." Margin="0,0,0,6" />
 
                     <Grid><TextBlock Style="{StaticResource Label}" Text="Outer deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding LeftOuterDeadzone, StringFormat={}{0:P0}}" /></Grid>
-                    <Slider Minimum="0" Maximum="0.3" SmallChange="0.01" Value="{Binding LeftOuterDeadzone}" />
+                    <Slider AutomationProperties.Name="Left stick outer deadzone" Minimum="0" Maximum="0.3" SmallChange="0.01" Value="{Binding LeftOuterDeadzone}" />
 
                     <Grid Margin="0,8,0,0"><TextBlock Style="{StaticResource Label}" Text="Anti-deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding LeftAntiDeadzone, StringFormat={}{0:P0}}" /></Grid>
-                    <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding LeftAntiDeadzone}" />
+                    <Slider AutomationProperties.Name="Left stick anti-deadzone" Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding LeftAntiDeadzone}" />
                     <TextBlock Style="{StaticResource Caption}" Text="Cancels a game's own deadzone so small movements register." Margin="0,0,0,6" />
 
                     <Grid><TextBlock Style="{StaticResource Label}" Text="Response curve" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding LeftCurve, StringFormat={}{0:0.0}}" /></Grid>
-                    <Slider Minimum="0.5" Maximum="3" SmallChange="0.1" Value="{Binding LeftCurve}" />
+                    <Slider AutomationProperties.Name="Left stick response curve" Minimum="0.5" Maximum="3" SmallChange="0.1" Value="{Binding LeftCurve}" />
                     <TextBlock Style="{StaticResource Caption}" Text="1.0 is linear. Higher gives finer control near the center." />
                 </StackPanel>
             </Border>
@@ -35,18 +35,18 @@
                     <ui:StickPlot x:Name="RightPlot" Width="130" Height="130" Margin="0,6,0,8" HorizontalAlignment="Center" />
 
                     <Grid><TextBlock Style="{StaticResource Label}" Text="Deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding RightDeadzone, StringFormat={}{0:P0}}" /></Grid>
-                    <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding RightDeadzone}" />
+                    <Slider AutomationProperties.Name="Right stick deadzone" Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding RightDeadzone}" />
                     <TextBlock Style="{StaticResource Caption}" Text="Ignores small movement. Raise it if the stick drifts." Margin="0,0,0,6" />
 
                     <Grid><TextBlock Style="{StaticResource Label}" Text="Outer deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding RightOuterDeadzone, StringFormat={}{0:P0}}" /></Grid>
-                    <Slider Minimum="0" Maximum="0.3" SmallChange="0.01" Value="{Binding RightOuterDeadzone}" />
+                    <Slider AutomationProperties.Name="Right stick outer deadzone" Minimum="0" Maximum="0.3" SmallChange="0.01" Value="{Binding RightOuterDeadzone}" />
 
                     <Grid Margin="0,8,0,0"><TextBlock Style="{StaticResource Label}" Text="Anti-deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding RightAntiDeadzone, StringFormat={}{0:P0}}" /></Grid>
-                    <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding RightAntiDeadzone}" />
+                    <Slider AutomationProperties.Name="Right stick anti-deadzone" Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding RightAntiDeadzone}" />
                     <TextBlock Style="{StaticResource Caption}" Text="Cancels a game's own deadzone so small movements register." Margin="0,0,0,6" />
 
                     <Grid><TextBlock Style="{StaticResource Label}" Text="Response curve" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding RightCurve, StringFormat={}{0:0.0}}" /></Grid>
-                    <Slider Minimum="0.5" Maximum="3" SmallChange="0.1" Value="{Binding RightCurve}" />
+                    <Slider AutomationProperties.Name="Right stick response curve" Minimum="0.5" Maximum="3" SmallChange="0.1" Value="{Binding RightCurve}" />
                     <TextBlock Style="{StaticResource Caption}" Text="1.0 is linear. Higher gives finer control near the center." />
                 </StackPanel>
             </Border>
@@ -65,17 +65,17 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Style="{StaticResource Label}" Text="L2" FontWeight="SemiBold" />
                     <Grid Grid.Column="1" x:Name="L2Bar" Height="5">
-                        <Border CornerRadius="5" Background="{StaticResource TrackBrush}" />
-                        <Border x:Name="L2Fill" CornerRadius="5" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                        <Border CornerRadius="5" Background="{DynamicResource TrackBrush}" />
+                        <Border x:Name="L2Fill" CornerRadius="5" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
                     <TextBlock Grid.Column="3" Style="{StaticResource Label}" Text="R2" FontWeight="SemiBold" />
                     <Grid Grid.Column="4" x:Name="R2Bar" Height="5">
-                        <Border CornerRadius="5" Background="{StaticResource TrackBrush}" />
-                        <Border x:Name="R2Fill" CornerRadius="5" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                        <Border CornerRadius="5" Background="{DynamicResource TrackBrush}" />
+                        <Border x:Name="R2Fill" CornerRadius="5" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
                 </Grid>
                 <Grid Margin="0,8,0,0"><TextBlock Style="{StaticResource Label}" Text="Trigger deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding TriggerDeadzone, StringFormat={}{0:P0}}" /></Grid>
-                <Slider Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding TriggerDeadzone}" />
+                <Slider AutomationProperties.Name="Trigger deadzone" Minimum="0" Maximum="0.4" SmallChange="0.01" Value="{Binding TriggerDeadzone}" />
                 <TextBlock Style="{StaticResource Caption}" Text="Light presses below this amount are ignored." />
             </StackPanel>
         </Border>

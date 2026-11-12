@@ -7,6 +7,19 @@
 
         <Border Style="{StaticResource Card}" Margin="0,12,0,0">
             <StackPanel>
+                <TextBlock Style="{StaticResource CardTitle}" Text="Controller info" />
+                <TextBlock x:Name="InfoEmpty" Style="{StaticResource Caption}" Text="Connect a controller to see its details." />
+                <Grid x:Name="InfoGrid" Margin="0,4,0,0" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="170" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
                 <Grid>
                     <StackPanel>
                         <TextBlock Style="{StaticResource CardTitle}" Text="Button checklist" />
@@ -15,7 +28,7 @@
                     <Button Style="{StaticResource SecondaryButton}" Content="Start over" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ResetChecklist_Click" />
                 </Grid>
                 <Grid x:Name="ChecklistBar" Height="4" Margin="0,8,0,4">
-                    <Border CornerRadius="2" Background="{StaticResource TrackBrush}" />
+                    <Border CornerRadius="2" Background="{DynamicResource TrackBrush}" />
                     <Border x:Name="ChecklistFill" CornerRadius="2" HorizontalAlignment="Left" Width="0" Background="#16A34A" />
                 </Grid>
                 <StackPanel x:Name="Groups" Margin="0,4,0,0" />
@@ -27,13 +40,13 @@
                 <TextBlock Style="{StaticResource CardTitle}" Text="Health check" />
                 <TextBlock Style="{StaticResource Caption}" Text="Takes about 15 seconds: the controller lies still, you rotate both sticks, then press both triggers fully." />
 
-                <Border x:Name="StepPanel" Margin="0,8,0,0" Padding="10,8" Background="{StaticResource SurfaceBrush}" CornerRadius="4" Visibility="Collapsed">
+                <Border x:Name="StepPanel" Margin="0,8,0,0" Padding="10,8" Background="{DynamicResource SurfaceBrush}" CornerRadius="4" Visibility="Collapsed">
                     <StackPanel>
-                        <TextBlock x:Name="StepTitle" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextBrush}" />
+                        <TextBlock x:Name="StepTitle" FontWeight="SemiBold" FontSize="13" Foreground="{DynamicResource TextBrush}" />
                         <TextBlock x:Name="StepDetail" Style="{StaticResource Caption}" />
                         <Grid x:Name="StepBar" Height="4" Margin="0,6,0,0">
-                            <Border CornerRadius="2" Background="{StaticResource TrackBrush}" />
-                            <Border x:Name="StepFill" CornerRadius="2" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                            <Border CornerRadius="2" Background="{DynamicResource TrackBrush}" />
+                            <Border x:Name="StepFill" CornerRadius="2" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                         </Grid>
                     </StackPanel>
                 </Border>
@@ -43,7 +56,7 @@
                     <TextBlock x:Name="Verdict" Style="{StaticResource Caption}" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="SemiBold" />
                 </StackPanel>
 
-                <ItemsControl x:Name="HealthResults" Margin="0,6,0,0">
+                <ItemsControl x:Name="HealthResults" AutomationProperties.Name="Health check results" Margin="0,6,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="0,3">
@@ -51,7 +64,7 @@
                                     <ColumnDefinition Width="20" />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Icon}" Foreground="{Binding IconBrush}" FontFamily="{StaticResource IconFont}" FontSize="12" Margin="0,2,0,0" />
+                                <TextBlock Text="{Binding Icon}" AutomationProperties.Name="{Binding Spoken}" Foreground="{Binding IconBrush}" FontFamily="{StaticResource IconFont}" FontSize="12" Margin="0,2,0,0" />
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Style="{StaticResource Label}" Text="{Binding Name}" />
                                     <TextBlock Style="{StaticResource Caption}" Text="{Binding Detail}" />

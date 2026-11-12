@@ -11,13 +11,13 @@
         <TextBlock x:Name="Subtitle" Style="{StaticResource PageSubtitle}" Text="Press any button to see it light up." />
 
         <!-- Problems that cause double input or fights over the controller -->
-        <ItemsControl x:Name="Warnings" Margin="0,8,0,0">
+        <ItemsControl x:Name="Warnings" AutomationProperties.Name="Warnings" Margin="0,8,0,0">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="0,0,0,6" Padding="10,7" Background="#FFF7E6" BorderBrush="#F5D9A8" BorderThickness="1" CornerRadius="4">
+                    <Border Margin="0,0,0,6" Padding="10,7" Background="{DynamicResource WarningBackBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" BorderThickness="1" CornerRadius="4">
                         <StackPanel>
-                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12.5" Foreground="#7A5200" />
-                            <TextBlock Text="{Binding Detail}" Style="{StaticResource Caption}" Foreground="#7A5200" />
+                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12.5" Foreground="{DynamicResource WarningTextBrush}" />
+                            <TextBlock Text="{Binding Detail}" Style="{StaticResource Caption}" Foreground="{DynamicResource WarningTextBrush}" />
                         </StackPanel>
                     </Border>
                 </DataTemplate>
@@ -29,10 +29,10 @@
             <Grid>
                 <ui:ControllerView x:Name="Controller" Height="300" />
                 <Border x:Name="ConnectHint" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,0"
-                        Background="{StaticResource SurfaceBrush}" CornerRadius="8" Padding="12,6">
+                        Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="12,6">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE839;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
-                        <TextBlock Text="Connect your controller with a USB cable or Bluetooth" Foreground="{StaticResource TextBrush}" FontSize="12.5" />
+                        <TextBlock Text="&#xE839;" FontFamily="{StaticResource IconFont}" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Text="Connect your controller with a USB cable or Bluetooth" Foreground="{DynamicResource TextBrush}" FontSize="12.5" />
                     </StackPanel>
                 </Border>
             </Grid>
@@ -54,8 +54,8 @@
                     <TextBlock Style="{StaticResource Caption}" Text="BATTERY" FontWeight="SemiBold" />
                     <TextBlock x:Name="BatteryText" Text="—" FontFamily="{StaticResource DisplayFont}" FontSize="18" FontWeight="SemiBold" Margin="0,4,0,6" />
                     <Grid x:Name="BatteryBar" Height="4">
-                        <Border CornerRadius="2" Background="{StaticResource TrackBrush}" />
-                        <Border x:Name="BatteryFill" CornerRadius="2" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                        <Border CornerRadius="2" Background="{DynamicResource TrackBrush}" />
+                        <Border x:Name="BatteryFill" CornerRadius="2" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
                     <TextBlock x:Name="BatteryDetail" Style="{StaticResource Caption}" Margin="0,4,0,0" Text="Shown once connected" />
                 </StackPanel>

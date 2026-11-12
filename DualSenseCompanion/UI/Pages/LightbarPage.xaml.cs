@@ -37,6 +37,8 @@ public partial class LightbarPage : UserControl
                 ToolTip = name,
             };
 
+            System.Windows.Automation.AutomationProperties.SetName(swatch, $"Lightbar color: {name}");
+
             swatch.Click += (s, e) => _vm.SetLightbarColor(color);
             Swatches.Children.Add(swatch);
         }
