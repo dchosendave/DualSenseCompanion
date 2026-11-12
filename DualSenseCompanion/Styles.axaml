@@ -70,8 +70,8 @@
           <Border Name="bar" Width="3" Height="16" CornerRadius="1.5" HorizontalAlignment="Left" Margin="6,0,0,0"
                   Background="{DynamicResource AccentBrush}" IsVisible="False" />
           <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center" Spacing="10">
-            <TextBlock Name="glyph" Classes="icon" Text="{TemplateBinding Tag}" FontSize="14" VerticalAlignment="Center"
-                       Foreground="{TemplateBinding Foreground}" />
+            <PathIcon Name="glyph" Data="{TemplateBinding Tag}" Width="16" Height="16" VerticalAlignment="Center"
+                      Foreground="{TemplateBinding Foreground}" />
             <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" VerticalAlignment="Center"
                               Foreground="{TemplateBinding Foreground}" FontSize="13" />
           </StackPanel>
@@ -95,7 +95,7 @@
   <Style Selector="RadioButton.nav:checked /template/ Border#bar">
     <Setter Property="IsVisible" Value="True" />
   </Style>
-  <Style Selector="RadioButton.nav:checked /template/ TextBlock#glyph">
+  <Style Selector="RadioButton.nav:checked /template/ PathIcon#glyph">
     <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
   </Style>
 

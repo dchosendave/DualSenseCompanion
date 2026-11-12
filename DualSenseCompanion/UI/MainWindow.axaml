@@ -37,16 +37,16 @@
       </Border>
 
       <StackPanel Name="Nav" AutomationProperties.Name="Pages" KeyboardNavigation.TabNavigation="Once">
-        <RadioButton Classes="nav" Tag="&#xE80F;" Content="Home" Name="NavHome" />
-        <RadioButton Classes="nav" Tag="&#xE73A;" Content="Controller test" Name="NavTest" />
-        <RadioButton Classes="nav" Tag="&#xE706;" Content="Lightbar &amp; LEDs" Name="NavLightbar" />
-        <RadioButton Classes="nav" Tag="&#xE7FC;" Content="Sticks" Name="NavSticks" />
-        <RadioButton Classes="nav" Tag="&#xE945;" Content="Adaptive triggers" Name="NavTriggers" />
-        <RadioButton Classes="nav" Tag="&#xE7AD;" Content="Gyro aiming" Name="NavGyro" />
-        <RadioButton Classes="nav" Tag="&#xE720;" Content="Touchpad &amp; mic" Name="NavTouchpad" />
-        <RadioButton Classes="nav" Tag="&#xE8AB;" Content="Button mapping" Name="NavButtons" />
-        <RadioButton Classes="nav" Tag="&#xE713;" Content="Settings" Name="NavSettings" />
-        <RadioButton Classes="nav" Tag="&#xE9D9;" Content="Log" Name="NavLog" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconHome}" Content="Home" Name="NavHome" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconTest}" Content="Controller test" Name="NavTest" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconLightbar}" Content="Lightbar &amp; LEDs" Name="NavLightbar" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconSticks}" Content="Sticks" Name="NavSticks" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconTriggers}" Content="Adaptive triggers" Name="NavTriggers" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconGyro}" Content="Gyro aiming" Name="NavGyro" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconMic}" Content="Touchpad &amp; mic" Name="NavTouchpad" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconMapping}" Content="Button mapping" Name="NavButtons" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconSettings}" Content="Settings" Name="NavSettings" />
+        <RadioButton Classes="nav" Tag="{StaticResource IconLog}" Content="Log" Name="NavLog" />
       </StackPanel>
     </DockPanel>
 

@@ -141,9 +141,10 @@ GitHub Actions builds and tests every push and pull request and uploads the `.ex
 2. HidHide: hiding the real controller from games.
 3. HidSharp: HID device communication in C#.
 4. Avalonia: the app's interface (Fluent theme).
-5. Linux kernel (hid-playstation.c): DualSense protocol documentation.
-6. NAudio: Windows microphone control.
-7. Nielk1's trigger effect documentation: adaptive trigger effect formats.
-8. The open-source community: shared knowledge on DualSense input and output.
+5. Fluent UI System Icons (Microsoft, MIT): the sidebar icons. See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+6. Linux kernel (hid-playstation.c): DualSense protocol documentation.
+7. NAudio: Windows microphone control.
+8. Nielk1's trigger effect documentation: adaptive trigger effect formats.
+9. The open-source community: shared knowledge on DualSense input and output.
 
 Not affiliated with Sony Interactive Entertainment.
