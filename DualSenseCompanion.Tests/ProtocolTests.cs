@@ -158,7 +158,7 @@ public class OutputTests
     [Fact]
     public void UsbLayoutMatchesExistingRumbleOffsets()
     {
-        var r = DualSenseOutputBuilder.Build(Sample, bluetooth: false, reportLength: 48, lightbarSetup: false);
+        var r = DualSenseOutputBuilder.Build(Sample, bluetooth: false, lightbarSetup: false);
 
         Assert.Equal(48, r.Length);
         Assert.Equal(0x02, r[0]);
@@ -175,7 +175,7 @@ public class OutputTests
     [Fact]
     public void BluetoothLayoutMatchesExistingRumbleOffsetsAndHasValidCrc()
     {
-        var r = DualSenseOutputBuilder.Build(Sample, bluetooth: true, reportLength: 78, lightbarSetup: true);
+        var r = DualSenseOutputBuilder.Build(Sample, bluetooth: true, lightbarSetup: true);
 
         Assert.Equal(78, r.Length);
         Assert.Equal(0x31, r[0]);
@@ -191,9 +191,19 @@ public class OutputTests
     }
 
     [Fact]
+    public void BluetoothReportIsAlways78BytesWithChecksumAt74()
+    {
+        //Regression: sizing from the device's max output length (547 over Bluetooth) broke all output
+        var r = DualSenseOutputBuilder.Build(Sample, bluetooth: true, lightbarSetup: false);
+
+        Assert.Equal(78, r.Length);
+        Assert.Equal(Crc32.ComputeWithBluetoothOutputPrefix(r.AsSpan(0, 74)), BitConverter.ToUInt32(r, 74));
+    }
+
+    [Fact]
     public void LightbarSetupOnlyWhenRequested()
     {
-        var r = DualSenseOutputBuilder.Build(Sample, bluetooth: false, reportLength: 48, lightbarSetup: false);
+        var r = DualSenseOutputBuilder.Build(Sample, bluetooth: false, lightbarSetup: false);
         Assert.Equal(0x04, r[39]);
         Assert.Equal(0, r[42]);
     }

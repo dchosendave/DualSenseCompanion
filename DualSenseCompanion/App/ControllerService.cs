@@ -80,6 +80,9 @@ public sealed class ControllerService : IDisposable
     private volatile bool _micMuted;
     private bool _lowBatteryNotified;
     private long _testRumbleUntilMs;
+
+    //In native mode the game owns the outputs; the app only sends for a moment after the user changes something
+    private long _userOutputUntilMs;
     private volatile DualSenseState? _latestInput;
     private volatile PadState? _latestOutput;
 
@@ -110,6 +113,14 @@ public sealed class ControllerService : IDisposable
     public void TestRumble()
     {
         _testRumbleUntilMs = _clock.ElapsedMilliseconds + 600;
+        RequestOutput(1500);
+    }
+
+    //Call when the user changes an output setting (lightbar, triggers...) so it reaches the controller right away,
+    //including in native mode
+    public void RequestOutput(int forMs = 1000)
+    {
+        _userOutputUntilMs = _clock.ElapsedMilliseconds + forMs;
         _outputSignal.Set();
     }
 
@@ -142,6 +153,7 @@ public sealed class ControllerService : IDisposable
     {
         _settings.Normalize();
         _settings.Save();
+        _userOutputUntilMs = _clock.ElapsedMilliseconds + 1000;
 
         bool needsPad = _settings.Emulation != EmulationMode.Native;
 
@@ -496,22 +508,11 @@ public sealed class ControllerService : IDisposable
                 lastSent = null;
             }
 
-            if (_padMode == EmulationMode.Native)
+            //Native mode: the game drives lightbar, triggers and rumble. Only send right after the user
+            //changed something here, and resend the full state then since the game may have changed it.
+            if (_padMode == EmulationMode.Native && _clock.ElapsedMilliseconds >= _userOutputUntilMs)
             {
-                //Release our trigger resistance once, then leave the outputs to the game
-                if (lastSent != null && lastSent != DualSenseOutputState.Neutral)
-                {
-                    try
-                    {
-                        device.Send(DualSenseOutputState.Neutral);
-                    }
-                    catch
-                    {
-                        //Disconnect is handled by the input thread
-                    }
-                }
-
-                lastSent = DualSenseOutputState.Neutral;
+                lastSent = null;
                 continue;
             }
 

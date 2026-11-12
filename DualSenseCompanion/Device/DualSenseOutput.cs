@@ -53,13 +53,15 @@ public static class DualSenseOutputBuilder
     //USB: [0]=0x02. Bluetooth: [0]=0x31, [1]=0x02 tag (same layout the app already used for BT rumble).
     public static int CommonOffset(bool bluetooth) => bluetooth ? 2 : 1;
 
-    public static byte[] Build(DualSenseOutputState s, bool bluetooth, int reportLength, bool lightbarSetup)
-    {
-        if (reportLength < (bluetooth ? 78 : 48))
-        {
-            reportLength = bluetooth ? 78 : 48;
-        }
+    //Report 0x31 is exactly 78 bytes over Bluetooth (checksum in the last 4); report 0x02 is 48 bytes over USB.
+    //Don't size it from the device's max output length: over Bluetooth that is 547 (larger audio/haptics reports),
+    //which would put the checksum in the wrong place and the controller would ignore the report.
+    public const int BluetoothReportLength = 78;
+    public const int UsbReportLength = 48;
 
+    public static byte[] Build(DualSenseOutputState s, bool bluetooth, bool lightbarSetup)
+    {
+        int reportLength = bluetooth ? BluetoothReportLength : UsbReportLength;
         var r = new byte[reportLength];
         int c = CommonOffset(bluetooth);
 

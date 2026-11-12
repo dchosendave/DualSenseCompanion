@@ -4,11 +4,18 @@
              xmlns:ui="clr-namespace:DualSenseCompanion.UI">
     <UserControl.Resources>
         <ui:EqualsConverter x:Key="Is" />
+        <ui:BoolToVisibilityConverter x:Key="Visible" />
     </UserControl.Resources>
 
     <StackPanel>
         <TextBlock Style="{StaticResource PageTitle}" Text="Lightbar &amp; LEDs" />
         <TextBlock Style="{StaticResource PageSubtitle}" Text="Changes show on your controller instantly." />
+
+        <Border Visibility="{Binding IsNative, Converter={StaticResource Visible}}" Margin="0,10,0,0" Padding="10,7"
+                Background="#FFF7E6" BorderBrush="#F5D9A8" BorderThickness="1" CornerRadius="4">
+            <TextBlock Style="{StaticResource Caption}" Foreground="#7A5200"
+                       Text="Native DualSense mode is on, so games control the lightbar, triggers and rumble. Changes here are sent right away, but a game can override them. Pick Xbox or DS4 on the Home page to keep them." />
+        </Border>
 
         <Border Style="{StaticResource Card}" Margin="0,12,0,10">
             <StackPanel>

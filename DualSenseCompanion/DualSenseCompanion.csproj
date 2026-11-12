@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -23,9 +23,6 @@
 
   <ItemGroup>
     <Resource Include="icon_6Q2_icon.ico" />
-    <!-- Inter, SIL Open Font License 1.1 (UI/Fonts/Inter-LICENSE.txt) -->
-    <Resource Include="UI\Fonts\*.ttf" />
-    <None Include="UI\Fonts\Inter-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- WPF and WinForms share type names (Application, MessageBox, Color...); import WinForms explicitly where used -->

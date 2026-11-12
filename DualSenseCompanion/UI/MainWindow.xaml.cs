@@ -35,7 +35,9 @@ public partial class MainWindow : Window
     private static readonly Brush LowBattery = new SolidColorBrush(Color.FromRgb(0xEF, 0x44, 0x44));
 
     private readonly ControllerService _service;
-    private readonly DispatcherTimer _liveTimer;
+    private bool _liveRunning;
+    private TimeSpan _lastFrame;
+    private ControllerStatus? _shownStatus;
     private readonly Dictionary<PageId, Func<FrameworkElement>> _factories;
     private readonly Dictionary<PageId, FrameworkElement> _pages = new Dictionary<PageId, FrameworkElement>();
     private readonly Dictionary<PageId, RadioButton> _navButtons;
@@ -85,20 +87,9 @@ public partial class MainWindow : Window
             button.Checked += (s, e) => ShowPage(id);
         }
 
-        _liveTimer = new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(33) };
-        _liveTimer.Tick += (s, e) => UpdateLive();
-
-        IsVisibleChanged += (s, e) =>
-        {
-            if (IsVisible)
-            {
-                _liveTimer.Start();
-            }
-            else
-            {
-                _liveTimer.Stop();
-            }
-        };
+        //Live view refreshes once per displayed frame, so it follows the monitor's refresh rate (60, 144, 180 Hz...)
+        IsVisibleChanged += (s, e) => SetLiveUpdates(IsVisible && WindowState != WindowState.Minimized);
+        StateChanged += (s, e) => SetLiveUpdates(IsVisible && WindowState != WindowState.Minimized);
 
         StateChanged += (s, e) =>
         {
@@ -145,10 +136,48 @@ public partial class MainWindow : Window
         UpdateLive();
     }
 
+    private void SetLiveUpdates(bool on)
+    {
+        if (on == _liveRunning)
+        {
+            return;
+        }
+
+        _liveRunning = on;
+
+        if (on)
+        {
+            CompositionTarget.Rendering += OnRendering;
+        }
+        else
+        {
+            CompositionTarget.Rendering -= OnRendering;
+        }
+    }
+
+    private void OnRendering(object? sender, EventArgs e)
+    {
+        //Rendering can fire more than once per frame; update once per new frame only
+        var time = ((RenderingEventArgs)e).RenderingTime;
+
+        if (time == _lastFrame)
+        {
+            return;
+        }
+
+        _lastFrame = time;
+        UpdateLive();
+    }
+
     private void UpdateLive()
     {
         var snapshot = _service.GetSnapshot();
-        UpdateStatus(snapshot.Status);
+
+        if (snapshot.Status != _shownStatus)
+        {
+            _shownStatus = snapshot.Status;
+            UpdateStatus(snapshot.Status);
+        }
 
         if (PageHost.Content is ILivePage live)
         {

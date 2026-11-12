@@ -27,7 +27,6 @@ public sealed class DualSenseDevice : IDisposable
     private readonly object _writeLock = new object();
     private HidStream? _stream;
     private bool _lightbarSetupPending = true;
-    private int _outputReportLength;
 
     public bool IsBluetooth { get; }
     public bool IsEdge => _hid.ProductID == DualSenseEdgeProductId;
@@ -56,7 +55,6 @@ public sealed class DualSenseDevice : IDisposable
     {
         _stream = _hid.Open();
         _stream.ReadTimeout = Timeout.Infinite;
-        _outputReportLength = _hid.GetMaxOutputReportLength();
         _lightbarSetupPending = true;
 
         //Reading the calibration report also switches a Bluetooth controller to full (0x31) reports,
@@ -83,7 +81,7 @@ public sealed class DualSenseDevice : IDisposable
                 return;
             }
 
-            byte[] report = DualSenseOutputBuilder.Build(state, IsBluetooth, _outputReportLength, _lightbarSetupPending);
+            byte[] report = DualSenseOutputBuilder.Build(state, IsBluetooth, _lightbarSetupPending);
             _stream.Write(report, 0, report.Length);
             _lightbarSetupPending = false;
         }

@@ -89,6 +89,7 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     private void Changed(Action apply, [CallerMemberName] string? name = null, params string[] alsoChanged)
     {
         apply();
+        _service.RequestOutput();
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         foreach (var other in alsoChanged)
@@ -170,6 +171,8 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
 
     // ---- General ----
 
+    public bool IsNative => Settings.Emulation == EmulationMode.Native;
+
     public EmulationMode Emulation
     {
         get => Settings.Emulation;
@@ -177,6 +180,7 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         {
             Settings.Emulation = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Emulation)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsNative)));
 
             //Recreate the virtual controller right away
             _saveTimer.Stop();
