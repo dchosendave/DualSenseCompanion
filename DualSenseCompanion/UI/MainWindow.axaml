@@ -6,6 +6,7 @@
         WindowStartupLocation="CenterScreen"
         Icon="avares://DualSenseCompanion/icon_6Q2_icon.ico"
         WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
         Background="{DynamicResource PageBrush}"
         TextOptions.TextRenderingMode="SubpixelAntialias"
         FontFamily="{StaticResource UiFont}"
