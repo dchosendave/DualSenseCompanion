@@ -206,6 +206,16 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         set => Changed(() => Settings.StartMinimized = value);
     }
 
+    public AppTheme Theme
+    {
+        get => Settings.Theme;
+        set => Changed(() =>
+        {
+            Settings.Theme = value;
+            ThemeManager.Apply(value);
+        });
+    }
+
     public bool CheckForUpdates
     {
         get => Settings.CheckForUpdates;

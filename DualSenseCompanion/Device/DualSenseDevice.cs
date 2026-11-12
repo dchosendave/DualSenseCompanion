@@ -60,6 +60,46 @@ public sealed class DualSenseDevice : IDisposable
         //Reading the calibration report also switches a Bluetooth controller to full (0x31) reports,
         //which carry gyro, touchpad and battery data
         Calibration = ReadCalibration() ?? GyroCalibration.Default;
+        Info = ReadInfo();
+    }
+
+    public ControllerInfo? Info { get; private set; }
+
+    private byte[]? ReadFeature(byte reportId)
+    {
+        try
+        {
+            var buffer = new byte[Math.Max(_hid.GetMaxFeatureReportLength(), 64)];
+            buffer[0] = reportId;
+            _stream!.GetFeature(buffer);
+            return buffer;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Could not read feature report 0x{reportId:X2}: {ex.Message}");
+            return null;
+        }
+    }
+
+    private ControllerInfo ReadInfo()
+    {
+        var pairing = ReadFeature(ControllerInfo.PairingReportId);
+        var firmware = ReadFeature(ControllerInfo.FirmwareReportId);
+
+        string? address = pairing != null ? ControllerInfo.ParseBluetoothAddress(pairing) : null;
+        var fw = firmware != null ? ControllerInfo.ParseFirmware(firmware) : default;
+
+        var info = new ControllerInfo(
+            IsEdge ? "DualSense Edge" : "DualSense",
+            ConnectionName,
+            address,
+            fw.Update,
+            fw.Firmware,
+            fw.Hardware,
+            fw.BuildDate);
+
+        Console.WriteLine($"Controller: {info.Model}, address {info.BluetoothAddress ?? "?"}, update {info.UpdateVersion ?? "?"}, firmware {info.FirmwareVersion ?? "?"}, hardware {info.HardwareVersion ?? "?"}, built {info.BuildDate ?? "?"}");
+        return info;
     }
 
     public int Read(byte[] buffer)

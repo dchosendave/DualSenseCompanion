@@ -99,8 +99,8 @@
 
         <Border Style="{StaticResource Card}">
             <StackPanel>
-                <TextBlock Style="{StaticResource CardTitle}" Text="Live motion" Foreground="{StaticResource TextBrush}" />
-                <TextBlock Style="{StaticResource Caption}" Foreground="{StaticResource TextSecondaryBrush}"
+                <TextBlock Style="{StaticResource CardTitle}" Text="Live motion" Foreground="{DynamicResource TextBrush}" />
+                <TextBlock Style="{StaticResource Caption}" Foreground="{DynamicResource TextSecondaryBrush}"
                            Text="Rotation speed right now. With the controller lying still all three should stay near zero; if not, calibrate." />
 
                 <Grid Margin="0,8,0,0">
@@ -115,29 +115,29 @@
                         <RowDefinition Height="24" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Up / down" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                    <TextBlock Text="Up / down" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" />
                     <Grid x:Name="PitchTrack" Grid.Column="1" Height="4">
-                        <Border CornerRadius="3" Background="{StaticResource TrackBrush}" />
-                        <Border Width="1" Background="#C9CCD3" HorizontalAlignment="Center" />
-                        <Border x:Name="PitchFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                        <Border CornerRadius="3" Background="{DynamicResource TrackBrush}" />
+                        <Border Width="1" Background="{DynamicResource DividerBrush}" HorizontalAlignment="Center" />
+                        <Border x:Name="PitchFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
-                    <TextBlock x:Name="PitchText" Grid.Column="2" Foreground="{StaticResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
+                    <TextBlock x:Name="PitchText" Grid.Column="2" Foreground="{DynamicResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
 
-                    <TextBlock Grid.Row="1" Text="Turn" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Text="Turn" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" />
                     <Grid x:Name="YawTrack" Grid.Row="1" Grid.Column="1" Height="4">
-                        <Border CornerRadius="3" Background="{StaticResource TrackBrush}" />
-                        <Border Width="1" Background="#C9CCD3" HorizontalAlignment="Center" />
-                        <Border x:Name="YawFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                        <Border CornerRadius="3" Background="{DynamicResource TrackBrush}" />
+                        <Border Width="1" Background="{DynamicResource DividerBrush}" HorizontalAlignment="Center" />
+                        <Border x:Name="YawFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
-                    <TextBlock x:Name="YawText" Grid.Row="1" Grid.Column="2" Foreground="{StaticResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
+                    <TextBlock x:Name="YawText" Grid.Row="1" Grid.Column="2" Foreground="{DynamicResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
 
-                    <TextBlock Grid.Row="2" Text="Tilt" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="2" Text="Tilt" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" />
                     <Grid x:Name="RollTrack" Grid.Row="2" Grid.Column="1" Height="4">
-                        <Border CornerRadius="3" Background="{StaticResource TrackBrush}" />
-                        <Border Width="1" Background="#C9CCD3" HorizontalAlignment="Center" />
-                        <Border x:Name="RollFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                        <Border CornerRadius="3" Background="{DynamicResource TrackBrush}" />
+                        <Border Width="1" Background="{DynamicResource DividerBrush}" HorizontalAlignment="Center" />
+                        <Border x:Name="RollFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
-                    <TextBlock x:Name="RollText" Grid.Row="2" Grid.Column="2" Foreground="{StaticResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
+                    <TextBlock x:Name="RollText" Grid.Row="2" Grid.Column="2" Foreground="{DynamicResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
                 </Grid>
 
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
@@ -147,12 +147,12 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
-                                            <Border x:Name="Bg" CornerRadius="6" Padding="12,5" Background="{StaticResource AccentBrush}">
+                                            <Border x:Name="Bg" CornerRadius="6" Padding="12,5" Background="{DynamicResource AccentBrush}">
                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Bg" Property="Background" Value="{StaticResource AccentLightBrush}" />
+                                                    <Setter TargetName="Bg" Property="Background" Value="{DynamicResource AccentLightBrush}" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -161,7 +161,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBlock x:Name="CalibrateHint" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12"
+                    <TextBlock x:Name="CalibrateHint" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12"
                                Text="Put the controller on a table and don't touch it for a second." />
                 </StackPanel>
             </StackPanel>

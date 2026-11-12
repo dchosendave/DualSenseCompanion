@@ -63,7 +63,8 @@ public sealed record LiveSnapshot(
     float GyroYaw,
     float GyroRoll,
     bool MicMuted,
-    IReadOnlyList<Conflict>? Conflicts = null);
+    IReadOnlyList<Conflict>? Conflicts = null,
+    ControllerInfo? Info = null);
 
 //When the output thread may write to the controller
 public static class OutputPolicy
@@ -145,7 +146,8 @@ public sealed class ControllerService : IDisposable
         _gyro.LastYaw,
         _gyro.LastRoll,
         _micMuted,
-        _conflicts);
+        _conflicts,
+        _device?.Info);
 
     //Short rumble so the strength setting can be felt
     public void TestRumble()

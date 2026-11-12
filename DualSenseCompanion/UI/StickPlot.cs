@@ -6,13 +6,11 @@ namespace DualSenseCompanion.UI;
 //Round stick visualizer: grey dot = physical stick, blue dot = what the game receives
 public sealed class StickPlot : FrameworkElement
 {
-    private static readonly Brush Background = Frozen(Color.FromRgb(0xF6, 0xF7, 0xF9));
-    private static readonly Brush DeadzoneFill = Frozen(Color.FromArgb(0x30, 0x6A, 0x6F, 0x7B));
-    private static readonly Pen RingPen = FrozenPen(Color.FromRgb(0xE3, 0xE5, 0xEA), 1);
+    private static readonly Brush DeadzoneFill = Frozen(Color.FromArgb(0x30, 0x8E, 0x8E, 0x93));
     private static readonly Pen OuterPen = FrozenPen(Color.FromArgb(0x99, 0x6C, 0x97, 0xFF), 1.2, dashed: true);
-    private static readonly Pen CrossPen = FrozenPen(Color.FromRgb(0xEC, 0xEE, 0xF2), 1);
-    private static readonly Brush RawDot = Frozen(Color.FromRgb(0x8B, 0x8F, 0x9A));
-    private static readonly Brush OutDot = Frozen(Color.FromRgb(0x2F, 0x6B, 0xFF));
+
+    //Theme colors, looked up each frame so a light/dark switch applies immediately
+    private Brush Theme(string key, Color fallback) => TryFindResource(key) as Brush ?? new SolidColorBrush(fallback);
 
     public double Deadzone { get; set; }
     public double OuterDeadzone { get; set; }
@@ -51,9 +49,12 @@ public sealed class StickPlot : FrameworkElement
         double r = size / 2 - 2;
         var c = new Point(ActualWidth / 2, ActualHeight / 2);
 
-        dc.DrawEllipse(Background, RingPen, c, r, r);
-        dc.DrawLine(CrossPen, new Point(c.X - r, c.Y), new Point(c.X + r, c.Y));
-        dc.DrawLine(CrossPen, new Point(c.X, c.Y - r), new Point(c.X, c.Y + r));
+        var ring = new Pen(Theme("BorderBrush", Color.FromRgb(0xE5, 0xE5, 0xEA)), 1);
+        var cross = new Pen(Theme("HoverBrush", Color.FromRgb(0xF3, 0xF4, 0xF6)), 1);
+
+        dc.DrawEllipse(Theme("SurfaceBrush", Color.FromRgb(0xF6, 0xF7, 0xF9)), ring, c, r, r);
+        dc.DrawLine(cross, new Point(c.X - r, c.Y), new Point(c.X + r, c.Y));
+        dc.DrawLine(cross, new Point(c.X, c.Y - r), new Point(c.X, c.Y + r));
 
         if (Deadzone > 0)
         {
@@ -64,7 +65,7 @@ public sealed class StickPlot : FrameworkElement
         dc.DrawEllipse(null, OuterPen, c, outer, outer);
 
         //Y is up-positive in both values
-        dc.DrawEllipse(RawDot, null, new Point(c.X + RawX * r, c.Y - RawY * r), 5, 5);
-        dc.DrawEllipse(OutDot, null, new Point(c.X + OutX * r, c.Y - OutY * r), 7, 7);
+        dc.DrawEllipse(Theme("TextSecondaryBrush", Color.FromRgb(0x8B, 0x8F, 0x9A)), null, new Point(c.X + RawX * r, c.Y - RawY * r), 5, 5);
+        dc.DrawEllipse(Theme("AccentBrush", Color.FromRgb(0x2F, 0x6B, 0xFF)), null, new Point(c.X + OutX * r, c.Y - OutY * r), 7, 7);
     }
 }

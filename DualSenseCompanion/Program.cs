@@ -94,6 +94,9 @@ public static class Program
         {
             Source = new Uri("pack://application:,,,/DualSenseCompanion;component/UI/Theme.xaml"),
         });
+
+        //Light or dark palette, inserted ahead of the styles
+        ThemeManager.Apply(settings.Theme);
         app.DispatcherUnhandledException += (s, e) =>
         {
             Console.WriteLine($"Unexpected UI error: {e.Exception}");

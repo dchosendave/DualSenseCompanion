@@ -12,12 +12,28 @@
         <TextBlock Style="{StaticResource PageSubtitle}" Text="Emulation, rumble and how the app starts." />
 
         <Border Visibility="{Binding IsNative, Converter={StaticResource Visible}}" Margin="0,10,0,0" Padding="10,7"
-                Background="#FFF7E6" BorderBrush="#F5D9A8" BorderThickness="1" CornerRadius="4">
-            <TextBlock Style="{StaticResource Caption}" Foreground="#7A5200"
+                Background="{DynamicResource WarningBackBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" BorderThickness="1" CornerRadius="4">
+            <TextBlock Style="{StaticResource Caption}" Foreground="{DynamicResource WarningTextBrush}"
                        Text="Native DualSense mode is on, so games control the lightbar, triggers and rumble. Changes here are sent right away, but a game can override them. Pick Xbox or DS4 on the Home page to keep them." />
         </Border>
 
-        <Border Style="{StaticResource Card}" Margin="0,12,0,10">
+        <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+            <StackPanel>
+                <TextBlock Style="{StaticResource CardTitle}" Text="Appearance" />
+                <Border Style="{StaticResource SegmentHost}" Margin="0,6,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Segment}" GroupName="Theme" Content="Match Windows" AutomationProperties.Name="Theme: match Windows"
+                                     IsChecked="{Binding Theme, Converter={StaticResource Is}, ConverterParameter=System}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="Theme" Content="Light" AutomationProperties.Name="Theme: light"
+                                     IsChecked="{Binding Theme, Converter={StaticResource Is}, ConverterParameter=Light}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="Theme" Content="Dark" AutomationProperties.Name="Theme: dark"
+                                     IsChecked="{Binding Theme, Converter={StaticResource Is}, ConverterParameter=Dark}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
             <StackPanel>
                 <TextBlock Style="{StaticResource CardTitle}" Text="Games see a" />
                 <Border Style="{StaticResource SegmentHost}" Margin="0,6,0,0">
@@ -123,9 +139,9 @@
 
         <Border Style="{StaticResource Card}">
             <StackPanel>
-                <TextBlock Style="{StaticResource CardTitle}" Foreground="{StaticResource TextBrush}" Text="About" />
-                <TextBlock x:Name="VersionText" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
-                <TextBlock Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                <TextBlock Style="{StaticResource CardTitle}" Foreground="{DynamicResource TextBrush}" Text="About" />
+                <TextBlock x:Name="VersionText" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                <TextBlock Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
                            Text="Built on ViGEmBus, HidHide, HidSharp and NAudio. Not affiliated with Sony Interactive Entertainment." />
             </StackPanel>
         </Border>

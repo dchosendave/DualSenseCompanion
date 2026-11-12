@@ -65,13 +65,13 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Style="{StaticResource Label}" Text="L2" FontWeight="SemiBold" />
                     <Grid Grid.Column="1" x:Name="L2Bar" Height="5">
-                        <Border CornerRadius="5" Background="{StaticResource TrackBrush}" />
-                        <Border x:Name="L2Fill" CornerRadius="5" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                        <Border CornerRadius="5" Background="{DynamicResource TrackBrush}" />
+                        <Border x:Name="L2Fill" CornerRadius="5" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
                     <TextBlock Grid.Column="3" Style="{StaticResource Label}" Text="R2" FontWeight="SemiBold" />
                     <Grid Grid.Column="4" x:Name="R2Bar" Height="5">
-                        <Border CornerRadius="5" Background="{StaticResource TrackBrush}" />
-                        <Border x:Name="R2Fill" CornerRadius="5" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                        <Border CornerRadius="5" Background="{DynamicResource TrackBrush}" />
+                        <Border x:Name="R2Fill" CornerRadius="5" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
                 </Grid>
                 <Grid Margin="0,8,0,0"><TextBlock Style="{StaticResource Label}" Text="Trigger deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding TriggerDeadzone, StringFormat={}{0:P0}}" /></Grid>

@@ -18,13 +18,6 @@ public partial class TestPage : UserControl, ILivePage
     private const double CircleSeconds = 6;
     private const double TriggerSeconds = 6;
 
-    private static readonly Brush UntestedBorder = Frozen(0xE5, 0xE5, 0xEA);
-    private static readonly Brush UntestedText = Frozen(0x6E, 0x6E, 0x73);
-    private static readonly Brush TestedBack = Frozen(0xEA, 0xF7, 0xEE);
-    private static readonly Brush TestedBorder = Frozen(0xA7, 0xD9, 0xB5);
-    private static readonly Brush TestedText = Frozen(0x14, 0x6C, 0x2E);
-    private static readonly Brush PressedBack = Frozen(0xEA, 0xF0, 0xFF);
-    private static readonly Brush PressedBorder = Frozen(0x2F, 0x6B, 0xFF);
     private static readonly Brush Pass = Frozen(0x16, 0xA3, 0x4A);
     private static readonly Brush Fail = Frozen(0xDC, 0x26, 0x26);
     private static readonly Brush Skipped = Frozen(0x9B, 0xA0, 0xAA);
@@ -41,6 +34,9 @@ public partial class TestPage : UserControl, ILivePage
     private byte _restL2, _restR2, _pressL2, _pressR2;
 
     private sealed record ResultRow(string Icon, Brush IconBrush, string Name, string Detail);
+
+    private ControllerInfo? _shownInfo;
+    private bool _infoShown;
 
     public TestPage()
     {
@@ -115,28 +111,89 @@ public partial class TestPage : UserControl, ILivePage
 
             _shown[i] = state;
 
-            switch (state)
+            //Resource references so chips follow light/dark theme switches
+            var (back, border, fore) = state switch
             {
-                case ChipState.Pressed:
-                    chip.Background = PressedBack;
-                    chip.BorderBrush = PressedBorder;
-                    text.Foreground = PressedBorder;
-                    break;
-                case ChipState.Tested:
-                    chip.Background = TestedBack;
-                    chip.BorderBrush = TestedBorder;
-                    text.Foreground = TestedText;
-                    break;
-                default:
-                    chip.Background = Brushes.Transparent;
-                    chip.BorderBrush = UntestedBorder;
-                    text.Foreground = UntestedText;
-                    break;
-            }
+                ChipState.Pressed => ("AccentSoftBrush", "AccentBrush", "AccentBrush"),
+                ChipState.Tested => ("GoodBackBrush", "GoodBorderBrush", "GoodTextBrush"),
+                _ => ("PageBrush", "BorderBrush", "TextSecondaryBrush"),
+            };
+
+            chip.SetResourceReference(Border.BackgroundProperty, back);
+            chip.SetResourceReference(Border.BorderBrushProperty, border);
+            text.SetResourceReference(TextBlock.ForegroundProperty, fore);
+
+            string status = state switch
+            {
+                ChipState.Pressed => "pressed",
+                ChipState.Tested => "works",
+                _ => "not tested yet",
+            };
+            System.Windows.Automation.AutomationProperties.SetName(chip, $"{item.Group}, {item.Name}: {status}");
         }
 
         UpdateProgress();
         RunHealthCheck(snapshot);
+        ShowInfo(snapshot.Status.Connected ? snapshot.Info : null);
+    }
+
+    private void ShowInfo(ControllerInfo? info)
+    {
+        if (_infoShown && info == _shownInfo)
+        {
+            return;
+        }
+
+        _infoShown = true;
+        _shownInfo = info;
+        InfoGrid.Children.Clear();
+        InfoGrid.RowDefinitions.Clear();
+
+        InfoEmpty.Visibility = info == null ? Visibility.Visible : Visibility.Collapsed;
+        InfoGrid.Visibility = info == null ? Visibility.Collapsed : Visibility.Visible;
+
+        if (info == null)
+        {
+            return;
+        }
+
+        var rows = new (string Label, string? Value)[]
+        {
+            ("Model", info.Model),
+            ("Connection", info.Connection),
+            ("Bluetooth address", info.BluetoothAddress),
+            ("Firmware update", info.UpdateVersion),
+            ("Firmware version", info.FirmwareVersion),
+            ("Hardware version", info.HardwareVersion),
+            ("Firmware built", info.BuildDate),
+        };
+
+        foreach (var (label, value) in rows)
+        {
+            int row = InfoGrid.RowDefinitions.Count;
+            InfoGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            var name = new TextBlock { Text = label, Style = (Style)FindResource("Caption"), Margin = new Thickness(0, 2, 0, 2) };
+            var text = new TextBox
+            {
+                //Read-only text box so the address and versions can be selected and copied
+                Text = value ?? "Not reported",
+                IsReadOnly = true,
+                BorderThickness = new Thickness(0),
+                Background = Brushes.Transparent,
+                Padding = new Thickness(0),
+                Margin = new Thickness(0, 2, 0, 2),
+                FontSize = 12.5,
+            };
+            text.SetResourceReference(TextBox.ForegroundProperty, "TextBrush");
+            System.Windows.Automation.AutomationProperties.SetName(text, label);
+
+            Grid.SetRow(name, row);
+            Grid.SetRow(text, row);
+            Grid.SetColumn(text, 1);
+            InfoGrid.Children.Add(name);
+            InfoGrid.Children.Add(text);
+        }
     }
 
     private void UpdateProgress()

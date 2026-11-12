@@ -17,7 +17,7 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="230" />
                                 </Grid.ColumnDefinitions>
-                                <Ellipse x:Name="Dot" Width="8" Height="8" Fill="{StaticResource TrackBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <Ellipse x:Name="Dot" Width="8" Height="8" Fill="{DynamicResource TrackBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="1" Style="{StaticResource Label}" Text="{Binding Name}" />
                                 <ComboBox Grid.Column="2" ItemsSource="{x:Static ui:SettingsViewModel.TargetNames}"
                                           DisplayMemberPath="Name" SelectedValuePath="Value" SelectedValue="{Binding Target}" />
@@ -25,7 +25,7 @@
                         </Border>
                         <DataTemplate.Triggers>
                             <Trigger SourceName="Row" Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Row" Property="Background" Value="#F6F7F9" />
+                                <Setter TargetName="Row" Property="Background" Value="{DynamicResource HoverBrush}" />
                             </Trigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>

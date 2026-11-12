@@ -33,7 +33,6 @@ public enum PageId
 public partial class MainWindow : Window
 {
     private static readonly Brush ConnectedDot = new SolidColorBrush(Color.FromRgb(0x22, 0xC5, 0x5E));
-    private static readonly Brush DisconnectedDot = new SolidColorBrush(Color.FromRgb(0x5B, 0x5F, 0x69));
     private static readonly Brush LowBattery = new SolidColorBrush(Color.FromRgb(0xEF, 0x44, 0x44));
 
     private readonly ControllerService _service;
@@ -100,6 +99,13 @@ public partial class MainWindow : Window
             //A borderless maximized window overhangs the screen; pad it back in
             Root.Margin = WindowState == WindowState.Maximized ? new Thickness(7) : new Thickness(0);
             MaximizeButton.Content = WindowState == WindowState.Maximized ? "" : "";
+        };
+
+        //Redraw code-colored parts after a theme switch
+        ThemeManager.Changed += () =>
+        {
+            _shownStatus = null;
+            UpdateLive();
         };
 
         NavHome.IsChecked = true;
@@ -193,7 +199,7 @@ public partial class MainWindow : Window
     {
         if (!status.Connected)
         {
-            StatusDot.Fill = DisconnectedDot;
+            StatusDot.Fill = (Brush)FindResource("StatusIdleBrush");
             StatusTitle.Text = "Not connected";
             StatusDetail.Text = "Plug in or pair your controller";
             StatusBatteryRow.Visibility = Visibility.Collapsed;

@@ -14,6 +14,13 @@ public enum EmulationMode
     Native,
 }
 
+public enum AppTheme
+{
+    System, //follow Windows' light/dark app setting
+    Light,
+    Dark,
+}
+
 public enum LightbarMode
 {
     Static,
@@ -112,6 +119,7 @@ public sealed class Settings
     public GyroSettings Gyro { get; set; } = new GyroSettings();
     public bool StartMinimized { get; set; }
     public bool CheckForUpdates { get; set; } = true;
+    public AppTheme Theme { get; set; } = AppTheme.System;
     public TouchpadSettings Touchpad { get; set; } = new TouchpadSettings();
 
     private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
