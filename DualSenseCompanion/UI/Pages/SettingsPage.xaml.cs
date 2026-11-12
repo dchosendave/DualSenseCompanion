@@ -28,6 +28,28 @@ public partial class SettingsPage : UserControl
 
     private void TestRumble_Click(object sender, RoutedEventArgs e) => _service.TestRumble();
 
+    private async void CheckUpdates_Click(object sender, RoutedEventArgs e)
+    {
+        CheckUpdatesButton.IsEnabled = false;
+
+        try
+        {
+            await _vm.CheckForUpdatesNowAsync();
+        }
+        finally
+        {
+            CheckUpdatesButton.IsEnabled = true;
+        }
+    }
+
+    private void DownloadUpdate_Click(object sender, RoutedEventArgs e)
+    {
+        if (_vm.UpdateUrl != null)
+        {
+            Process.Start(new ProcessStartInfo(_vm.UpdateUrl) { UseShellExecute = true });
+        }
+    }
+
     private sealed record ResultRow(string Icon, Brush IconBrush, string Name, string Detail);
 
     private async void SelfTest_Click(object sender, RoutedEventArgs e)

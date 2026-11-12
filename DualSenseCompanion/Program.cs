@@ -173,6 +173,23 @@ public static class Program
             window.Show();
         }
 
+        if (settings.CheckForUpdates)
+        {
+            _ = Task.Run(async () =>
+            {
+                var update = await UpdateChecker.CheckAsync();
+
+                if (update != null)
+                {
+                    await app.Dispatcher.InvokeAsync(() =>
+                    {
+                        window.ViewModel.SetUpdate(update, checkedNow: true);
+                        tray.ShowMessage($"Version {update.Version} is available. Open Settings to download it.");
+                    });
+                }
+            });
+        }
+
         app.Run();
 
         Console.WriteLine("Exiting...");

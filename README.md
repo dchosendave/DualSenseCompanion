@@ -46,6 +46,7 @@ The virtual controller driver (ViGEmBus) can only create Xbox 360 and DualShock 
 - The real controller is hidden only while the app runs. It is restored on exit, logoff and crashes; if the app is force-closed, it is restored the next time the app starts.
 - Built-in self-test.
 - Starts with Windows (optional, starts in the tray).
+- Checks GitHub for a newer release on startup (can be turned off in Settings; nothing about you or your PC is sent).
 
 ## Command line
 

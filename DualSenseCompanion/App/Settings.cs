@@ -106,6 +106,7 @@ public sealed class Settings
     public TriggerPreset RightTriggerEffect { get; set; } = TriggerPreset.Off;
     public GyroSettings Gyro { get; set; } = new GyroSettings();
     public bool StartMinimized { get; set; }
+    public bool CheckForUpdates { get; set; } = true;
     public TouchpadSettings Touchpad { get; set; } = new TouchpadSettings();
 
     private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
