@@ -2,7 +2,7 @@
 
 namespace DualSenseCompanion
 {
-    internal class NewCrc
+    public static class NewCrc
     {
         private static readonly uint[] ChecksumTableCRC32 = new uint[256]
     {

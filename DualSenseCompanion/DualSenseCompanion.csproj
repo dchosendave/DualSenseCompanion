@@ -1,11 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
     <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>Program</StartupObject>
+    <StartupObject>DualSenseCompanion.Program</StartupObject>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <ApplicationIcon>icon_6Q2_icon.ico</ApplicationIcon>
     <PackageId>DualSenseCompanion</PackageId>
@@ -17,25 +19,41 @@
     <AssemblyName>DualSenseCompanion</AssemblyName>
     <RootNamespace>DualSenseCompanion</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+
+  <!--
+    Release package: one self-contained .exe that runs without installing .NET.
+    dotnet publish DualSenseCompanion -c Release -p:SingleFile=true -o publish
+  -->
+  <PropertyGroup Condition="'$(SingleFile)' == 'true'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="icon_6Q2_icon.ico" />
+    <Resource Include="icon_6Q2_icon.ico" />
+  </ItemGroup>
+
+  <!-- WPF and WinForms share type names (Application, MessageBox, Color...); import WinForms explicitly where used -->
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <Using Include="System.IO" />
+    <Using Include="System.Net.Http" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HidSharp" Version="2.1.0" />
+    <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
     <PackageReference Include="Nefarius.Drivers.HidHide" Version="2.4.1" />
     <PackageReference Include="Nefarius.ViGEm.Client" Version="1.21.256" />
     <PackageReference Include="System.Management" Version="9.0.3" />
-    <PackageReference Include="System.Reactive.Windows.Forms" Version="6.0.1" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="DSToolsIcon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

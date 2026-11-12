@@ -1,0 +1,85 @@
+<UserControl x:Class="DualSenseCompanion.UI.Pages.TriggersPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="clr-namespace:DualSenseCompanion.UI">
+    <UserControl.Resources>
+        <ui:EqualsConverter x:Key="Is" />
+        <ui:BoolToVisibilityConverter x:Key="Visible" />
+        <Style x:Key="TileTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <TextBlock Style="{StaticResource PageTitle}" Text="Adaptive triggers" />
+        <TextBlock Style="{StaticResource PageSubtitle}" Text="Pick an effect and pull the trigger to feel it. It applies right away and stays on in every game." />
+
+        <Border Visibility="{Binding IsNative, Converter={StaticResource Visible}}" Margin="0,10,0,0" Padding="10,7"
+                Background="#FFF7E6" BorderBrush="#F5D9A8" BorderThickness="1" CornerRadius="4">
+            <TextBlock Style="{StaticResource Caption}" Foreground="#7A5200"
+                       Text="Native DualSense mode is on, so games control the lightbar, triggers and rumble. Changes here are sent right away, but a game can override them. Pick Xbox or DS4 on the Home page to keep them." />
+        </Border>
+
+        <UniformGrid Columns="2" Margin="0,6,0,0">
+            <Border Style="{StaticResource Card}" Margin="0,0,5,10">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="L2" />
+                    <Grid x:Name="L2Bar" Height="4" Margin="0,4,0,10">
+                        <Border CornerRadius="4" Background="{StaticResource TrackBrush}" />
+                        <Border x:Name="L2Fill" CornerRadius="4" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                    </Grid>
+
+                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Off}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Off" /><TextBlock Style="{StaticResource Caption}" Text="Normal trigger, no resistance." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Soft}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Soft resistance" /><TextBlock Style="{StaticResource Caption}" Text="A light push-back for most of the pull." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Medium}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Medium resistance" /><TextBlock Style="{StaticResource Caption}" Text="Noticeably firmer, good for driving games." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Hard}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Hard resistance" /><TextBlock Style="{StaticResource Caption}" Text="Strong resistance through the whole pull." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Weapon}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Weapon" /><TextBlock Style="{StaticResource Caption}" Text="Resists, then breaks with a click at mid-pull." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Vibrate}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Vibrate" /><TextBlock Style="{StaticResource Caption}" Text="The trigger buzzes once pulled past a quarter." /></StackPanel>
+                    </RadioButton>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="5,0,0,10">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="R2" />
+                    <Grid x:Name="R2Bar" Height="4" Margin="0,4,0,10">
+                        <Border CornerRadius="4" Background="{StaticResource TrackBrush}" />
+                        <Border x:Name="R2Fill" CornerRadius="4" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                    </Grid>
+
+                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Off}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Off" /><TextBlock Style="{StaticResource Caption}" Text="Normal trigger, no resistance." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Soft}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Soft resistance" /><TextBlock Style="{StaticResource Caption}" Text="A light push-back for most of the pull." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Medium}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Medium resistance" /><TextBlock Style="{StaticResource Caption}" Text="Noticeably firmer, good for driving games." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Hard}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Hard resistance" /><TextBlock Style="{StaticResource Caption}" Text="Strong resistance through the whole pull." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Weapon}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Weapon" /><TextBlock Style="{StaticResource Caption}" Text="Resists, then breaks with a click at mid-pull." /></StackPanel>
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Vibrate}">
+                        <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Vibrate" /><TextBlock Style="{StaticResource Caption}" Text="The trigger buzzes once pulled past a quarter." /></StackPanel>
+                    </RadioButton>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+    </StackPanel>
+</UserControl>

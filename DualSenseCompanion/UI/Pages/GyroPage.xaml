@@ -1,0 +1,170 @@
+<UserControl x:Class="DualSenseCompanion.UI.Pages.GyroPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="clr-namespace:DualSenseCompanion.UI">
+    <UserControl.Resources>
+        <ui:EqualsConverter x:Key="Is" />
+        <ui:BoolToVisibilityConverter x:Key="Visible" />
+    </UserControl.Resources>
+
+    <StackPanel>
+        <TextBlock Style="{StaticResource PageTitle}" Text="Gyro aiming" />
+        <TextBlock Style="{StaticResource PageSubtitle}" Text="Aim by moving the controller, for precise fine-tuning on top of the right stick." />
+
+        <Border Style="{StaticResource Card}" Margin="0,12,0,10">
+            <StackPanel>
+                <TextBlock Style="{StaticResource CardTitle}" Text="Mode" />
+                <Border Style="{StaticResource SegmentHost}" Margin="0,6,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Segment}" GroupName="GyroMode" Content="Off" IsChecked="{Binding GyroMode, Converter={StaticResource Is}, ConverterParameter=Off}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="GyroMode" Content="Mouse" IsChecked="{Binding GyroMode, Converter={StaticResource Is}, ConverterParameter=Mouse}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="GyroMode" Content="Right stick" IsChecked="{Binding GyroMode, Converter={StaticResource Is}, ConverterParameter=RightStick}" />
+                    </StackPanel>
+                </Border>
+                <TextBlock Style="{StaticResource Caption}" Margin="0,6,0,0"
+                           Text="Mouse is the most precise but only works in games that accept mouse and controller together. Right stick works in every game." />
+            </StackPanel>
+        </Border>
+
+        <StackPanel IsEnabled="{Binding GyroEnabled}">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="When is gyro active?" />
+                    <Border Style="{StaticResource SegmentHost}" Margin="0,6,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Style="{StaticResource Segment}" GroupName="GyroAct" Content="Always" IsChecked="{Binding GyroActivation, Converter={StaticResource Is}, ConverterParameter=Always}" />
+                            <RadioButton Style="{StaticResource Segment}" GroupName="GyroAct" Content="While holding a button" IsChecked="{Binding GyroActivation, Converter={StaticResource Is}, ConverterParameter=WhileHeld}" />
+                            <RadioButton Style="{StaticResource Segment}" GroupName="GyroAct" Content="Toggle with a button" IsChecked="{Binding GyroActivation, Converter={StaticResource Is}, ConverterParameter=Toggle}" />
+                        </StackPanel>
+                    </Border>
+                    <Grid Margin="0,8,0,0" Visibility="{Binding GyroNeedsButton, Converter={StaticResource Visible}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="Button" />
+                            <TextBlock Style="{StaticResource Caption}" Text="Holding L2 to aim down sights is a popular choice." />
+                        </StackPanel>
+                        <ComboBox Grid.Column="1" Width="170" ItemsSource="{x:Static ui:SettingsViewModel.GyroButtonNames}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Value" SelectedValue="{Binding GyroButton}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Feel" />
+
+                    <StackPanel Visibility="{Binding GyroIsMouse, Converter={StaticResource Visible}}" Margin="0,8,0,0">
+                        <Grid><TextBlock Style="{StaticResource Label}" Text="Sensitivity" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding GyroMouseSensitivity, StringFormat={}{0:0.0} px per degree}" /></Grid>
+                        <Slider Minimum="1" Maximum="60" Value="{Binding GyroMouseSensitivity}" />
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding GyroIsStick, Converter={StaticResource Visible}}" Margin="0,8,0,0">
+                        <Grid><TextBlock Style="{StaticResource Label}" Text="Turn speed for full stick" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding GyroStickSpeed, StringFormat={}{0:0}° per second}" /></Grid>
+                        <Slider Minimum="30" Maximum="720" Value="{Binding GyroStickSpeed}" />
+                        <TextBlock Style="{StaticResource Caption}" Text="Lower is more sensitive." Margin="0,0,0,6" />
+                        <Grid><TextBlock Style="{StaticResource Label}" Text="Anti-deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding GyroStickAntiDeadzone, StringFormat={}{0:P0}}" /></Grid>
+                        <Slider Minimum="0" Maximum="0.4" Value="{Binding GyroStickAntiDeadzone}" />
+                        <TextBlock Style="{StaticResource Caption}" Text="Raise it if small motions don't move your aim in a game." Margin="0,0,0,6" />
+                    </StackPanel>
+
+                    <Grid Margin="0,8,0,0"><TextBlock Style="{StaticResource Label}" Text="Steadiness" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding GyroSmoothing, StringFormat={}{0:0.0}° per second}" /></Grid>
+                    <Slider Minimum="0" Maximum="6" Value="{Binding GyroSmoothing}" />
+                    <TextBlock Style="{StaticResource Caption}" Text="Softens very small movements so hand shake doesn't move the aim." Margin="0,0,0,6" />
+
+                    <Grid Margin="0,4,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="Horizontal aim" />
+                            <TextBlock Style="{StaticResource Caption}" Text="Turn the controller like a flashlight, or tilt it like a steering wheel." />
+                        </StackPanel>
+                        <Border Grid.Column="1" Style="{StaticResource SegmentHost}">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton Style="{StaticResource Segment}" GroupName="GyroAxis" Content="Turn" IsChecked="{Binding GyroHorizontalAxis, Converter={StaticResource Is}, ConverterParameter=Yaw}" />
+                                <RadioButton Style="{StaticResource Segment}" GroupName="GyroAxis" Content="Tilt" IsChecked="{Binding GyroHorizontalAxis, Converter={StaticResource Is}, ConverterParameter=Roll}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <CheckBox Style="{StaticResource Toggle}" Content="Invert horizontal" IsChecked="{Binding GyroInvertX}" />
+                    <CheckBox Style="{StaticResource Toggle}" Content="Invert vertical" IsChecked="{Binding GyroInvertY}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource CardTitle}" Text="Live motion" Foreground="{StaticResource TextBrush}" />
+                <TextBlock Style="{StaticResource Caption}" Foreground="{StaticResource TextSecondaryBrush}"
+                           Text="Rotation speed right now. With the controller lying still all three should stay near zero; if not, calibrate." />
+
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="90" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24" />
+                        <RowDefinition Height="24" />
+                        <RowDefinition Height="24" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Up / down" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                    <Grid x:Name="PitchTrack" Grid.Column="1" Height="4">
+                        <Border CornerRadius="3" Background="{StaticResource TrackBrush}" />
+                        <Border Width="1" Background="#C9CCD3" HorizontalAlignment="Center" />
+                        <Border x:Name="PitchFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                    </Grid>
+                    <TextBlock x:Name="PitchText" Grid.Column="2" Foreground="{StaticResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
+
+                    <TextBlock Grid.Row="1" Text="Turn" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                    <Grid x:Name="YawTrack" Grid.Row="1" Grid.Column="1" Height="4">
+                        <Border CornerRadius="3" Background="{StaticResource TrackBrush}" />
+                        <Border Width="1" Background="#C9CCD3" HorizontalAlignment="Center" />
+                        <Border x:Name="YawFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                    </Grid>
+                    <TextBlock x:Name="YawText" Grid.Row="1" Grid.Column="2" Foreground="{StaticResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
+
+                    <TextBlock Grid.Row="2" Text="Tilt" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                    <Grid x:Name="RollTrack" Grid.Row="2" Grid.Column="1" Height="4">
+                        <Border CornerRadius="3" Background="{StaticResource TrackBrush}" />
+                        <Border Width="1" Background="#C9CCD3" HorizontalAlignment="Center" />
+                        <Border x:Name="RollFill" CornerRadius="3" HorizontalAlignment="Left" Width="0" Background="{StaticResource AccentBrush}" />
+                    </Grid>
+                    <TextBlock x:Name="RollText" Grid.Row="2" Grid.Column="2" Foreground="{StaticResource AccentBrush}" FontSize="12" Typography.NumeralAlignment="Tabular" HorizontalAlignment="Right" VerticalAlignment="Center" Text="0" />
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Content="Calibrate" Click="Calibrate_Click">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bg" CornerRadius="6" Padding="12,5" Background="{StaticResource AccentBrush}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bg" Property="Background" Value="{StaticResource AccentLightBrush}" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBlock x:Name="CalibrateHint" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12"
+                               Text="Put the controller on a table and don't touch it for a second." />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>
