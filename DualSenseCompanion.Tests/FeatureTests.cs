@@ -280,3 +280,51 @@ public class ControllerInfoTests
         Assert.Equal((null, null, null, null), ControllerInfo.ParseFirmware(new byte[64]));
     }
 }
+
+public class TriggerStrengthTests
+{
+    [Fact]
+    public void DefaultStrengthMatchesThePreset()
+    {
+        Assert.Equal(TriggerEffects.Vibration(2, 6, 25), TriggerEffects.FromPreset(TriggerPreset.Vibrate));
+        Assert.Equal(TriggerEffects.Vibration(2, 6, 25), TriggerEffects.FromPreset(TriggerPreset.Vibrate, 100));
+    }
+
+    [Fact]
+    public void StrengthScalesVibrationAmplitude()
+    {
+        Assert.Equal(TriggerEffects.Vibration(2, 8, 25), TriggerEffects.FromPreset(TriggerPreset.Vibrate, 130));
+        Assert.Equal(TriggerEffects.Vibration(2, 3, 25), TriggerEffects.FromPreset(TriggerPreset.Vibrate, 50));
+    }
+
+    [Fact]
+    public void StrengthIsCappedAtTheControllersMaximum()
+    {
+        Assert.Equal(TriggerEffects.Feedback(1, 8), TriggerEffects.FromPreset(TriggerPreset.Hard, 150));
+        Assert.Equal(TriggerEffects.Feedback(2, 4), TriggerEffects.FromPreset(TriggerPreset.Soft, 150));
+    }
+
+    [Fact]
+    public void OffIgnoresStrength()
+    {
+        Assert.Equal(TriggerEffects.Off(), TriggerEffects.FromPreset(TriggerPreset.Off, 150));
+    }
+
+    [Fact]
+    public void EachTriggerUsesItsOwnStrength()
+    {
+        var state = new DualSenseOutputState
+        {
+            LeftTrigger = TriggerPreset.Vibrate,
+            RightTrigger = TriggerPreset.Vibrate,
+            LeftTriggerStrength = 130,
+            RightTriggerStrength = 100,
+        };
+
+        var r = DualSenseOutputBuilder.Build(state, bluetooth: true, lightbarSetup: false);
+        int c = DualSenseOutputBuilder.CommonOffset(true);
+
+        Assert.Equal(TriggerEffects.FromPreset(TriggerPreset.Vibrate, 100), r[(c + 10)..(c + 21)]); //R2
+        Assert.Equal(TriggerEffects.FromPreset(TriggerPreset.Vibrate, 130), r[(c + 21)..(c + 32)]); //L2
+    }
+}

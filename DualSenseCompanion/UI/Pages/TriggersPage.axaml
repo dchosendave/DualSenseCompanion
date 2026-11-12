@@ -45,6 +45,12 @@
                        IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Vibrate}">
             <StackPanel><TextBlock Text="Vibrate" FontWeight="SemiBold" /><TextBlock Classes="caption" Text="The trigger buzzes once pulled past a quarter." /></StackPanel>
           </RadioButton>
+          <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
+            <TextBlock Classes="label" Text="Strength" />
+            <TextBlock Grid.Column="1" Classes="value" Text="{Binding LeftTriggerStrength, StringFormat={}{0:0}%}" />
+          </Grid>
+          <Slider Minimum="50" Maximum="150" SmallChange="5" Value="{Binding LeftTriggerStrength}" AutomationProperties.Name="L2 strength" />
+          <TextBlock Classes="caption" Text="Raise it if this trigger feels weaker than the other. The controller tops out at its own maximum, so hard and weapon effects can't go higher." />
         </StackPanel>
       </Border>
       <Grid Grid.Column="1">
@@ -79,6 +85,12 @@
                        IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Vibrate}">
             <StackPanel><TextBlock Text="Vibrate" FontWeight="SemiBold" /><TextBlock Classes="caption" Text="The trigger buzzes once pulled past a quarter." /></StackPanel>
           </RadioButton>
+          <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
+            <TextBlock Classes="label" Text="Strength" />
+            <TextBlock Grid.Column="1" Classes="value" Text="{Binding RightTriggerStrength, StringFormat={}{0:0}%}" />
+          </Grid>
+          <Slider Minimum="50" Maximum="150" SmallChange="5" Value="{Binding RightTriggerStrength}" AutomationProperties.Name="R2 strength" />
+          <TextBlock Classes="caption" Text="Raise it if this trigger feels weaker than the other. The controller tops out at its own maximum, so hard and weapon effects can't go higher." />
         </StackPanel>
       </Border>
       </Grid>

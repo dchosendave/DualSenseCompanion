@@ -96,13 +96,24 @@ public static class TriggerEffects
         return e;
     }
 
-    public static byte[] FromPreset(TriggerPreset preset) => preset switch
+    public const int MinStrengthPercent = 50;
+    public const int MaxStrengthPercent = 150;
+
+    //strengthPercent scales the preset's force or vibration amplitude (100 = as designed).
+    //The controller has 8 steps, so results are rounded and capped at its maximum.
+    public static byte[] FromPreset(TriggerPreset preset, int strengthPercent = 100)
     {
-        TriggerPreset.Soft => Feedback(2, 3),
-        TriggerPreset.Medium => Feedback(2, 5),
-        TriggerPreset.Hard => Feedback(1, 8),
-        TriggerPreset.Weapon => Weapon(3, 6, 8),
-        TriggerPreset.Vibrate => Vibration(2, 6, 25),
-        _ => Off(),
-    };
+        int Scale(int baseStrength) =>
+            Math.Clamp((int)Math.Round(baseStrength * Math.Clamp(strengthPercent, MinStrengthPercent, MaxStrengthPercent) / 100.0), 1, 8);
+
+        return preset switch
+        {
+            TriggerPreset.Soft => Feedback(2, Scale(3)),
+            TriggerPreset.Medium => Feedback(2, Scale(5)),
+            TriggerPreset.Hard => Feedback(1, Scale(8)),
+            TriggerPreset.Weapon => Weapon(3, 6, Scale(8)),
+            TriggerPreset.Vibrate => Vibration(2, Scale(6), 25),
+            _ => Off(),
+        };
+    }
 }

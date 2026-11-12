@@ -379,6 +379,18 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         set => Changed(() => Settings.RightTriggerEffect = value);
     }
 
+    public double LeftTriggerStrength
+    {
+        get => Settings.LeftTriggerStrength;
+        set => Changed(() => Settings.LeftTriggerStrength = (int)Math.Round(value / 5) * 5);
+    }
+
+    public double RightTriggerStrength
+    {
+        get => Settings.RightTriggerStrength;
+        set => Changed(() => Settings.RightTriggerStrength = (int)Math.Round(value / 5) * 5);
+    }
+
     public double TriggerDeadzone
     {
         get => Settings.TriggerDeadzone;

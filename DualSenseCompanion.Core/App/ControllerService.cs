@@ -800,6 +800,8 @@ public sealed class ControllerService : IDisposable
             MicMuted = micControl && _micMuted,
             LeftTrigger = s.LeftTriggerEffect,
             RightTrigger = s.RightTriggerEffect,
+            LeftTriggerStrength = s.LeftTriggerStrength,
+            RightTriggerStrength = s.RightTriggerStrength,
         };
     }
 
