@@ -116,6 +116,10 @@ public sealed class Settings
     public bool MicMuteButtonControlsWindows { get; set; } = true;
     public TriggerPreset LeftTriggerEffect { get; set; } = TriggerPreset.Off;
     public TriggerPreset RightTriggerEffect { get; set; } = TriggerPreset.Off;
+
+    //Per-trigger strength in percent, to even out triggers that feel different
+    public int LeftTriggerStrength { get; set; } = 100;
+    public int RightTriggerStrength { get; set; } = 100;
     public GyroSettings Gyro { get; set; } = new GyroSettings();
     public bool StartMinimized { get; set; }
     public bool CheckForUpdates { get; set; } = true;
@@ -202,6 +206,8 @@ public sealed class Settings
 
         TriggerDeadzone = Math.Clamp(TriggerDeadzone, 0f, 0.9f);
         RumbleStrength = Math.Clamp(RumbleStrength, 0, 100);
+        LeftTriggerStrength = Math.Clamp(LeftTriggerStrength, TriggerEffects.MinStrengthPercent, TriggerEffects.MaxStrengthPercent);
+        RightTriggerStrength = Math.Clamp(RightTriggerStrength, TriggerEffects.MinStrengthPercent, TriggerEffects.MaxStrengthPercent);
         PlayerNumber = Math.Clamp(PlayerNumber, 0, 5);
         Lightbar.Brightness = Math.Clamp(Lightbar.Brightness, 0, 100);
         Lightbar.EffectSpeed = Math.Clamp(Lightbar.EffectSpeed, 0.2f, 3f);

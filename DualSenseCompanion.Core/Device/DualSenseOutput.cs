@@ -20,6 +20,8 @@ public sealed record DualSenseOutputState
     public bool MicMuted { get; init; }   //mutes the controller's built-in mic in hardware
     public TriggerPreset LeftTrigger { get; init; }
     public TriggerPreset RightTrigger { get; init; }
+    public int LeftTriggerStrength { get; init; } = 100;  //percent of the preset's force
+    public int RightTriggerStrength { get; init; } = 100;
 
     //Turns everything off: used when the app exits so the controller isn't left with resistance on
     public static DualSenseOutputState Neutral { get; } = new DualSenseOutputState { LightbarBlue = 64 };
@@ -82,8 +84,8 @@ public static class DualSenseOutputBuilder
         r[c + 8] = (byte)s.MicLed;
         r[c + 9] = s.MicMuted ? PowerSaveMicMute : (byte)0;
 
-        Array.Copy(TriggerEffects.FromPreset(s.RightTrigger), 0, r, c + 10, TriggerEffects.Size);
-        Array.Copy(TriggerEffects.FromPreset(s.LeftTrigger), 0, r, c + 21, TriggerEffects.Size);
+        Array.Copy(TriggerEffects.FromPreset(s.RightTrigger, s.RightTriggerStrength), 0, r, c + 10, TriggerEffects.Size);
+        Array.Copy(TriggerEffects.FromPreset(s.LeftTrigger, s.LeftTriggerStrength), 0, r, c + 21, TriggerEffects.Size);
 
         r[c + 38] = CompatibleVibration2;
 
