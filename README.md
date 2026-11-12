@@ -1,29 +1,87 @@
 # DualSense Companion
 
-A basic companion app for the DualSense controller for windows. It will emulate an xbox 360 controller so you can play almost all pc games with your ps5 controller!
+A companion app for the DualSense (PS5) controller on Windows. It emulates an Xbox 360 or DualShock 4 controller so you can play almost every PC game with your PS5 controller, and unlocks DualSense features like gyro aiming, adaptive triggers and the lightbar.
 
-What This App Can Do:
-1. Xbox 360 controller emulation for a single DualSense(PS5) Controller.
-2. USB and BT connectivity support.
-3. Rumble support.
-4. Automatic hiding of original controller to prevent double input.
-5. Dependency check and install on startup.
+It runs in the system tray. Right-click the tray icon to change any setting; changes apply immediately and are saved.
 
-What I'm currently working on:
-1. GUI.
-2. Option to enable automatic startup with Windows.
-2. Adding support for up to 4 controllers.
+## Features
 
-Roadmap:
-1. Custom controls mapping.
-2. Lightbar customization.
-3. Battery indicator.
-4. Headphone jack support for game audio.
+**Controller emulation**
+- Xbox 360 controller emulation (works with almost every game).
+- DualShock 4 emulation with gyro, accelerometer and touchpad passed through natively (for games, emulators and Steam Input that support PlayStation controllers).
+- USB and Bluetooth, DualSense and DualSense Edge.
+- Automatic reconnect: unplug, switch between USB and Bluetooth, or let the battery die, and it picks the controller up again.
+- Automatic hiding of the real controller (via HidHide) to prevent double input, safely restored on exit, crash, Ctrl+C or logoff.
 
+**DualSense features**
+- **Gyro aiming**: as mouse movement (best precision) or added to the right stick (works in every game). Always on, while holding a button, or toggled. Adjustable sensitivity, invert, turn/tilt axis, automatic drift correction and manual calibration.
+- **Adaptive triggers**: soft, medium or hard resistance, weapon-style click, or vibration, separately for L2 and R2.
+- **Lightbar**: custom color, battery level (green to red), set by the game (DualShock 4 mode) or off, with brightness control.
+- **Player LEDs**: player 1-4 or all.
+- **Battery level**: shown in the tray tooltip and menu; low-battery notification and red pulsing lightbar.
+- **Mic mute button**: mutes/unmutes all Windows microphones, with the button LED showing the state.
+- **Touchpad as mouse**: move with one finger, click = left click, two-finger click = right click, two-finger drag = scroll.
+- **Rumble** with adjustable strength.
+
+**Tuning (settings file)**
+- Stick deadzone, outer deadzone, anti-deadzone and response curve, per stick.
+- Trigger deadzone.
+- Button remapping.
+
+**App**
+- System tray app with a log window.
+- Start with Windows.
+- Dependency check on startup (asks before installing ViGEmBus / HidHide).
+
+## Settings file
+
+Settings are stored in `%AppData%\DualSenseCompanion\settings.json`. Use **Open settings file** in the tray menu, edit, save, then **Reload settings file**.
+
+Things only available in the file:
+
+```jsonc
+"LeftStick": {
+  "Deadzone": 0.05,       // ignore movement below 5% (stick drift)
+  "OuterDeadzone": 0.02,  // reach 100% slightly before the edge
+  "AntiDeadzone": 0.0,    // minimum output once you move (counters in-game deadzones)
+  "Curve": 1.0            // 1 = linear, 2 = finer aim near the center
+},
+"TriggerDeadzone": 0.0,
+"ButtonMap": {
+  "Cross": "A",
+  "Circle": "B",
+  "Mute": "None"          // used by the mic feature unless that is turned off
+}
+```
+
+`ButtonMap` keys (DualSense): `Cross, Circle, Square, Triangle, L1, R1, L3, R3, Create, Options, PS, DpadUp, DpadDown, DpadLeft, DpadRight, Touchpad, Mute`.
+Values (virtual controller): `A, B, X, Y, LeftShoulder, RightShoulder, LeftThumb, RightThumb, Back, Start, Guide, Up, Down, Left, Right, Touchpad` (DualShock 4 only) or `None`. In DualShock 4 mode A/B/X/Y are Cross/Circle/Square/Triangle, Back is Share and Start is Options.
+
+Gyro tuning in the file: `MouseSensitivity` (pixels per degree), `StickFullSpeed` (degrees per second for full stick), `StickAntiDeadzone`, `SmoothingThreshold`.
+
+The log is written to `%AppData%\DualSenseCompanion\log.txt`.
+
+## Building
+
+Requires the .NET 8 SDK on Windows.
+
+```
+dotnet build
+dotnet test
+dotnet publish DualSenseCompanion -c Release -r win-x64 --self-contained false -o publish
+```
+
+## Roadmap
+
+1. Support for up to 4 controllers.
+2. A settings window for deadzones and button mapping.
+3. Headphone jack support for game audio.
 
 A huge thanks goes to:
 1. ViGEm (Virtual Gamepad Emulation Driver) – For providing the essential Xbox 360 controller emulation.
 2. HidHide – For allowing HID device filtering and hiding.
 3. HidSharp – For handling HID device communication in C#.
 4. Linux Kernel (hid-playstation.c) – For documentation on DualSense Controller.
-5. The awesome Open-Source Developers & Community Discussions – For shared knowledge on DualSense input/output handling.
+5. NAudio – For Windows microphone control.
+6. Nielk1's trigger effect documentation – For the adaptive trigger effect formats.
+7. The awesome Open-Source Developers & Community Discussions – For shared knowledge on DualSense input/output handling.
