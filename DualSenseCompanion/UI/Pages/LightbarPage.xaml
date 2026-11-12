@@ -23,13 +23,29 @@
                 <TextBlock Style="{StaticResource Caption}" Text="What the light strips around the touchpad show." />
                 <Border Style="{StaticResource SegmentHost}" Margin="0,8,0,0">
                     <StackPanel Orientation="Horizontal">
-                        <RadioButton Style="{StaticResource Segment}" GroupName="LbMode" Content="Custom color" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Static}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="LbMode" Content="Color" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Static}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="LbMode" Content="Breathing" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Breathing}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="LbMode" Content="Rainbow" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Rainbow}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="LbMode" Content="Music" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=AudioReactive}" />
                         <RadioButton Style="{StaticResource Segment}" GroupName="LbMode" Content="Battery level" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Battery}" />
                         <RadioButton Style="{StaticResource Segment}" GroupName="LbMode" Content="Set by game" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Game}" />
                         <RadioButton Style="{StaticResource Segment}" GroupName="LbMode" Content="Off" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Off}" />
                     </StackPanel>
                 </Border>
-                <TextBlock Style="{StaticResource Caption}" Margin="0,6,0,0" Text="Battery level goes from green to red. Set by game works in DualShock 4 mode, otherwise your custom color is used." />
+                <TextBlock Style="{StaticResource Caption}" Margin="0,6,0,0" Text="Breathing fades your color in and out. Rainbow cycles through every color. Music pulses your color with whatever your PC is playing. Battery level goes from green to red. Set by game works in DualShock 4 mode." />
+                <StackPanel Visibility="{Binding ShowEffectSpeed, Converter={StaticResource Visible}}" Margin="0,8,0,0">
+                    <Grid>
+                        <TextBlock Style="{StaticResource Label}" Text="Effect speed" />
+                        <TextBlock Style="{StaticResource ValueText}" Text="{Binding LightbarEffectSpeed, StringFormat={}{0:0.0}x}" />
+                    </Grid>
+                    <Slider Minimum="0.2" Maximum="3" Value="{Binding LightbarEffectSpeed}" />
+                </StackPanel>
+                <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding PulseRedWhenMicMuted}" Margin="0,6,0,0">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Label}" Text="Pulse red while the mic is muted" />
+                        <TextBlock Style="{StaticResource Caption}" Text="A reminder you're muted. Needs the mute button feature on the Touchpad &amp; mic page." />
+                    </StackPanel>
+                </CheckBox>
             </StackPanel>
         </Border>
 

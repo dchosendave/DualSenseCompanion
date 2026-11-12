@@ -48,6 +48,7 @@
 
                 <StackPanel x:Name="Nav">
                     <RadioButton Style="{StaticResource NavButton}" Tag="&#xE80F;" Content="Home" x:Name="NavHome" />
+                    <RadioButton Style="{StaticResource NavButton}" Tag="&#xE73A;" Content="Controller test" x:Name="NavTest" />
                     <RadioButton Style="{StaticResource NavButton}" Tag="&#xE706;" Content="Lightbar &amp; LEDs" x:Name="NavLightbar" />
                     <RadioButton Style="{StaticResource NavButton}" Tag="&#xE7FC;" Content="Sticks" x:Name="NavSticks" />
                     <RadioButton Style="{StaticResource NavButton}" Tag="&#xE945;" Content="Adaptive triggers" x:Name="NavTriggers" />

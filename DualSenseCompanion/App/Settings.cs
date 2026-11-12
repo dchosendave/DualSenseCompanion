@@ -20,6 +20,9 @@ public enum LightbarMode
     Battery,
     Game, //color set by the game (DualShock 4 mode only; falls back to Static)
     Off,
+    Breathing,     //custom color fading in and out
+    Rainbow,       //cycles through all colors
+    AudioReactive, //custom color pulsing with the PC's sound
 }
 
 public enum GyroMode
@@ -57,6 +60,8 @@ public sealed class LightbarSettings
     public byte Green { get; set; } = 80;
     public byte Blue { get; set; } = 255;
     public int Brightness { get; set; } = 100; //percent
+    public float EffectSpeed { get; set; } = 1.0f; //breathing and rainbow speed
+    public bool PulseRedWhenMicMuted { get; set; } = true;
 }
 
 public sealed class BatterySettings
@@ -191,6 +196,7 @@ public sealed class Settings
         RumbleStrength = Math.Clamp(RumbleStrength, 0, 100);
         PlayerNumber = Math.Clamp(PlayerNumber, 0, 5);
         Lightbar.Brightness = Math.Clamp(Lightbar.Brightness, 0, 100);
+        Lightbar.EffectSpeed = Math.Clamp(Lightbar.EffectSpeed, 0.2f, 3f);
         Battery.LowThreshold = Math.Clamp(Battery.LowThreshold, 0, 100);
         Gyro.MouseSensitivity = Math.Clamp(Gyro.MouseSensitivity, 0.1f, 200f);
         Gyro.StickFullSpeed = Math.Clamp(Gyro.StickFullSpeed, 10f, 2000f);

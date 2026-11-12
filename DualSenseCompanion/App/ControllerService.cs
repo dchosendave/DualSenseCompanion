@@ -12,8 +12,14 @@ public sealed record ControllerStatus(
     bool HasBattery,
     int BatteryPercent,
     BatteryState Battery,
-    string Emulation)
+    string Emulation,
+    double? DrainPerHour = null)
 {
+    public TimeSpan? BatteryRemaining =>
+        Connected && HasBattery && Battery == BatteryState.Discharging
+            ? BatteryEstimator.Remaining(BatteryPercent, DrainPerHour)
+            : null;
+
     public bool IsLowBattery(int threshold) =>
         Connected && HasBattery && Battery == BatteryState.Discharging && BatteryPercent <= threshold;
 
@@ -36,6 +42,11 @@ public sealed record ControllerStatus(
                 _ => "",
             };
             text += $" - {BatteryPercent}%{charge}";
+
+            if (BatteryRemaining is { } remaining)
+            {
+                text += $", {BatteryEstimator.Describe(remaining)}";
+            }
         }
 
         return text;
@@ -51,7 +62,8 @@ public sealed record LiveSnapshot(
     float GyroPitch,
     float GyroYaw,
     float GyroRoll,
-    bool MicMuted);
+    bool MicMuted,
+    IReadOnlyList<Conflict>? Conflicts = null);
 
 //When the output thread may write to the controller
 public static class OutputPolicy
@@ -65,6 +77,7 @@ public static class OutputPolicy
 public sealed class ControllerService : IDisposable
 {
     private const int OutputIntervalMs = 50;
+    private const int AnimatedOutputIntervalMs = 33;
     private const int MicPollIntervalMs = 1000;
 
     private volatile Settings _settings;
@@ -87,6 +100,14 @@ public sealed class ControllerService : IDisposable
     private RgbColor? _gameLightbar;
     private volatile bool _micMuted;
     private bool _lowBatteryNotified;
+    private readonly BatteryEstimator _batteryEstimator = new BatteryEstimator();
+    private readonly AudioLevelMeter _audioMeter = new AudioLevelMeter();
+
+    //Other controller apps, Steam Input, missing HidHide; rechecked every few seconds
+    private volatile IReadOnlyList<Conflict> _conflicts = Array.Empty<Conflict>();
+    private readonly HashSet<string> _notifiedConflicts = new HashSet<string>();
+    private Timer? _conflictTimer;
+    private volatile float _audioLevel;
     private long _testRumbleUntilMs;
 
     //In native mode the game owns the outputs; the app only sends for a moment after the user changes something
@@ -123,7 +144,8 @@ public sealed class ControllerService : IDisposable
         _gyro.LastPitch,
         _gyro.LastYaw,
         _gyro.LastRoll,
-        _micMuted);
+        _micMuted,
+        _conflicts);
 
     //Short rumble so the strength setting can be felt
     public void TestRumble()
@@ -162,6 +184,40 @@ public sealed class ControllerService : IDisposable
         _outputThread = new Thread(OutputLoop) { IsBackground = true, Name = "DualSense output" };
         _inputThread.Start();
         _outputThread.Start();
+        _conflictTimer = new Timer(_ => CheckConflicts(), null, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(10));
+    }
+
+    public IReadOnlyList<Conflict> Conflicts => _conflicts;
+
+    private void CheckConflicts()
+    {
+        if (_stopping)
+        {
+            return;
+        }
+
+        try
+        {
+            var found = ConflictDetector.Detect(_padMode, CloakManager.IsHidingAvailable);
+            _conflicts = found;
+
+            foreach (var conflict in found)
+            {
+                //Tell the user once per kind of problem, not every 10 seconds
+                if (_notifiedConflicts.Add(conflict.Title))
+                {
+                    Console.WriteLine($"Warning: {conflict.Title}. {conflict.Detail}");
+                    Notification?.Invoke($"{conflict.Title}. Open the app for details.");
+                }
+            }
+
+            //Once a problem is gone, warn again if it comes back
+            _notifiedConflicts.IntersectWith(found.Select(c => c.Title));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Conflict check failed: {ex.Message}");
+        }
     }
 
     //Call after changing Settings
@@ -188,6 +244,9 @@ public sealed class ControllerService : IDisposable
         }
 
         _outputSignal.Set();
+
+        //Mode changes affect which warnings apply
+        _conflictTimer?.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromSeconds(10));
     }
 
     public void ReplaceSettings(Settings settings)
@@ -322,6 +381,7 @@ public sealed class ControllerService : IDisposable
                 device.Open();
                 _device = device;
                 _gyro.ResetConnection();
+                _batteryEstimator.Reset();
                 Console.WriteLine($"DualSense{(device.IsEdge ? " Edge" : "")} connected ({device.ConnectionName}).");
                 UpdateStatus(s => s with { Connected = true, Connection = device.ConnectionName, HasBattery = false });
                 _outputSignal.Set();
@@ -569,7 +629,14 @@ public sealed class ControllerService : IDisposable
             return;
         }
 
-        var updated = UpdateStatus(s => s with { HasBattery = true, BatteryPercent = state.BatteryPercent, Battery = state.Battery });
+        _batteryEstimator.Add(_clock.Elapsed.TotalSeconds, state.BatteryPercent, state.Battery);
+        var updated = UpdateStatus(s => s with
+        {
+            HasBattery = true,
+            BatteryPercent = state.BatteryPercent,
+            Battery = state.Battery,
+            DrainPerHour = _batteryEstimator.DrainPerHour,
+        });
         Console.WriteLine($"Battery: {updated.BatteryPercent}% ({updated.Battery})");
 
         int threshold = _settings.Battery.LowThreshold;
@@ -599,7 +666,12 @@ public sealed class ControllerService : IDisposable
 
         while (!_stopping)
         {
-            _outputSignal.WaitOne(OutputIntervalMs);
+            _outputSignal.WaitOne(IsLightbarAnimated() ? AnimatedOutputIntervalMs : OutputIntervalMs);
+
+            if (_settings.Lightbar.Mode == LightbarMode.AudioReactive)
+            {
+                _audioLevel = _audioMeter.Read(_clock.ElapsedMilliseconds);
+            }
 
             if (_stopping)
             {
@@ -656,20 +728,50 @@ public sealed class ControllerService : IDisposable
         }
     }
 
+    //Effects that change over time need more frequent output reports
+    private bool IsLightbarAnimated()
+    {
+        var s = _settings;
+        var status = Status;
+
+        return s.Lightbar.Mode is LightbarMode.Breathing or LightbarMode.Rainbow or LightbarMode.AudioReactive
+               || (s.Lightbar.PulseRedWhenMicMuted && s.MicMuteButtonControlsWindows && _micMuted)
+               || (s.Battery.PulseLightbarWhenLow && status.IsLowBattery(s.Battery.LowThreshold));
+    }
+
     public DualSenseOutputState ComputeOutput()
     {
         var s = _settings;
         var status = Status;
+        double seconds = _clock.Elapsed.TotalSeconds;
+        var custom = new RgbColor(s.Lightbar.Red, s.Lightbar.Green, s.Lightbar.Blue);
 
         RgbColor color = s.Lightbar.Mode switch
         {
             LightbarMode.Off => new RgbColor(0, 0, 0),
             LightbarMode.Battery when status.HasBattery => BatteryColor(status.BatteryPercent),
             LightbarMode.Game when _gameLightbar.HasValue => _gameLightbar.Value,
-            _ => new RgbColor(s.Lightbar.Red, s.Lightbar.Green, s.Lightbar.Blue),
+            LightbarMode.Rainbow => LightbarEffects.Rainbow(seconds, s.Lightbar.EffectSpeed),
+            _ => custom,
         };
 
         float brightness = s.Lightbar.Brightness / 100f;
+
+        if (s.Lightbar.Mode == LightbarMode.Breathing)
+        {
+            brightness *= LightbarEffects.Breathing(seconds, s.Lightbar.EffectSpeed);
+        }
+        else if (s.Lightbar.Mode == LightbarMode.AudioReactive)
+        {
+            brightness *= LightbarEffects.AudioBrightness(_audioLevel);
+        }
+
+        //Reminder that the mic is muted: slow red breathing
+        if (s.Lightbar.PulseRedWhenMicMuted && s.MicMuteButtonControlsWindows && _micMuted)
+        {
+            color = new RgbColor(255, 0, 0);
+            brightness = Math.Max(s.Lightbar.Brightness / 100f, 0.3f) * LightbarEffects.MicMutedPulse(seconds);
+        }
 
         if (s.Battery.PulseLightbarWhenLow && status.IsLowBattery(s.Battery.LowThreshold))
         {
@@ -770,6 +872,8 @@ public sealed class ControllerService : IDisposable
     public void Dispose()
     {
         Stop();
+        _conflictTimer?.Dispose();
+        _audioMeter.Dispose();
         _client.Dispose();
         _outputSignal.Dispose();
     }

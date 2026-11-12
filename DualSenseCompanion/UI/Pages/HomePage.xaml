@@ -10,6 +10,20 @@
         <TextBlock Style="{StaticResource PageTitle}" Text="Your controller" />
         <TextBlock x:Name="Subtitle" Style="{StaticResource PageSubtitle}" Text="Press any button to see it light up." />
 
+        <!-- Problems that cause double input or fights over the controller -->
+        <ItemsControl x:Name="Warnings" Margin="0,8,0,0">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="0,0,0,6" Padding="10,7" Background="#FFF7E6" BorderBrush="#F5D9A8" BorderThickness="1" CornerRadius="4">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12.5" Foreground="#7A5200" />
+                            <TextBlock Text="{Binding Detail}" Style="{StaticResource Caption}" Foreground="#7A5200" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
         <!-- Live controller -->
         <Border Style="{StaticResource Card}" Margin="0,12,0,10" Padding="12,14">
             <Grid>
