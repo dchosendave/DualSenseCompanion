@@ -16,6 +16,7 @@ public static class CloakManager
     private static bool _wasActive;
     private static bool _initialized;
     private static bool _cleanedUp;
+    private static readonly HiddenDeviceStore _store = HiddenDeviceStore.Default;
 
     //Whitelists this app and registers cleanup for every way the process can end
     public static void Initialize()
@@ -27,6 +28,7 @@ public static class CloakManager
         }
 
         _wasActive = _hidHide.IsActive;
+        RestoreAfterUncleanExit();
         WhitelistCurrentApp();
         _initialized = true;
 
@@ -40,6 +42,38 @@ public static class CloakManager
         foreach (var signal in new[] { PosixSignal.SIGINT, PosixSignal.SIGQUIT, PosixSignal.SIGTERM, PosixSignal.SIGHUP })
         {
             _signalRegistrations.Add(PosixSignalRegistration.Create(signal, ctx => UnhidePS5Controller()));
+        }
+    }
+
+    //A previous run that was killed or crashed hard couldn't unhide the controller; do it now
+    private static void RestoreAfterUncleanExit()
+    {
+        var leftover = _store.Load();
+
+        if (leftover == null)
+        {
+            return;
+        }
+
+        try
+        {
+            foreach (string instanceId in leftover.InstanceIds)
+            {
+                if (_hidHide.BlockedInstanceIds.Contains(instanceId))
+                {
+                    _hidHide.RemoveBlockedInstanceId(instanceId);
+                }
+            }
+
+            //Restore HidHide to how it was before that run, not how that run left it
+            _hidHide.IsActive = leftover.HidHideWasActive;
+            _wasActive = leftover.HidHideWasActive;
+            _store.Clear();
+            Console.WriteLine($"Restored {leftover.InstanceIds.Count} controller(s) left hidden by a previous run that didn't exit cleanly.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Could not restore controllers hidden by a previous run: {ex.Message}");
         }
     }
 
@@ -73,6 +107,7 @@ public static class CloakManager
 
             //Tracked even if it was already blocked (e.g. left over from a crash) so it gets unhidden on exit
             _hiddenIds.Add(instanceId);
+            _store.Save(new HiddenDeviceRecord(_wasActive, _hiddenIds.ToList()));
 
             _hidHide.IsActive = true;
             Console.WriteLine("PS5 Controller is now hidden!");
@@ -97,6 +132,7 @@ public static class CloakManager
                 }
 
                 _hiddenIds.Clear();
+                _store.Clear();
                 Console.WriteLine("PS5 Controller is visible to games (native mode).");
             }
             catch (Exception ex)
@@ -131,6 +167,7 @@ public static class CloakManager
                 }
 
                 _hidHide.IsActive = _wasActive;
+                _store.Clear();
 
                 if (_hidHide.ApplicationPaths.Contains(_exePath))
                 {

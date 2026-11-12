@@ -69,6 +69,10 @@ public sealed class DualSenseState
     public TouchPoint Touch1;
     public TouchPoint Touch2;
     public int BatteryPercent;
+
+    //Bytes 40-47 of the full report: trigger stop position/status and active effect, as reported by the controller.
+    //Used by the self-test to confirm output reports are applied.
+    public ulong TriggerFeedback;
     public BatteryState Battery = BatteryState.Unknown;
 
     public bool IsPressed(DsButtons button) => (Buttons & button) != 0;

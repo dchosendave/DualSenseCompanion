@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using DualSenseCompanion.App;
 using DualSenseCompanion.UI;
 using DualSenseCompanion.UI.Pages;
@@ -11,6 +11,8 @@ public static class Program
 {
     private const string MutexName = @"Local\DualSenseCompanion";
     private const string ShowEventName = @"Local\DualSenseCompanion.Show";
+    private const string ExitEventName = @"Local\DualSenseCompanion.Exit";
+    public const string ExitArgument = "--exit";
 
     [STAThread]
     public static int Main(string[] args)
@@ -20,12 +22,15 @@ public static class Program
         //Two copies would fight over the same controller; a second launch just opens the window of the first
         using var singleInstance = new Mutex(true, MutexName, out bool isFirstInstance);
 
+        bool exitRequested = args.Contains(ExitArgument, StringComparer.OrdinalIgnoreCase);
+
         if (!isFirstInstance)
         {
+            //"DualSenseCompanion.exe --exit" closes the running copy cleanly; any other launch opens its window
             try
             {
-                using var show = EventWaitHandle.OpenExisting(ShowEventName);
-                show.Set();
+                using var signal = EventWaitHandle.OpenExisting(exitRequested ? ExitEventName : ShowEventName);
+                signal.Set();
             }
             catch
             {
@@ -40,6 +45,12 @@ public static class Program
         AppDomain.CurrentDomain.UnhandledException += (s, e) => Console.WriteLine($"Fatal error: {e.ExceptionObject}");
 
         Console.WriteLine("DualSense Companion starting...");
+
+        if (exitRequested)
+        {
+            //Nothing is running, so there is nothing to close
+            return 0;
+        }
 
         if (!DependencyManager.CheckAndInstallDependencies())
         {
@@ -101,12 +112,14 @@ public static class Program
             ShowWindow();
         };
         tray.SettingsChanged += window.OnSettingsReplaced;
-        tray.ExitRequested += () =>
+        void ExitApp()
         {
             window.AllowClose = true;
             window.Close();
             app.Shutdown();
-        };
+        }
+
+        tray.ExitRequested += ExitApp;
 
         SettingsPage.SettingsReloaded += window.OnSettingsReplaced;
 
@@ -135,6 +148,17 @@ public static class Program
         })
         { IsBackground = true, Name = "Show window listener" };
         showThread.Start();
+
+        using var exitEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ExitEventName);
+        var exitThread = new Thread(() =>
+        {
+            if (exitEvent.WaitOne() && !app.Dispatcher.HasShutdownStarted)
+            {
+                app.Dispatcher.BeginInvoke(ExitApp);
+            }
+        })
+        { IsBackground = true, Name = "Exit listener" };
+        exitThread.Start();
 
         bool startMinimized = settings.StartMinimized ||
                               args.Contains(Autostart.MinimizedArgument, StringComparer.OrdinalIgnoreCase);

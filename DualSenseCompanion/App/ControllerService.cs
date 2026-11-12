@@ -53,6 +53,14 @@ public sealed record LiveSnapshot(
     float GyroRoll,
     bool MicMuted);
 
+//When the output thread may write to the controller
+public static class OutputPolicy
+{
+    //Native mode leaves outputs to the game, except right after the user changed something here or during a self-test
+    public static bool ShouldSend(EmulationMode mode, long nowMs, long userOutputUntilMs, bool selfTestRunning) =>
+        selfTestRunning || mode != EmulationMode.Native || nowMs < userOutputUntilMs;
+}
+
 //Owns the controller connection, the virtual pad and every feature that runs per input report
 public sealed class ControllerService : IDisposable
 {
@@ -83,6 +91,14 @@ public sealed class ControllerService : IDisposable
 
     //In native mode the game owns the outputs; the app only sends for a moment after the user changes something
     private long _userOutputUntilMs;
+
+    //Set while the self-test drives the outputs directly
+    private volatile DualSenseOutputState? _outputOverride;
+    private volatile bool _selfTestRunning;
+
+    private int _reportCount;
+    private long _rateWindowStartMs;
+    public int InputRate { get; private set; }
     private volatile DualSenseState? _latestInput;
     private volatile PadState? _latestOutput;
 
@@ -389,7 +405,103 @@ public sealed class ControllerService : IDisposable
 
             HandleReport(device, state, previous);
             previous = state.Buttons;
+            CountReport();
         }
+    }
+
+    private void CountReport()
+    {
+        _reportCount++;
+        long now = _clock.ElapsedMilliseconds;
+
+        if (now - _rateWindowStartMs >= 1000)
+        {
+            InputRate = (int)(_reportCount * 1000 / Math.Max(1, now - _rateWindowStartMs));
+            _reportCount = 0;
+            _rateWindowStartMs = now;
+        }
+    }
+
+    //Checks input and output end to end. Flashes the lightbar and pulses rumble so the user can also see and feel it.
+    public async Task<DiagnosticReport> RunSelfTestAsync()
+    {
+        var checks = new List<DiagnosticCheck>();
+        var status = Status;
+
+        if (!status.Connected)
+        {
+            checks.Add(new DiagnosticCheck("Controller connected", CheckResult.Fail, "No DualSense found. Plug it in or pair it, then run the test again."));
+            return new DiagnosticReport(checks);
+        }
+
+        checks.Add(new DiagnosticCheck("Controller connected", CheckResult.Pass, $"Over {status.Connection}"));
+
+        //Let the rate counter settle if the controller just connected
+        await Task.Delay(1100);
+        int rate = InputRate;
+        checks.Add(new DiagnosticCheck("Input reports", Diagnostics.EvaluateInputRate(rate), $"{rate} per second"));
+
+        var input = _latestInput;
+        bool extended = input?.HasExtendedData == true;
+        checks.Add(new DiagnosticCheck("Motion, touchpad and battery data", extended ? CheckResult.Pass : CheckResult.Fail,
+            extended ? "Receiving full reports" : "Only basic reports; gyro, touchpad and battery are unavailable"));
+
+        if (!extended)
+        {
+            checks.Add(new DiagnosticCheck("Controller accepts output", CheckResult.Skipped, "Needs full reports"));
+            return new DiagnosticReport(checks);
+        }
+
+        _selfTestRunning = true;
+
+        try
+        {
+            ulong Read() => _latestInput?.TriggerFeedback ?? 0;
+
+            _outputOverride = new DualSenseOutputState { LightbarBlue = 255 };
+            _outputSignal.Set();
+            await Task.Delay(500);
+            ulong baseline = Read();
+
+            //Red lightbar, rumble, and resistance on both triggers
+            _outputOverride = new DualSenseOutputState
+            {
+                LightbarRed = 255,
+                LightbarBlue = 0,
+                RumbleLeft = 160,
+                RumbleRight = 160,
+                PlayerLeds = 0x1F,
+                LeftTrigger = TriggerPreset.Hard,
+                RightTrigger = TriggerPreset.Weapon,
+            };
+            _outputSignal.Set();
+            await Task.Delay(700);
+            ulong withEffect = Read();
+
+            //Green lightbar, everything off
+            _outputOverride = new DualSenseOutputState { LightbarGreen = 255, LightbarBlue = 0 };
+            _outputSignal.Set();
+            await Task.Delay(600);
+            ulong afterOff = Read();
+
+            var result = Diagnostics.EvaluateTriggers(baseline, withEffect, afterOff);
+            string detail = result == CheckResult.Pass
+                ? "The controller confirmed the trigger effects, so lightbar, rumble and triggers are reaching it"
+                : "The controller did not confirm the test effects. Don't touch the triggers during the test and try again.";
+
+            checks.Add(new DiagnosticCheck("Controller accepts output", result,
+                $"{detail} ({Diagnostics.Hex(baseline)} / {Diagnostics.Hex(withEffect)} / {Diagnostics.Hex(afterOff)})"));
+
+            Console.WriteLine($"Self-test trigger feedback: {Diagnostics.Hex(baseline)} -> {Diagnostics.Hex(withEffect)} -> {Diagnostics.Hex(afterOff)}");
+        }
+        finally
+        {
+            _outputOverride = null;
+            _selfTestRunning = false;
+            RequestOutput();
+        }
+
+        return new DiagnosticReport(checks);
     }
 
     private void HandleReport(DualSenseDevice device, DualSenseState state, DsButtons previous)
@@ -510,7 +622,7 @@ public sealed class ControllerService : IDisposable
 
             //Native mode: the game drives lightbar, triggers and rumble. Only send right after the user
             //changed something here, and resend the full state then since the game may have changed it.
-            if (_padMode == EmulationMode.Native && _clock.ElapsedMilliseconds >= _userOutputUntilMs)
+            if (!OutputPolicy.ShouldSend(_padMode, _clock.ElapsedMilliseconds, _userOutputUntilMs, _selfTestRunning))
             {
                 lastSent = null;
                 continue;
@@ -522,7 +634,7 @@ public sealed class ControllerService : IDisposable
                 _micMuted = MicMute.IsMuted() ?? _micMuted;
             }
 
-            var desired = ComputeOutput();
+            var desired = _outputOverride ?? ComputeOutput();
 
             if (desired == lastSent)
             {

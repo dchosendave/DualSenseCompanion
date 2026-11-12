@@ -19,6 +19,20 @@
     <AssemblyName>DualSenseCompanion</AssemblyName>
     <RootNamespace>DualSenseCompanion</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+
+  <!--
+    Release package: one self-contained .exe that runs without installing .NET.
+    dotnet publish DualSenseCompanion -c Release -p:SingleFile=true -o publish
+  -->
+  <PropertyGroup Condition="'$(SingleFile)' == 'true'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

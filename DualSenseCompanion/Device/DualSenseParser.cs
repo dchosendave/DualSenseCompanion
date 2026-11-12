@@ -67,6 +67,7 @@ public static class DualSenseParser
             s.Buttons |= DsButtons.TouchpadTouch;
         }
 
+        s.TriggerFeedback = BinaryPrimitives.ReadUInt64LittleEndian(d.Slice(40));
         DecodeBattery(d[52], s);
         s.HasExtendedData = true;
     }

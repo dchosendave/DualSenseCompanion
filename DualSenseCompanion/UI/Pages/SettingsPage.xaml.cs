@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using DualSenseCompanion.App;
 
 namespace DualSenseCompanion.UI.Pages;
@@ -26,6 +27,41 @@ public partial class SettingsPage : UserControl
     }
 
     private void TestRumble_Click(object sender, RoutedEventArgs e) => _service.TestRumble();
+
+    private sealed record ResultRow(string Icon, Brush IconBrush, string Name, string Detail);
+
+    private async void SelfTest_Click(object sender, RoutedEventArgs e)
+    {
+        SelfTestButton.IsEnabled = false;
+        SelfTestSummary.Text = "Running...";
+        SelfTestResults.ItemsSource = null;
+
+        try
+        {
+            var report = await _service.RunSelfTestAsync();
+
+            SelfTestResults.ItemsSource = report.Checks.Select(c => c.Result switch
+            {
+                CheckResult.Pass => new ResultRow("\uE73E", Pass, c.Name, c.Detail),
+                CheckResult.Fail => new ResultRow("\uE711", Fail, c.Name, c.Detail),
+                _ => new ResultRow("\uE738", Skipped, c.Name, c.Detail),
+            }).ToList();
+
+            SelfTestSummary.Text = report.AllPassed ? "Everything works." : "Some checks failed.";
+        }
+        catch (Exception ex)
+        {
+            SelfTestSummary.Text = $"Self-test failed: {ex.Message}";
+        }
+        finally
+        {
+            SelfTestButton.IsEnabled = true;
+        }
+    }
+
+    private static readonly Brush Pass = new SolidColorBrush(Color.FromRgb(0x16, 0xA3, 0x4A));
+    private static readonly Brush Fail = new SolidColorBrush(Color.FromRgb(0xDC, 0x26, 0x26));
+    private static readonly Brush Skipped = new SolidColorBrush(Color.FromRgb(0x9B, 0xA0, 0xAA));
 
     private void OpenSettings_Click(object sender, RoutedEventArgs e)
     {
