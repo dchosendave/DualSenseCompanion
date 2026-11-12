@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using DualSenseCompanion.App;
 using DualSenseCompanion.Device;
+using DualSenseCompanion.Features;
 
 namespace DualSenseCompanion.UI.Pages;
 
@@ -21,6 +22,11 @@ public partial class HomePage : UserControl, ILivePage
     public void Update(LiveSnapshot snapshot)
     {
         Controller.Update(snapshot);
+
+        if (!ReferenceEquals(Warnings.ItemsSource, snapshot.Conflicts))
+        {
+            Warnings.ItemsSource = snapshot.Conflicts;
+        }
 
         var status = snapshot.Status;
         ConnectHint.Visibility = status.Connected ? Visibility.Collapsed : Visibility.Visible;
@@ -55,7 +61,8 @@ public partial class HomePage : UserControl, ILivePage
             BatteryState.Charging => "Charging",
             BatteryState.Full => "Fully charged",
             BatteryState.Error => "Battery error",
-            _ => status.IsLowBattery(_vm.Settings.Battery.LowThreshold) ? "Low, charge soon" : "On battery",
+            _ => (status.IsLowBattery(_vm.Settings.Battery.LowThreshold) ? "Low, charge soon" : "On battery") +
+                 (status.BatteryRemaining is { } left ? $", {BatteryEstimator.Describe(left)}" : ", estimating time left"),
         };
 
         BatteryFill.Width = BatteryBar.ActualWidth * status.BatteryPercent / 100.0;

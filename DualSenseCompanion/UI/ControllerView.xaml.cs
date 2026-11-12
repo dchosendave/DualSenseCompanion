@@ -14,6 +14,14 @@ public partial class ControllerView : UserControl
 {
     private const double StickTravel = 13;
 
+    //Bluetooth delivers input in bursts; easing the drawing toward the latest value over a few milliseconds
+    //hides that at high refresh rates. Only the drawing is smoothed, never what games receive.
+    private const double SmoothingSeconds = 0.012;
+
+    private readonly System.Diagnostics.Stopwatch _clock = System.Diagnostics.Stopwatch.StartNew();
+    private double _lastUpdate;
+    private double _leftX, _leftY, _rightX, _rightY, _l2, _r2;
+
     private static readonly Brush KeyFill = Brushes.White;
     private static readonly Brush KeyStroke = Frozen(Color.FromRgb(0xC5, 0xC9, 0xD1));
     private static readonly Brush GlyphStroke = Frozen(Color.FromRgb(0x9B, 0xA0, 0xAA));
@@ -41,6 +49,13 @@ public partial class ControllerView : UserControl
 
     public void Update(LiveSnapshot snapshot)
     {
+        double now = _clock.Elapsed.TotalSeconds;
+        double dt = Math.Clamp(now - _lastUpdate, 0, 0.1);
+        _lastUpdate = now;
+
+        //Fraction of the remaining distance to cover this frame, independent of frame rate
+        double follow = 1 - Math.Exp(-dt / SmoothingSeconds);
+
         var input = snapshot.Input;
         var buttons = input?.Buttons ?? DsButtons.None;
         bool Down(DsButtons b) => (buttons & b) != 0;
@@ -62,8 +77,8 @@ public partial class ControllerView : UserControl
         CoreButton(R1, Down(DsButtons.R1));
         CoreButton(PsButton, Down(DsButtons.PS));
 
-        L2Fill.Opacity = (input?.L2 ?? 0) / 255.0;
-        R2Fill.Opacity = (input?.R2 ?? 0) / 255.0;
+        L2Fill.Opacity = Ease(ref _l2, (input?.L2 ?? 0) / 255.0, follow);
+        R2Fill.Opacity = Ease(ref _r2, (input?.R2 ?? 0) / 255.0, follow);
 
         //Mute button: orange LED when the mic is muted, blue while pressed
         if (Down(DsButtons.Mute))
@@ -79,8 +94,8 @@ public partial class ControllerView : UserControl
         }
 
         //Sticks
-        MoveStick(LeftStickMove, LeftStickCap, input?.LeftX ?? 128, input?.LeftY ?? 128, Down(DsButtons.L3));
-        MoveStick(RightStickMove, RightStickCap, input?.RightX ?? 128, input?.RightY ?? 128, Down(DsButtons.R3));
+        MoveStick(LeftStickMove, LeftStickCap, ref _leftX, ref _leftY, input?.LeftX ?? 128, input?.LeftY ?? 128, Down(DsButtons.L3), follow);
+        MoveStick(RightStickMove, RightStickCap, ref _rightX, ref _rightY, input?.RightX ?? 128, input?.RightY ?? 128, Down(DsButtons.R3), follow);
 
         //Touchpad
         PlaceTouch(Touch1, input?.Touch1 ?? default);
@@ -121,10 +136,23 @@ public partial class ControllerView : UserControl
         key.Effect = pressed ? _glow : null;
     }
 
-    private void MoveStick(TranslateTransform move, Shape cap, byte x, byte y, bool pressed)
+    private static double Ease(ref double current, double target, double follow)
     {
-        move.X = InputMapper.NormalizeAxis(x) * StickTravel;
-        move.Y = InputMapper.NormalizeAxis(y) * StickTravel;
+        current += (target - current) * follow;
+
+        //Snap when close so the drawing settles exactly
+        if (Math.Abs(target - current) < 0.002)
+        {
+            current = target;
+        }
+
+        return current;
+    }
+
+    private void MoveStick(TranslateTransform move, Shape cap, ref double shownX, ref double shownY, byte x, byte y, bool pressed, double follow)
+    {
+        move.X = Ease(ref shownX, InputMapper.NormalizeAxis(x), follow) * StickTravel;
+        move.Y = Ease(ref shownY, InputMapper.NormalizeAxis(y), follow) * StickTravel;
         cap.Stroke = pressed ? Accent : StickStroke;
         cap.Effect = pressed ? _glow : null;
     }

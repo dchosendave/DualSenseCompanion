@@ -273,7 +273,21 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     public LightbarMode LightbarMode
     {
         get => Settings.Lightbar.Mode;
-        set => Changed(() => Settings.Lightbar.Mode = value);
+        set => Changed(() => Settings.Lightbar.Mode = value, nameof(LightbarMode), nameof(ShowEffectSpeed));
+    }
+
+    public bool ShowEffectSpeed => Settings.Lightbar.Mode is LightbarMode.Breathing or LightbarMode.Rainbow;
+
+    public double LightbarEffectSpeed
+    {
+        get => Settings.Lightbar.EffectSpeed;
+        set => Changed(() => Settings.Lightbar.EffectSpeed = (float)Math.Round(value, 1));
+    }
+
+    public bool PulseRedWhenMicMuted
+    {
+        get => Settings.Lightbar.PulseRedWhenMicMuted;
+        set => Changed(() => Settings.Lightbar.PulseRedWhenMicMuted = value);
     }
 
     public double LightbarRed

@@ -28,12 +28,16 @@ The virtual controller driver (ViGEmBus) can only create Xbox 360 and DualShock 
 **DualSense features**
 - **Gyro aiming**: as mouse movement (best precision) or added to the right stick (works in every game). Always on, while holding a button, or toggled. Adjustable sensitivity and steadiness, invert, turn or tilt for horizontal aim, automatic drift correction and calibration, with a live motion readout.
 - **Adaptive triggers**: soft, medium or hard resistance, weapon-style click, or vibration, separately for L2 and R2.
-- **Lightbar**: custom color, battery level (green to red), set by the game (DualShock 4 mode) or off, with brightness control.
+- **Lightbar**: custom color, breathing, rainbow, music (pulses with your PC's sound), battery level (green to red), set by the game (DualShock 4 mode) or off, with brightness control. Optional red pulse while the mic is muted.
 - **Player LEDs**: player 1-4 or all.
-- **Battery**: shown in the app and tray; low-battery notification and red pulsing lightbar.
+- **Battery**: shown in the app and tray with an estimate of the time left; low-battery notification and red pulsing lightbar.
 - **Mic mute button**: mutes and unmutes all Windows microphones, with the button LED showing the state.
 - **Touchpad as mouse**: one finger moves the pointer, click is left click, two-finger click is right click, two-finger drag scrolls.
 - **Rumble** with adjustable strength and a test button.
+
+**Controller test**
+- Button checklist: every button, trigger, stick direction, touchpad input and the gyro turns green once it works.
+- Health check: measures stick drift, stick jitter, stick range, trigger travel and gyro noise, with advice when something is off.
 
 **Tuning**
 - Stick deadzone, outer deadzone, anti-deadzone and response curve per stick, with a live plot of the physical stick and what the game receives.
@@ -45,6 +49,7 @@ The virtual controller driver (ViGEmBus) can only create Xbox 360 and DualShock 
 - Automatic reconnect when you unplug, switch between USB and Bluetooth, or the battery dies.
 - The real controller is hidden only while the app runs. It is restored on exit, logoff and crashes; if the app is force-closed, it is restored the next time the app starts.
 - Built-in self-test.
+- Warns about setups that cause double input: other controller apps (DS4Windows, DSX, reWASD, x360ce), Steam's PlayStation support in DualShock 4 mode, or HidHide missing.
 - Starts with Windows (optional, starts in the tray).
 - Checks GitHub for a newer release on startup (can be turned off in Settings; nothing about you or your PC is sent).
 

@@ -15,6 +15,9 @@ public static class CloakManager
     private static readonly List<PosixSignalRegistration> _signalRegistrations = new List<PosixSignalRegistration>();
     private static bool _wasActive;
     private static bool _initialized;
+
+    //False when HidHide isn't installed: games would see both controllers
+    public static bool IsHidingAvailable => _initialized;
     private static bool _cleanedUp;
     private static readonly HiddenDeviceStore _store = HiddenDeviceStore.Default;
 

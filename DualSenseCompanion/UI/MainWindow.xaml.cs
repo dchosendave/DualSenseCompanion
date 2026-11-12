@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using DualSenseCompanion.App;
 using DualSenseCompanion.Device;
+using DualSenseCompanion.Features;
 using DualSenseCompanion.UI.Pages;
 
 namespace DualSenseCompanion.UI;
@@ -18,6 +19,7 @@ public interface ILivePage
 public enum PageId
 {
     Home,
+    Test,
     Lightbar,
     Sticks,
     Triggers,
@@ -59,6 +61,7 @@ public partial class MainWindow : Window
         _factories = new Dictionary<PageId, Func<FrameworkElement>>
         {
             [PageId.Home] = () => new HomePage(ViewModel),
+            [PageId.Test] = () => new TestPage(),
             [PageId.Lightbar] = () => new LightbarPage(ViewModel),
             [PageId.Sticks] = () => new SticksPage(ViewModel),
             [PageId.Triggers] = () => new TriggersPage(ViewModel),
@@ -72,6 +75,7 @@ public partial class MainWindow : Window
         _navButtons = new Dictionary<PageId, RadioButton>
         {
             [PageId.Home] = NavHome,
+            [PageId.Test] = NavTest,
             [PageId.Lightbar] = NavLightbar,
             [PageId.Sticks] = NavSticks,
             [PageId.Triggers] = NavTriggers,
@@ -213,7 +217,9 @@ public partial class MainWindow : Window
             _ => "",
         };
 
-        StatusDetail.Text = $"Battery {status.BatteryPercent}%{charge}";
+        StatusDetail.Text = status.BatteryRemaining is { } left
+            ? $"Battery {status.BatteryPercent}%, {BatteryEstimator.Describe(left).Replace("about ", "~")}"
+            : $"Battery {status.BatteryPercent}%{charge}";
         StatusBatteryRow.Visibility = Visibility.Visible;
         StatusBatteryFill.Width = Math.Max(0, (StatusBatteryRow.ActualWidth > 0 ? StatusBatteryRow.ActualWidth : 180) * status.BatteryPercent / 100.0);
         StatusBatteryFill.Background = status.IsLowBattery(_service.Settings.Battery.LowThreshold)
