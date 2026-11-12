@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Media;
-using System.Windows.Threading;
+using Avalonia.Media;
+using Avalonia.Threading;
 using DualSenseCompanion.App;
 using DualSenseCompanion.Device;
 using DualSenseCompanion.Emulation;
@@ -212,7 +212,7 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         set => Changed(() =>
         {
             Settings.Theme = value;
-            ThemeManager.Apply(value);
+            CompanionApp.ApplyTheme(value);
         });
     }
 
@@ -303,23 +303,26 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     public double LightbarRed
     {
         get => Settings.Lightbar.Red;
-        set => Changed(() => Settings.Lightbar.Red = (byte)Math.Round(value), nameof(LightbarRed), nameof(LightbarPreview), nameof(LightbarHex));
+        set => Changed(() => Settings.Lightbar.Red = (byte)Math.Round(value), nameof(LightbarRed), nameof(LightbarPreview), nameof(LightbarGlow), nameof(LightbarHex));
     }
 
     public double LightbarGreen
     {
         get => Settings.Lightbar.Green;
-        set => Changed(() => Settings.Lightbar.Green = (byte)Math.Round(value), nameof(LightbarGreen), nameof(LightbarPreview), nameof(LightbarHex));
+        set => Changed(() => Settings.Lightbar.Green = (byte)Math.Round(value), nameof(LightbarGreen), nameof(LightbarPreview), nameof(LightbarGlow), nameof(LightbarHex));
     }
 
     public double LightbarBlue
     {
         get => Settings.Lightbar.Blue;
-        set => Changed(() => Settings.Lightbar.Blue = (byte)Math.Round(value), nameof(LightbarBlue), nameof(LightbarPreview), nameof(LightbarHex));
+        set => Changed(() => Settings.Lightbar.Blue = (byte)Math.Round(value), nameof(LightbarBlue), nameof(LightbarPreview), nameof(LightbarGlow), nameof(LightbarHex));
     }
 
     public SolidColorBrush LightbarPreview =>
         new SolidColorBrush(Color.FromRgb(Settings.Lightbar.Red, Settings.Lightbar.Green, Settings.Lightbar.Blue));
+
+    //Glow around the preview strip in the lightbar's color
+    public BoxShadows LightbarGlow => BoxShadows.Parse($"0 0 24 4 {LightbarHex}");
 
     public string LightbarHex => $"#{Settings.Lightbar.Red:X2}{Settings.Lightbar.Green:X2}{Settings.Lightbar.Blue:X2}";
 
@@ -329,7 +332,7 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         Settings.Lightbar.Green = color.G;
         Settings.Lightbar.Blue = color.B;
         Settings.Lightbar.Mode = LightbarMode.Static;
-        Changed(() => { }, nameof(LightbarRed), nameof(LightbarGreen), nameof(LightbarBlue), nameof(LightbarPreview), nameof(LightbarHex), nameof(LightbarMode));
+        Changed(() => { }, nameof(LightbarRed), nameof(LightbarGreen), nameof(LightbarBlue), nameof(LightbarPreview), nameof(LightbarGlow), nameof(LightbarHex), nameof(LightbarMode));
     }
 
     public double LightbarBrightness

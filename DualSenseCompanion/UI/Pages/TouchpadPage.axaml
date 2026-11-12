@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DualSenseCompanion.UI.Pages.TouchpadPage">
+  <StackPanel>
+    <TextBlock Classes="pageTitle" Text="Touchpad &amp; mic" />
+    <TextBlock Classes="pageSubtitle" Text="Use the touchpad as a mouse and the mute button for your Windows microphone." />
+
+    <Border Classes="section" Margin="0,12,0,0">
+      <Grid ColumnDefinitions="*,220">
+        <StackPanel Margin="0,0,16,0" Spacing="6">
+          <TextBlock Classes="cardTitle" Text="Touchpad" />
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel>
+              <TextBlock Classes="label" Text="Use as a mouse" />
+              <TextBlock Classes="caption" Text="One finger moves the pointer, click is left click, click with two fingers is right click." />
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding TouchpadMouse}" AutomationProperties.Name="Use the touchpad as a mouse" />
+          </Grid>
+          <Grid ColumnDefinitions="*,Auto" IsEnabled="{Binding TouchpadMouse}">
+            <StackPanel>
+              <TextBlock Classes="label" Text="Two-finger scroll" />
+              <TextBlock Classes="caption" Text="Drag two fingers up or down to scroll." />
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding TouchpadScroll}" AutomationProperties.Name="Two-finger scroll" />
+          </Grid>
+          <StackPanel IsEnabled="{Binding TouchpadMouse}">
+            <Grid ColumnDefinitions="*,Auto"><TextBlock Classes="label" Text="Pointer speed" /><TextBlock Grid.Column="1" Classes="value" Text="{Binding TouchpadSensitivity, StringFormat={}{0:0.0}x}" /></Grid>
+            <Slider Minimum="0.2" Maximum="4" Value="{Binding TouchpadSensitivity}" AutomationProperties.Name="Pointer speed" />
+          </StackPanel>
+          <TextBlock Classes="caption" Text="When off, the touchpad click goes to the game (DualShock 4 mode gets the full touchpad)." />
+        </StackPanel>
+
+        <!-- Live touchpad -->
+        <Border Grid.Column="1" Height="120" VerticalAlignment="Top" CornerRadius="10" Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource LineBrush}" BorderThickness="1.5">
+          <Grid>
+            <Border Name="ClickRing" CornerRadius="10" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="3" IsVisible="False" />
+            <Canvas Name="Pad" ClipToBounds="True">
+              <Ellipse Name="Finger1" Width="18" Height="18" Fill="{DynamicResource AccentBrush}" Opacity="0.85" IsVisible="False" Effect="{DynamicResource AccentGlow}" />
+              <Ellipse Name="Finger2" Width="18" Height="18" Fill="{DynamicResource AccentBrush}" Opacity="0.85" IsVisible="False" Effect="{DynamicResource AccentGlow}" />
+            </Canvas>
+            <TextBlock Name="PadHint" Text="Touch the touchpad" Classes="caption" HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Grid>
+        </Border>
+      </Grid>
+    </Border>
+
+    <Border Classes="section">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="4">
+          <TextBlock Classes="cardTitle" Text="Mute button" />
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel>
+              <TextBlock Classes="label" Text="Mute and unmute Windows microphones" />
+              <TextBlock Classes="caption" Text="The button glows orange while muted. Works in Discord, Teams and games." />
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding MicMuteButton}" AutomationProperties.Name="Mute button controls Windows microphones" />
+          </Grid>
+        </StackPanel>
+        <Border Grid.Column="1" Margin="16,0,0,0" Padding="12,7" CornerRadius="8" Background="{DynamicResource SurfaceBrush}" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <Border Name="MicLed" Width="26" Height="8" CornerRadius="4" Background="{DynamicResource TrackBrush}" VerticalAlignment="Center" />
+            <TextBlock Name="MicText" Text="Microphone on" VerticalAlignment="Center" />
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
+  </StackPanel>
+</UserControl>

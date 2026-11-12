@@ -1,0 +1,204 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Text -->
+  <Style Selector="TextBlock.pageTitle">
+    <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+    <Setter Property="FontSize" Value="22" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="TextBlock.pageSubtitle">
+    <Setter Property="FontSize" Value="12.5" />
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+    <Setter Property="Margin" Value="0,2,0,0" />
+  </Style>
+  <Style Selector="TextBlock.cardTitle">
+    <Setter Property="FontSize" Value="13.5" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Margin" Value="0,0,0,2" />
+  </Style>
+  <Style Selector="TextBlock.caption">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+  <Style Selector="TextBlock.label">
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+  <Style Selector="TextBlock.value">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+    <Setter Property="HorizontalAlignment" Value="Right" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+  <Style Selector="TextBlock.icon">
+    <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
+  </Style>
+
+  <!-- A page section, separated from the one above by a hairline -->
+  <Style Selector="Border.section">
+    <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+    <Setter Property="BorderThickness" Value="0,1,0,0" />
+    <Setter Property="Padding" Value="0,12" />
+  </Style>
+
+  <!-- Yellow notice banner -->
+  <Style Selector="Border.notice">
+    <Setter Property="Background" Value="{DynamicResource WarningBackBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource WarningBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="Padding" Value="10,7" />
+  </Style>
+  <Style Selector="Border.notice TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource WarningTextBrush}" />
+  </Style>
+
+  <!-- Sidebar navigation: flat rows, a blue bar marks the current page -->
+  <Style Selector="RadioButton.nav">
+    <Setter Property="GroupName" Value="Nav" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid Name="row" Height="34" Background="Transparent">
+          <Border Name="bg" Margin="6,1" CornerRadius="5" Background="Transparent" />
+          <Border Name="bar" Width="3" Height="16" CornerRadius="1.5" HorizontalAlignment="Left" Margin="6,0,0,0"
+                  Background="{DynamicResource AccentBrush}" IsVisible="False" />
+          <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center" Spacing="10">
+            <TextBlock Name="glyph" Classes="icon" Text="{TemplateBinding Tag}" FontSize="14" VerticalAlignment="Center"
+                       Foreground="{TemplateBinding Foreground}" />
+            <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                              Foreground="{TemplateBinding Foreground}" FontSize="13" />
+          </StackPanel>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="RadioButton.nav:pointerover /template/ Border#bg">
+    <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+  </Style>
+  <Style Selector="RadioButton.nav:pointerover">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+  </Style>
+  <Style Selector="RadioButton.nav:checked">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="RadioButton.nav:checked /template/ Border#bg">
+    <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+  </Style>
+  <Style Selector="RadioButton.nav:checked /template/ Border#bar">
+    <Setter Property="IsVisible" Value="True" />
+  </Style>
+  <Style Selector="RadioButton.nav:checked /template/ TextBlock#glyph">
+    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+  </Style>
+
+  <!-- Segmented control: the selected option is a raised white chip -->
+  <Style Selector="Border.segments">
+    <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Padding" Value="2" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+  </Style>
+  <Style Selector="RadioButton.segment">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FontSize" Value="12.5" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="bg" CornerRadius="4" Padding="11,4" Background="Transparent" BorderThickness="1" BorderBrush="Transparent">
+          <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="RadioButton.segment:pointerover /template/ Border#bg">
+    <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+  </Style>
+  <Style Selector="RadioButton.segment:checked /template/ Border#bg">
+    <Setter Property="Background" Value="{DynamicResource PageBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+    <Setter Property="BoxShadow" Value="0 1 2 0 #22000000" />
+  </Style>
+  <Style Selector="RadioButton.segment:checked">
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <!-- Selectable option row (trigger effects) -->
+  <Style Selector="RadioButton.tile">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Margin" Value="0,0,0,4" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="bg" CornerRadius="4" Padding="10,6" Background="{DynamicResource PageBrush}"
+                BorderBrush="{DynamicResource LineBrush}" BorderThickness="1">
+          <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="RadioButton.tile:pointerover /template/ Border#bg">
+    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+  </Style>
+  <Style Selector="RadioButton.tile:checked /template/ Border#bg">
+    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+  </Style>
+
+  <!-- Color swatch -->
+  <Style Selector="Button.swatch">
+    <Setter Property="Width" Value="24" />
+    <Setter Property="Height" Value="24" />
+    <Setter Property="Margin" Value="0,0,6,6" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid>
+          <Ellipse Name="ring" Stroke="{DynamicResource LineBrush}" StrokeThickness="2" />
+          <Ellipse Margin="3" Fill="{TemplateBinding Background}" />
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="Button.swatch:pointerover /template/ Ellipse#ring">
+    <Setter Property="Stroke" Value="{DynamicResource TextBrush}" />
+  </Style>
+
+  <!-- Thin progress-style bars (battery, triggers, checklist) -->
+  <Style Selector="Border.track">
+    <Setter Property="Background" Value="{DynamicResource TrackBrush}" />
+    <Setter Property="CornerRadius" Value="2" />
+  </Style>
+  <Style Selector="Border.fill">
+    <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+    <Setter Property="CornerRadius" Value="2" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+  </Style>
+
+  <!-- Compact controls -->
+  <Style Selector="Button">
+    <Setter Property="FontSize" Value="12.5" />
+    <Setter Property="Padding" Value="12,5" />
+  </Style>
+  <Style Selector="ComboBox">
+    <Setter Property="FontSize" Value="12.5" />
+    <Setter Property="MinHeight" Value="30" />
+  </Style>
+  <Style Selector="ToggleSwitch">
+    <Setter Property="OnContent" Value="" />
+    <Setter Property="OffContent" Value="" />
+    <Setter Property="MinWidth" Value="0" />
+    <Setter Property="HorizontalAlignment" Value="Right" />
+  </Style>
+  <Style Selector="Slider">
+    <Setter Property="Margin" Value="0,-6,0,-4" />
+  </Style>
+</Styles>

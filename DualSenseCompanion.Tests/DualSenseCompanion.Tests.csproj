@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -23,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DualSenseCompanion\DualSenseCompanion.csproj" />
+    <ProjectReference Include="..\DualSenseCompanion.Core\DualSenseCompanion.Core.csproj" />
   </ItemGroup>
 
 </Project>

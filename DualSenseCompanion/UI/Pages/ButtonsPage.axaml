@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:DualSenseCompanion.UI"
+             x:Class="DualSenseCompanion.UI.Pages.ButtonsPage">
+  <StackPanel>
+    <TextBlock Classes="pageTitle" Text="Button mapping" />
+    <TextBlock Classes="pageSubtitle" Text="Choose what each DualSense button does on the virtual controller. Press a button to find it in the list." />
+
+    <Border Classes="section" Margin="0,12,0,0" Padding="0,6">
+      <ItemsControl Name="Rows" ItemsSource="{Binding ButtonMap}" AutomationProperties.Name="Button mapping">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Border Classes="mapRow" CornerRadius="5" Padding="10,3" Background="Transparent">
+              <Grid ColumnDefinitions="16,*,230">
+                <Ellipse Name="Dot" Width="8" Height="8" Fill="{DynamicResource TrackBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Classes="label" Text="{Binding Name}" />
+                <ComboBox Grid.Column="2" HorizontalAlignment="Stretch" ItemsSource="{x:Static ui:SettingsViewModel.TargetNames}"
+                          DisplayMemberBinding="{Binding Name}" SelectedValueBinding="{Binding Value}" SelectedValue="{Binding Target}"
+                          AutomationProperties.Name="{Binding Name}" />
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </Border>
+
+    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+      <Button Content="Reset to default" Click="Reset_Click" />
+      <TextBlock Classes="caption" VerticalAlignment="Center"
+                 Text="The mute and touchpad buttons only reach the game when their features (Touchpad &amp; mic page) are turned off." />
+    </StackPanel>
+  </StackPanel>
+
+  <UserControl.Styles>
+    <Style Selector="Border.mapRow:pointerover">
+      <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

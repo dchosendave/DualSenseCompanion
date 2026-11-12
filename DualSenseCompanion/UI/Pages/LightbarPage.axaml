@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:DualSenseCompanion.UI"
+             x:Class="DualSenseCompanion.UI.Pages.LightbarPage">
+  <UserControl.Resources>
+    <ui:EqualsConverter x:Key="Is" />
+  </UserControl.Resources>
+
+  <StackPanel>
+    <TextBlock Classes="pageTitle" Text="Lightbar &amp; LEDs" />
+    <TextBlock Classes="pageSubtitle" Text="Changes show on your controller instantly." />
+    <Border Classes="notice" Margin="0,10,0,0" IsVisible="{Binding IsNative}">
+      <TextBlock FontSize="12" TextWrapping="Wrap" Text="Native DualSense mode is on, so games control the lightbar, triggers and rumble. Changes here are sent right away, but a game can override them. Pick Xbox or DS4 on the Home page to keep them." />
+    </Border>
+
+    <Border Classes="section" Margin="0,12,0,0">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="cardTitle" Text="Lightbar" />
+        <TextBlock Classes="caption" Text="What the light strips around the touchpad show." />
+        <Border Classes="segments">
+          <StackPanel Orientation="Horizontal">
+            <RadioButton Classes="segment" GroupName="LbMode" Content="Color" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Static}" />
+            <RadioButton Classes="segment" GroupName="LbMode" Content="Breathing" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Breathing}" />
+            <RadioButton Classes="segment" GroupName="LbMode" Content="Rainbow" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Rainbow}" />
+            <RadioButton Classes="segment" GroupName="LbMode" Content="Music" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=AudioReactive}" />
+            <RadioButton Classes="segment" GroupName="LbMode" Content="Battery level" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Battery}" />
+            <RadioButton Classes="segment" GroupName="LbMode" Content="Set by game" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Game}" />
+            <RadioButton Classes="segment" GroupName="LbMode" Content="Off" IsChecked="{Binding LightbarMode, Converter={StaticResource Is}, ConverterParameter=Off}" />
+          </StackPanel>
+        </Border>
+        <TextBlock Classes="caption" Text="Breathing fades your color in and out. Rainbow cycles through every color. Music pulses your color with whatever your PC is playing. Battery level goes from green to red. Set by game works in DualShock 4 mode." />
+        <StackPanel IsVisible="{Binding ShowEffectSpeed}">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Classes="label" Text="Effect speed" />
+            <TextBlock Grid.Column="1" Classes="value" Text="{Binding LightbarEffectSpeed, StringFormat={}{0:0.0}x}" />
+          </Grid>
+          <Slider Minimum="0.2" Maximum="3" Value="{Binding LightbarEffectSpeed}" AutomationProperties.Name="Effect speed" />
+        </StackPanel>
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel>
+            <TextBlock Classes="label" Text="Pulse red while the mic is muted" />
+            <TextBlock Classes="caption" Text="A reminder you're muted. Needs the mute button feature on the Touchpad &amp; mic page." />
+          </StackPanel>
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding PulseRedWhenMicMuted}" AutomationProperties.Name="Pulse red while the mic is muted" />
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <Grid ColumnDefinitions="132,*">
+        <!-- Preview: a glowing lightbar strip -->
+        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="10" Margin="0,0,16,0" Height="132" VerticalAlignment="Top">
+          <Grid>
+            <Border Width="8" Height="76" CornerRadius="4" Background="{Binding LightbarPreview}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    BoxShadow="{Binding LightbarGlow}" />
+            <TextBlock Text="{Binding LightbarHex}" Classes="caption" FontSize="11.5" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,8" />
+          </Grid>
+        </Border>
+
+        <StackPanel Grid.Column="1" Spacing="2">
+          <TextBlock Classes="cardTitle" Text="Color" />
+          <WrapPanel Name="Swatches" Margin="0,4,0,2" />
+          <Grid ColumnDefinitions="18,*,36" RowDefinitions="Auto,Auto,Auto">
+            <TextBlock Classes="label" Text="R" FontWeight="SemiBold" Foreground="#EF4444" />
+            <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarRed}" AutomationProperties.Name="Lightbar red" />
+            <TextBlock Grid.Column="2" Classes="value" Text="{Binding LightbarRed, StringFormat={}{0:0}}" />
+            <TextBlock Grid.Row="1" Classes="label" Text="G" FontWeight="SemiBold" Foreground="#22C55E" />
+            <Slider Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarGreen}" AutomationProperties.Name="Lightbar green" />
+            <TextBlock Grid.Row="1" Grid.Column="2" Classes="value" Text="{Binding LightbarGreen, StringFormat={}{0:0}}" />
+            <TextBlock Grid.Row="2" Classes="label" Text="B" FontWeight="SemiBold" Foreground="#2F6BFF" />
+            <Slider Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarBlue}" AutomationProperties.Name="Lightbar blue" />
+            <TextBlock Grid.Row="2" Grid.Column="2" Classes="value" Text="{Binding LightbarBlue, StringFormat={}{0:0}}" />
+          </Grid>
+          <Button Content="More colors..." Margin="0,4,0,0" Click="MoreColors_Click" />
+          <Grid ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+            <TextBlock Classes="label" Text="Brightness" />
+            <TextBlock Grid.Column="1" Classes="value" Text="{Binding LightbarBrightness, StringFormat={}{0:0}%}" />
+          </Grid>
+          <Slider Minimum="5" Maximum="100" Value="{Binding LightbarBrightness}" AutomationProperties.Name="Lightbar brightness" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="cardTitle" Text="Player LEDs" />
+        <TextBlock Classes="caption" Text="The small lights under the touchpad." />
+        <Border Classes="segments">
+          <StackPanel Orientation="Horizontal">
+            <RadioButton Classes="segment" GroupName="Player" Content="Off" IsChecked="{Binding PlayerNumber, Converter={StaticResource Is}, ConverterParameter=0}" />
+            <RadioButton Classes="segment" GroupName="Player" Content="Player 1" IsChecked="{Binding PlayerNumber, Converter={StaticResource Is}, ConverterParameter=1}" />
+            <RadioButton Classes="segment" GroupName="Player" Content="Player 2" IsChecked="{Binding PlayerNumber, Converter={StaticResource Is}, ConverterParameter=2}" />
+            <RadioButton Classes="segment" GroupName="Player" Content="Player 3" IsChecked="{Binding PlayerNumber, Converter={StaticResource Is}, ConverterParameter=3}" />
+            <RadioButton Classes="segment" GroupName="Player" Content="Player 4" IsChecked="{Binding PlayerNumber, Converter={StaticResource Is}, ConverterParameter=4}" />
+            <RadioButton Classes="segment" GroupName="Player" Content="All" IsChecked="{Binding PlayerNumber, Converter={StaticResource Is}, ConverterParameter=5}" />
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="cardTitle" Text="Low battery" />
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBlock Classes="label" Text="Warn when battery is at or below" />
+          <TextBlock Grid.Column="1" Classes="value" Text="{Binding LowBatteryThreshold, StringFormat={}{0:0}%}" />
+        </Grid>
+        <Slider Minimum="5" Maximum="50" Value="{Binding LowBatteryThreshold}" AutomationProperties.Name="Warn when battery is at or below" />
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBlock Classes="label" Text="Pulse the lightbar red" />
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding PulseWhenLow}" AutomationProperties.Name="Pulse the lightbar red when the battery is low" />
+        </Grid>
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBlock Classes="label" Text="Show a notification" />
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding NotifyWhenLow}" AutomationProperties.Name="Notify when the battery is low" />
+        </Grid>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

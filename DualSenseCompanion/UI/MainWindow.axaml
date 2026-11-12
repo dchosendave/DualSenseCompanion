@@ -1,0 +1,62 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DualSenseCompanion.UI.MainWindow"
+        Title="DualSense Companion"
+        Width="1040" Height="700" MinWidth="860" MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Icon="avares://DualSenseCompanion/icon_6Q2_icon.ico"
+        ExtendClientAreaToDecorationsHint="True"
+        TransparencyLevelHint="Mica"
+        TransparencyBackgroundFallback="{DynamicResource SidebarBrush}"
+        Background="Transparent"
+        FontFamily="{StaticResource UiFont}"
+        FontSize="13">
+
+  <Grid ColumnDefinitions="210,*">
+    <!-- Sidebar: Windows 11 Mica shows through -->
+    <DockPanel Name="Sidebar" Background="Transparent">
+      <StackPanel DockPanel.Dock="Top" Margin="20,16,16,14" PointerPressed="TitleBar_PointerPressed" Background="Transparent">
+        <TextBlock FontFamily="{StaticResource DisplayFont}" FontSize="15">
+          <Run Text="DualSense" FontWeight="SemiBold" /><Run Text=" Companion" Foreground="{DynamicResource TextSecondaryBrush}" />
+        </TextBlock>
+        <Border Height="2" Width="28" CornerRadius="1" HorizontalAlignment="Left" Margin="0,8,0,0" Background="{DynamicResource AccentBrush}" />
+      </StackPanel>
+
+      <!-- Connection status -->
+      <Border DockPanel.Dock="Bottom" Padding="16,10" BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,1,0,0">
+        <StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <Ellipse Name="StatusDot" Width="7" Height="7" Fill="{DynamicResource StatusIdleBrush}" VerticalAlignment="Center" />
+            <TextBlock Name="StatusTitle" Text="Not connected" FontWeight="SemiBold" FontSize="12.5" />
+          </StackPanel>
+          <TextBlock Name="StatusDetail" Text="Plug in or pair your controller" Classes="caption" FontSize="11.5" Margin="14,1,0,0" />
+          <Grid Name="StatusBatteryRow" Margin="14,6,0,0" IsVisible="False">
+            <Border Classes="track" Height="3" />
+            <Border Name="StatusBatteryFill" Classes="fill" Height="3" Width="0" />
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <StackPanel Name="Nav" AutomationProperties.Name="Pages" KeyboardNavigation.TabNavigation="Once">
+        <RadioButton Classes="nav" Tag="&#xE80F;" Content="Home" Name="NavHome" />
+        <RadioButton Classes="nav" Tag="&#xE73A;" Content="Controller test" Name="NavTest" />
+        <RadioButton Classes="nav" Tag="&#xE706;" Content="Lightbar &amp; LEDs" Name="NavLightbar" />
+        <RadioButton Classes="nav" Tag="&#xE7FC;" Content="Sticks" Name="NavSticks" />
+        <RadioButton Classes="nav" Tag="&#xE945;" Content="Adaptive triggers" Name="NavTriggers" />
+        <RadioButton Classes="nav" Tag="&#xE7AD;" Content="Gyro aiming" Name="NavGyro" />
+        <RadioButton Classes="nav" Tag="&#xE720;" Content="Touchpad &amp; mic" Name="NavTouchpad" />
+        <RadioButton Classes="nav" Tag="&#xE8AB;" Content="Button mapping" Name="NavButtons" />
+        <RadioButton Classes="nav" Tag="&#xE713;" Content="Settings" Name="NavSettings" />
+        <RadioButton Classes="nav" Tag="&#xE9D9;" Content="Log" Name="NavLog" />
+      </StackPanel>
+    </DockPanel>
+
+    <!-- Content: solid page color, with room at the top for the window buttons -->
+    <Grid Grid.Column="1" Background="{DynamicResource PageBrush}" RowDefinitions="32,*">
+      <Border Background="Transparent" PointerPressed="TitleBar_PointerPressed" />
+      <ScrollViewer Name="Scroller" Grid.Row="1" Padding="24,0,20,16">
+        <ContentControl Name="PageHost" MaxWidth="920" />
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</Window>
