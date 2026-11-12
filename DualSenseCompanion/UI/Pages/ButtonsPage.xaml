@@ -7,7 +7,7 @@
         <TextBlock Style="{StaticResource PageSubtitle}" Text="Choose what each DualSense button does on the virtual controller. Press a button to find it in the list." />
 
         <Border Style="{StaticResource Card}" Margin="0,12,0,10" Padding="6,6">
-            <ItemsControl x:Name="Rows" ItemsSource="{Binding ButtonMap}">
+            <ItemsControl x:Name="Rows" AutomationProperties.Name="Button mapping" ItemsSource="{Binding ButtonMap}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border x:Name="Row" CornerRadius="6" Padding="10,3" Background="Transparent">
@@ -19,7 +19,7 @@
                                 </Grid.ColumnDefinitions>
                                 <Ellipse x:Name="Dot" Width="8" Height="8" Fill="{DynamicResource TrackBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="1" Style="{StaticResource Label}" Text="{Binding Name}" />
-                                <ComboBox Grid.Column="2" ItemsSource="{x:Static ui:SettingsViewModel.TargetNames}"
+                                <ComboBox Grid.Column="2" AutomationProperties.Name="{Binding Name}" ItemsSource="{x:Static ui:SettingsViewModel.TargetNames}"
                                           DisplayMemberPath="Name" SelectedValuePath="Value" SelectedValue="{Binding Target}" />
                             </Grid>
                         </Border>

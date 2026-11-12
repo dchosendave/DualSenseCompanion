@@ -1,6 +1,7 @@
 <UserControl x:Class="DualSenseCompanion.UI.ControllerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             AutomationProperties.Name="Live controller view" AutomationProperties.HelpText="Shows the buttons and sticks you press. Use the Controller test page for a list a screen reader can follow.">
     <!-- Live illustration of a white DualSense-style controller. Pressed inputs light up in lightbar blue. -->
     <Viewbox Stretch="Uniform">
         <Canvas Width="760" Height="470">

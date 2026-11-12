@@ -74,8 +74,20 @@
         <Setter Property="Margin" Value="0" />
     </Style>
 
+    <!-- Keyboard focus: a blue ring, shown only when navigating with the keyboard -->
+    <Style x:Key="FocusRing">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="-3" RadiusX="5" RadiusY="5" Stroke="{DynamicResource AccentBrush}" StrokeThickness="2" SnapsToDevicePixels="True" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Sidebar navigation -->
     <Style x:Key="NavButton" TargetType="RadioButton">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Cursor" Value="Hand" />
@@ -113,6 +125,7 @@
 
     <!-- On/off switch -->
     <Style x:Key="Toggle" TargetType="CheckBox">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -147,6 +160,8 @@
 
     <!-- Segmented control: the selected option turns black like the controller core -->
     <Style x:Key="SegmentHost" TargetType="Border">
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Once" />
+        <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Cycle" />
         <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -156,6 +171,7 @@
     </Style>
 
     <Style x:Key="Segment" TargetType="RadioButton">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FontSize" Value="12.5" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -183,6 +199,7 @@
 
     <!-- Selectable tile (trigger presets, lightbar modes) -->
     <Style x:Key="Tile" TargetType="RadioButton">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Margin" Value="0,0,0,4" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -209,6 +226,7 @@
 
     <!-- Buttons -->
     <Style x:Key="PrimaryButton" TargetType="Button">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="12.5" />
@@ -237,6 +255,7 @@
     </Style>
 
     <Style x:Key="SecondaryButton" TargetType="Button">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Setter Property="FontSize" Value="12.5" />
@@ -262,6 +281,7 @@
     </Style>
 
     <Style x:Key="SwatchButton" TargetType="Button">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Width" Value="24" />
         <Setter Property="Height" Value="24" />
@@ -284,6 +304,7 @@
     </Style>
 
     <Style x:Key="TitleBarButton" TargetType="Button">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Width" Value="42" />
         <Setter Property="Height" Value="32" />
         <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
@@ -370,6 +391,7 @@
     </Style>
 
     <Style TargetType="Slider">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="IsMoveToPointEnabled" Value="True" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -442,6 +464,7 @@
     </Style>
 
     <Style TargetType="ComboBox">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Height" Value="28" />
         <Setter Property="MinWidth" Value="140" />
         <Setter Property="FontSize" Value="12.5" />

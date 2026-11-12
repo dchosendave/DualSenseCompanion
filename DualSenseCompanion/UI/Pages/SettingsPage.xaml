@@ -55,7 +55,7 @@
             <StackPanel>
                 <TextBlock Style="{StaticResource CardTitle}" Text="Rumble" />
                 <Grid Margin="0,6,0,0"><TextBlock Style="{StaticResource Label}" Text="Strength" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding RumbleStrength, StringFormat={}{0:0}%}" /></Grid>
-                <Slider Minimum="0" Maximum="100" Value="{Binding RumbleStrength}" />
+                <Slider AutomationProperties.Name="Rumble strength" Minimum="0" Maximum="100" Value="{Binding RumbleStrength}" />
                 <Button Style="{StaticResource SecondaryButton}" Content="Test rumble" Margin="0,4,0,0" Click="TestRumble_Click" />
             </StackPanel>
         </Border>
@@ -69,7 +69,7 @@
                     <Button x:Name="SelfTestButton" Style="{StaticResource PrimaryButton}" Content="Run self-test" Click="SelfTest_Click" />
                     <TextBlock x:Name="SelfTestSummary" Style="{StaticResource Caption}" VerticalAlignment="Center" Margin="10,0,0,0" />
                 </StackPanel>
-                <ItemsControl x:Name="SelfTestResults" Margin="0,6,0,0">
+                <ItemsControl x:Name="SelfTestResults" AutomationProperties.Name="Self-test results" Margin="0,6,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="0,3">
@@ -77,7 +77,7 @@
                                     <ColumnDefinition Width="20" />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Icon}" Foreground="{Binding IconBrush}" FontFamily="{StaticResource IconFont}" FontSize="12" Margin="0,2,0,0" />
+                                <TextBlock Text="{Binding Icon}" AutomationProperties.Name="{Binding Spoken}" Foreground="{Binding IconBrush}" FontFamily="{StaticResource IconFont}" FontSize="12" Margin="0,2,0,0" />
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Style="{StaticResource Label}" Text="{Binding Name}" />
                                     <TextBlock Style="{StaticResource Caption}" Text="{Binding Detail}" />
@@ -92,13 +92,13 @@
         <Border Style="{StaticResource Card}">
             <StackPanel>
                 <TextBlock Style="{StaticResource CardTitle}" Text="Startup" />
-                <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding StartWithWindows}" Margin="0,10,0,6">
+                <CheckBox Style="{StaticResource Toggle}" AutomationProperties.Name="Start with Windows" IsChecked="{Binding StartWithWindows}" Margin="0,10,0,6">
                     <StackPanel>
                         <TextBlock Style="{StaticResource Label}" Text="Start with Windows" />
                         <TextBlock Style="{StaticResource Caption}" Text="Starts quietly in the system tray when you sign in." />
                     </StackPanel>
                 </CheckBox>
-                <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding StartMinimized}">
+                <CheckBox Style="{StaticResource Toggle}" AutomationProperties.Name="Always start in the tray" IsChecked="{Binding StartMinimized}">
                     <StackPanel>
                         <TextBlock Style="{StaticResource Label}" Text="Always start in the tray" />
                         <TextBlock Style="{StaticResource Caption}" Text="Don't open this window when the app starts. Click the tray icon to open it." />
@@ -116,7 +116,7 @@
                             Visibility="{Binding HasUpdate, Converter={StaticResource Visible}}" Margin="0,0,6,0" />
                     <Button x:Name="CheckUpdatesButton" Style="{StaticResource SecondaryButton}" Content="Check now" Click="CheckUpdates_Click" />
                 </StackPanel>
-                <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding CheckForUpdates}" Margin="0,6,0,0">
+                <CheckBox Style="{StaticResource Toggle}" AutomationProperties.Name="Check for updates when the app starts" IsChecked="{Binding CheckForUpdates}" Margin="0,6,0,0">
                     <StackPanel>
                         <TextBlock Style="{StaticResource Label}" Text="Check for updates when the app starts" />
                         <TextBlock Style="{StaticResource Caption}" Text="Asks GitHub for the latest release. Nothing about you or your PC is sent." />

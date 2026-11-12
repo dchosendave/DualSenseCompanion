@@ -31,22 +31,22 @@
                         <Border x:Name="L2Fill" CornerRadius="4" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
 
-                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Off}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="L2: Off" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Off}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Off" /><TextBlock Style="{StaticResource Caption}" Text="Normal trigger, no resistance." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Soft}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="L2: Soft resistance" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Soft}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Soft resistance" /><TextBlock Style="{StaticResource Caption}" Text="A light push-back for most of the pull." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Medium}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="L2: Medium resistance" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Medium}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Medium resistance" /><TextBlock Style="{StaticResource Caption}" Text="Noticeably firmer, good for driving games." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Hard}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="L2: Hard resistance" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Hard}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Hard resistance" /><TextBlock Style="{StaticResource Caption}" Text="Strong resistance through the whole pull." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Weapon}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="L2: Weapon" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Weapon}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Weapon" /><TextBlock Style="{StaticResource Caption}" Text="Resists, then breaks with a click at mid-pull." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Vibrate}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="L2: Vibrate" GroupName="L2" IsChecked="{Binding LeftTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Vibrate}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Vibrate" /><TextBlock Style="{StaticResource Caption}" Text="The trigger buzzes once pulled past a quarter." /></StackPanel>
                     </RadioButton>
                 </StackPanel>
@@ -60,22 +60,22 @@
                         <Border x:Name="R2Fill" CornerRadius="4" HorizontalAlignment="Left" Width="0" Background="{DynamicResource AccentBrush}" />
                     </Grid>
 
-                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Off}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="R2: Off" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Off}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Off" /><TextBlock Style="{StaticResource Caption}" Text="Normal trigger, no resistance." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Soft}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="R2: Soft resistance" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Soft}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Soft resistance" /><TextBlock Style="{StaticResource Caption}" Text="A light push-back for most of the pull." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Medium}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="R2: Medium resistance" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Medium}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Medium resistance" /><TextBlock Style="{StaticResource Caption}" Text="Noticeably firmer, good for driving games." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Hard}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="R2: Hard resistance" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Hard}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Hard resistance" /><TextBlock Style="{StaticResource Caption}" Text="Strong resistance through the whole pull." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Weapon}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="R2: Weapon" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Weapon}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Weapon" /><TextBlock Style="{StaticResource Caption}" Text="Resists, then breaks with a click at mid-pull." /></StackPanel>
                     </RadioButton>
-                    <RadioButton Style="{StaticResource Tile}" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Vibrate}">
+                    <RadioButton Style="{StaticResource Tile}" AutomationProperties.Name="R2: Vibrate" GroupName="R2" IsChecked="{Binding RightTriggerEffect, Converter={StaticResource Is}, ConverterParameter=Vibrate}">
                         <StackPanel><TextBlock Style="{StaticResource TileTitle}" Text="Vibrate" /><TextBlock Style="{StaticResource Caption}" Text="The trigger buzzes once pulled past a quarter." /></StackPanel>
                     </RadioButton>
                 </StackPanel>

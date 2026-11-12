@@ -11,7 +11,7 @@
         <TextBlock x:Name="Subtitle" Style="{StaticResource PageSubtitle}" Text="Press any button to see it light up." />
 
         <!-- Problems that cause double input or fights over the controller -->
-        <ItemsControl x:Name="Warnings" Margin="0,8,0,0">
+        <ItemsControl x:Name="Warnings" AutomationProperties.Name="Warnings" Margin="0,8,0,0">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="0,0,0,6" Padding="10,7" Background="{DynamicResource WarningBackBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" BorderThickness="1" CornerRadius="4">

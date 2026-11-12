@@ -14,13 +14,13 @@
 
                 <StackPanel Margin="0,0,16,0">
                     <TextBlock Style="{StaticResource CardTitle}" Text="Touchpad" />
-                    <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding TouchpadMouse}" Margin="0,4,0,0">
+                    <CheckBox Style="{StaticResource Toggle}" AutomationProperties.Name="Use as a mouse" IsChecked="{Binding TouchpadMouse}" Margin="0,4,0,0">
                         <StackPanel>
                             <TextBlock Style="{StaticResource Label}" Text="Use as a mouse" />
                             <TextBlock Style="{StaticResource Caption}" Text="One finger moves the pointer, click is left click, click with two fingers is right click." />
                         </StackPanel>
                     </CheckBox>
-                    <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding TouchpadScroll}" IsEnabled="{Binding TouchpadMouse}">
+                    <CheckBox Style="{StaticResource Toggle}" AutomationProperties.Name="Two-finger scroll" IsChecked="{Binding TouchpadScroll}" IsEnabled="{Binding TouchpadMouse}">
                         <StackPanel>
                             <TextBlock Style="{StaticResource Label}" Text="Two-finger scroll" />
                             <TextBlock Style="{StaticResource Caption}" Text="Drag two fingers up or down to scroll." />
@@ -28,7 +28,7 @@
                     </CheckBox>
                     <StackPanel IsEnabled="{Binding TouchpadMouse}" Margin="0,6,0,0">
                         <Grid><TextBlock Style="{StaticResource Label}" Text="Pointer speed" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding TouchpadSensitivity, StringFormat={}{0:0.0}x}" /></Grid>
-                        <Slider Minimum="0.2" Maximum="4" Value="{Binding TouchpadSensitivity}" />
+                        <Slider AutomationProperties.Name="Pointer speed" Minimum="0.2" Maximum="4" Value="{Binding TouchpadSensitivity}" />
                     </StackPanel>
                     <TextBlock Style="{StaticResource Caption}" Margin="0,6,0,0"
                                Text="When off, the touchpad click goes to the game (DualShock 4 mode gets the full touchpad)." />
@@ -56,7 +56,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel>
                     <TextBlock Style="{StaticResource CardTitle}" Text="Mute button" />
-                    <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding MicMuteButton}" Margin="0,6,0,0">
+                    <CheckBox Style="{StaticResource Toggle}" AutomationProperties.Name="Mute and unmute Windows microphones" IsChecked="{Binding MicMuteButton}" Margin="0,6,0,0">
                         <StackPanel>
                             <TextBlock Style="{StaticResource Label}" Text="Mute and unmute Windows microphones" />
                             <TextBlock Style="{StaticResource Caption}" Text="The button glows orange while muted. Works in Discord, Teams and games." />

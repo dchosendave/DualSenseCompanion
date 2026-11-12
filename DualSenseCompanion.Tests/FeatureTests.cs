@@ -234,3 +234,49 @@ public class ChecklistTests
         Assert.Equal(ControllerChecklist.Items.Count, ControllerChecklist.Items.Select(i => i.Group + i.Name).Distinct().Count());
     }
 }
+
+public class ControllerInfoTests
+{
+    [Fact]
+    public void BluetoothAddressIsReversedFromTheReport()
+    {
+        var report = new byte[20];
+        report[0] = 0x09;
+        byte[] lowFirst = { 0xB2, 0xDA, 0x75, 0x46, 0xC7, 0xBC };
+        lowFirst.CopyTo(report, 1);
+
+        Assert.Equal("BC:C7:46:75:DA:B2", ControllerInfo.ParseBluetoothAddress(report));
+    }
+
+    [Fact]
+    public void EmptyOrWrongReportsGiveNoAddress()
+    {
+        Assert.Null(ControllerInfo.ParseBluetoothAddress(new byte[20] { 0x09, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }));
+        Assert.Null(ControllerInfo.ParseBluetoothAddress(new byte[20]));
+    }
+
+    [Fact]
+    public void FirmwareReport()
+    {
+        var report = new byte[64];
+        report[0] = 0x20;
+        System.Text.Encoding.ASCII.GetBytes("Jun 14 2023").CopyTo(report, 1);
+        System.Text.Encoding.ASCII.GetBytes("10:30:00").CopyTo(report, 12);
+        BitConverter.GetBytes(0x00000414u).CopyTo(report, 24); //hardware
+        BitConverter.GetBytes(0x0110002Au).CopyTo(report, 28); //firmware
+        BitConverter.GetBytes((ushort)0x0430).CopyTo(report, 44); //update version
+
+        var (update, firmware, hardware, built) = ControllerInfo.ParseFirmware(report);
+
+        Assert.Equal("04.30", update);
+        Assert.Equal("0110002A", firmware);
+        Assert.Equal("00000414", hardware);
+        Assert.Equal("Jun 14 2023 10:30:00", built);
+    }
+
+    [Fact]
+    public void WrongFirmwareReportIsIgnored()
+    {
+        Assert.Equal((null, null, null, null), ControllerInfo.ParseFirmware(new byte[64]));
+    }
+}

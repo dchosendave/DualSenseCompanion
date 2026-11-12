@@ -56,7 +56,7 @@
                     <TextBlock x:Name="Verdict" Style="{StaticResource Caption}" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="SemiBold" />
                 </StackPanel>
 
-                <ItemsControl x:Name="HealthResults" Margin="0,6,0,0">
+                <ItemsControl x:Name="HealthResults" AutomationProperties.Name="Health check results" Margin="0,6,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="0,3">
@@ -64,7 +64,7 @@
                                     <ColumnDefinition Width="20" />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Icon}" Foreground="{Binding IconBrush}" FontFamily="{StaticResource IconFont}" FontSize="12" Margin="0,2,0,0" />
+                                <TextBlock Text="{Binding Icon}" AutomationProperties.Name="{Binding Spoken}" Foreground="{Binding IconBrush}" FontFamily="{StaticResource IconFont}" FontSize="12" Margin="0,2,0,0" />
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Style="{StaticResource Label}" Text="{Binding Name}" />
                                     <TextBlock Style="{StaticResource Caption}" Text="{Binding Detail}" />

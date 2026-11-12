@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using DualSenseCompanion.App;
@@ -108,6 +110,31 @@ public partial class MainWindow : Window
             UpdateLive();
         };
 
+        //Ctrl+1 ... Ctrl+0 jump straight to a page
+        PreviewKeyDown += (s, e) =>
+        {
+            if (Keyboard.Modifiers != ModifierKeys.Control)
+            {
+                return;
+            }
+
+            int index = e.Key switch
+            {
+                >= Key.D1 and <= Key.D9 => e.Key - Key.D1,
+                Key.D0 => 9,
+                _ => -1,
+            };
+
+            var pages = Enum.GetValues<PageId>();
+
+            if (index >= 0 && index < pages.Length)
+            {
+                Navigate(pages[index]);
+                _navButtons[pages[index]].Focus();
+                e.Handled = true;
+            }
+        };
+
         NavHome.IsChecked = true;
     }
 
@@ -196,6 +223,28 @@ public partial class MainWindow : Window
     }
 
     private void UpdateStatus(ControllerStatus status)
+    {
+        bool wasConnected = _announcedConnected;
+        _announcedConnected = status.Connected;
+
+        try
+        {
+            ApplyStatus(status);
+        }
+        finally
+        {
+            //Screen readers announce connects and disconnects, not every battery tick
+            if (wasConnected != status.Connected)
+            {
+                (UIElementAutomationPeer.FromElement(StatusTitle) ?? UIElementAutomationPeer.CreatePeerForElement(StatusTitle))
+                    ?.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+            }
+        }
+    }
+
+    private bool _announcedConnected;
+
+    private void ApplyStatus(ControllerStatus status)
     {
         if (!status.Connected)
         {

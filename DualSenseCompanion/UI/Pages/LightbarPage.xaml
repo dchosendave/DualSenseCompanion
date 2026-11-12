@@ -38,9 +38,9 @@
                         <TextBlock Style="{StaticResource Label}" Text="Effect speed" />
                         <TextBlock Style="{StaticResource ValueText}" Text="{Binding LightbarEffectSpeed, StringFormat={}{0:0.0}x}" />
                     </Grid>
-                    <Slider Minimum="0.2" Maximum="3" Value="{Binding LightbarEffectSpeed}" />
+                    <Slider AutomationProperties.Name="Effect speed" Minimum="0.2" Maximum="3" Value="{Binding LightbarEffectSpeed}" />
                 </StackPanel>
-                <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding PulseRedWhenMicMuted}" Margin="0,6,0,0">
+                <CheckBox Style="{StaticResource Toggle}" AutomationProperties.Name="Pulse red while the mic is muted" IsChecked="{Binding PulseRedWhenMicMuted}" Margin="0,6,0,0">
                     <StackPanel>
                         <TextBlock Style="{StaticResource Label}" Text="Pulse red while the mic is muted" />
                         <TextBlock Style="{StaticResource Caption}" Text="A reminder you're muted. Needs the mute button feature on the Touchpad &amp; mic page." />
@@ -85,13 +85,13 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <TextBlock Style="{StaticResource Label}" Text="R" FontWeight="SemiBold" Foreground="#EF4444" />
-                        <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarRed}" />
+                        <Slider AutomationProperties.Name="Lightbar red" Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarRed}" />
                         <TextBlock Grid.Column="2" Style="{StaticResource ValueText}" Text="{Binding LightbarRed}" />
                         <TextBlock Grid.Row="1" Style="{StaticResource Label}" Text="G" FontWeight="SemiBold" Foreground="#22C55E" />
-                        <Slider Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarGreen}" />
+                        <Slider AutomationProperties.Name="Lightbar green" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarGreen}" />
                         <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource ValueText}" Text="{Binding LightbarGreen}" />
                         <TextBlock Grid.Row="2" Style="{StaticResource Label}" Text="B" FontWeight="SemiBold" Foreground="#2F6BFF" />
-                        <Slider Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarBlue}" />
+                        <Slider AutomationProperties.Name="Lightbar blue" Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding LightbarBlue}" />
                         <TextBlock Grid.Row="2" Grid.Column="2" Style="{StaticResource ValueText}" Text="{Binding LightbarBlue}" />
                     </Grid>
 
@@ -101,7 +101,7 @@
                         <TextBlock Style="{StaticResource Label}" Text="Brightness" />
                         <TextBlock Style="{StaticResource ValueText}" Text="{Binding LightbarBrightness, StringFormat={}{0:0}%}" />
                     </Grid>
-                    <Slider Minimum="5" Maximum="100" Value="{Binding LightbarBrightness}" />
+                    <Slider AutomationProperties.Name="Lightbar brightness" Minimum="5" Maximum="100" Value="{Binding LightbarBrightness}" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -130,7 +130,7 @@
                     <TextBlock Style="{StaticResource Label}" Text="Warn when battery is at or below" />
                     <TextBlock Style="{StaticResource ValueText}" Text="{Binding LowBatteryThreshold, StringFormat={}{0:0}%}" />
                 </Grid>
-                <Slider Minimum="5" Maximum="50" Value="{Binding LowBatteryThreshold}" />
+                <Slider AutomationProperties.Name="Warn when battery is at or below" Minimum="5" Maximum="50" Value="{Binding LowBatteryThreshold}" />
                 <CheckBox Style="{StaticResource Toggle}" Content="Pulse the lightbar red" IsChecked="{Binding PulseWhenLow}" Margin="0,6,0,0" />
                 <CheckBox Style="{StaticResource Toggle}" Content="Show a notification" IsChecked="{Binding NotifyWhenLow}" />
             </StackPanel>

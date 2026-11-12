@@ -46,7 +46,7 @@
                             <TextBlock Style="{StaticResource Label}" Text="Button" />
                             <TextBlock Style="{StaticResource Caption}" Text="Holding L2 to aim down sights is a popular choice." />
                         </StackPanel>
-                        <ComboBox Grid.Column="1" Width="170" ItemsSource="{x:Static ui:SettingsViewModel.GyroButtonNames}"
+                        <ComboBox Grid.Column="1" Width="170" AutomationProperties.Name="Gyro activation button" ItemsSource="{x:Static ui:SettingsViewModel.GyroButtonNames}"
                                   DisplayMemberPath="Name" SelectedValuePath="Value" SelectedValue="{Binding GyroButton}" />
                     </Grid>
                 </StackPanel>
@@ -58,20 +58,20 @@
 
                     <StackPanel Visibility="{Binding GyroIsMouse, Converter={StaticResource Visible}}" Margin="0,8,0,0">
                         <Grid><TextBlock Style="{StaticResource Label}" Text="Sensitivity" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding GyroMouseSensitivity, StringFormat={}{0:0.0} px per degree}" /></Grid>
-                        <Slider Minimum="1" Maximum="60" Value="{Binding GyroMouseSensitivity}" />
+                        <Slider AutomationProperties.Name="Gyro sensitivity" Minimum="1" Maximum="60" Value="{Binding GyroMouseSensitivity}" />
                     </StackPanel>
 
                     <StackPanel Visibility="{Binding GyroIsStick, Converter={StaticResource Visible}}" Margin="0,8,0,0">
                         <Grid><TextBlock Style="{StaticResource Label}" Text="Turn speed for full stick" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding GyroStickSpeed, StringFormat={}{0:0}° per second}" /></Grid>
-                        <Slider Minimum="30" Maximum="720" Value="{Binding GyroStickSpeed}" />
+                        <Slider AutomationProperties.Name="Turn speed for full stick" Minimum="30" Maximum="720" Value="{Binding GyroStickSpeed}" />
                         <TextBlock Style="{StaticResource Caption}" Text="Lower is more sensitive." Margin="0,0,0,6" />
                         <Grid><TextBlock Style="{StaticResource Label}" Text="Anti-deadzone" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding GyroStickAntiDeadzone, StringFormat={}{0:P0}}" /></Grid>
-                        <Slider Minimum="0" Maximum="0.4" Value="{Binding GyroStickAntiDeadzone}" />
+                        <Slider AutomationProperties.Name="Gyro anti-deadzone" Minimum="0" Maximum="0.4" Value="{Binding GyroStickAntiDeadzone}" />
                         <TextBlock Style="{StaticResource Caption}" Text="Raise it if small motions don't move your aim in a game." Margin="0,0,0,6" />
                     </StackPanel>
 
                     <Grid Margin="0,8,0,0"><TextBlock Style="{StaticResource Label}" Text="Steadiness" /><TextBlock Style="{StaticResource ValueText}" Text="{Binding GyroSmoothing, StringFormat={}{0:0.0}° per second}" /></Grid>
-                    <Slider Minimum="0" Maximum="6" Value="{Binding GyroSmoothing}" />
+                    <Slider AutomationProperties.Name="Gyro steadiness" Minimum="0" Maximum="6" Value="{Binding GyroSmoothing}" />
                     <TextBlock Style="{StaticResource Caption}" Text="Softens very small movements so hand shake doesn't move the aim." Margin="0,0,0,6" />
 
                     <Grid Margin="0,4,0,8">

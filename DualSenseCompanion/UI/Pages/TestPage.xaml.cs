@@ -33,7 +33,11 @@ public partial class TestPage : UserControl, ILivePage
     private readonly List<float> _restGyro = new();
     private byte _restL2, _restR2, _pressL2, _pressR2;
 
-    private sealed record ResultRow(string Icon, Brush IconBrush, string Name, string Detail);
+    private sealed record ResultRow(string Icon, Brush IconBrush, string Name, string Detail)
+    {
+        //What a screen reader says instead of the icon glyph
+        public string Spoken => IconBrush == Pass ? "Passed" : IconBrush == Fail ? "Failed" : "Skipped";
+    }
 
     private ControllerInfo? _shownInfo;
     private bool _infoShown;
