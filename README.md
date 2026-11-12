@@ -2,7 +2,9 @@
 
 A companion app for the DualSense (PS5) controller on Windows. It emulates an Xbox 360 or DualShock 4 controller so you can play almost every PC game with your PS5 controller, and unlocks DualSense features like gyro aiming, adaptive triggers and the lightbar.
 
-It runs in the system tray. Right-click the tray icon to change any setting; changes apply immediately and are saved.
+It has a full settings window styled after the white DualSense: a live view of your controller that lights up as you press buttons, plus pages for the lightbar, sticks, adaptive triggers, gyro, touchpad, button mapping and more. Changes apply instantly and are saved automatically.
+
+Closing the window keeps the app running in the system tray so your controller keeps working. Click the tray icon to open the window again, or right-click it for quick actions and Exit.
 
 ## Features
 
@@ -23,21 +25,22 @@ It runs in the system tray. Right-click the tray icon to change any setting; cha
 - **Touchpad as mouse**: move with one finger, click = left click, two-finger click = right click, two-finger drag = scroll.
 - **Rumble** with adjustable strength.
 
-**Tuning (settings file)**
-- Stick deadzone, outer deadzone, anti-deadzone and response curve, per stick.
+**Tuning**
+- Stick deadzone, outer deadzone, anti-deadzone and response curve, per stick, with a live preview.
 - Trigger deadzone.
 - Button remapping.
 
 **App**
-- System tray app with a log window.
+- Settings window with live controller view, stick and trigger visualizers, live gyro readout and button mapping editor.
+- System tray icon with quick actions; launching the app again just opens the window.
 - Start with Windows.
 - Dependency check on startup (asks before installing ViGEmBus / HidHide).
 
 ## Settings file
 
-Settings are stored in `%AppData%\DualSenseCompanion\settings.json`. Use **Open settings file** in the tray menu, edit, save, then **Reload settings file**.
+Everything can be changed in the app window. Settings are stored in `%AppData%\DualSenseCompanion\settings.json`; to edit the file by hand use **Settings > Open settings file**, save, then **Reload settings file**.
 
-Things only available in the file:
+The file format:
 
 ```jsonc
 "LeftStick": {
@@ -74,8 +77,7 @@ dotnet publish DualSenseCompanion -c Release -r win-x64 --self-contained false -
 ## Roadmap
 
 1. Support for up to 4 controllers.
-2. A settings window for deadzones and button mapping.
-3. Headphone jack support for game audio.
+2. Headphone jack support for game audio.
 
 A huge thanks goes to:
 1. ViGEm (Virtual Gamepad Emulation Driver) – For providing the essential Xbox 360 controller emulation.

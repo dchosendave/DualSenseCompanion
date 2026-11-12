@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Management;
 using System.Runtime.InteropServices;
 using Nefarius.Drivers.HidHide;
@@ -76,6 +76,33 @@ public static class CloakManager
 
             _hidHide.IsActive = true;
             Console.WriteLine("PS5 Controller is now hidden!");
+        }
+    }
+
+    //Makes the controller visible to games again while the app keeps running (Native DualSense mode)
+    public static void ShowPS5Controller()
+    {
+        lock (_lock)
+        {
+            if (!_initialized || _cleanedUp || _hiddenIds.Count == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                foreach (string instanceId in _hiddenIds)
+                {
+                    _hidHide.RemoveBlockedInstanceId(instanceId);
+                }
+
+                _hiddenIds.Clear();
+                Console.WriteLine("PS5 Controller is visible to games (native mode).");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to unhide controller: {ex.Message}");
+            }
         }
     }
 

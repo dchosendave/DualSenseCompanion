@@ -42,6 +42,17 @@ public sealed record ControllerStatus(
     }
 }
 
+//Everything the UI shows live, captured at one moment
+public sealed record LiveSnapshot(
+    ControllerStatus Status,
+    DualSenseState? Input,
+    PadState? Output,
+    DualSenseOutputState Feedback,
+    float GyroPitch,
+    float GyroYaw,
+    float GyroRoll,
+    bool MicMuted);
+
 //Owns the controller connection, the virtual pad and every feature that runs per input report
 public sealed class ControllerService : IDisposable
 {
@@ -68,6 +79,9 @@ public sealed class ControllerService : IDisposable
     private RgbColor? _gameLightbar;
     private volatile bool _micMuted;
     private bool _lowBatteryNotified;
+    private long _testRumbleUntilMs;
+    private volatile DualSenseState? _latestInput;
+    private volatile PadState? _latestOutput;
 
     private readonly object _statusLock = new object();
     private ControllerStatus _status;
@@ -81,6 +95,23 @@ public sealed class ControllerService : IDisposable
     }
 
     public Settings Settings => _settings;
+
+    public LiveSnapshot GetSnapshot() => new LiveSnapshot(
+        Status,
+        _latestInput,
+        _latestOutput,
+        ComputeOutput(),
+        _gyro.LastPitch,
+        _gyro.LastYaw,
+        _gyro.LastRoll,
+        _micMuted);
+
+    //Short rumble so the strength setting can be felt
+    public void TestRumble()
+    {
+        _testRumbleUntilMs = _clock.ElapsedMilliseconds + 600;
+        _outputSignal.Set();
+    }
 
     public ControllerService(Settings settings)
     {
@@ -112,7 +143,9 @@ public sealed class ControllerService : IDisposable
         _settings.Normalize();
         _settings.Save();
 
-        if (_settings.Emulation != _padMode || _pad == null)
+        bool needsPad = _settings.Emulation != EmulationMode.Native;
+
+        if (_settings.Emulation != _padMode || (needsPad && _pad == null))
         {
             try
             {
@@ -151,27 +184,72 @@ public sealed class ControllerService : IDisposable
             _rumbleLarge = 0;
             _rumbleSmall = 0;
 
-            IVirtualPad pad = ConnectPadWithRetry(_settings.Emulation);
-
-            pad.RumbleReceived += (large, small) =>
+            if (_settings.Emulation == EmulationMode.Native)
             {
-                _rumbleLarge = large;
-                _rumbleSmall = small;
-                _outputSignal.Set();
-            };
-
-            pad.LightbarReceived += color =>
+                _padMode = EmulationMode.Native;
+                Console.WriteLine("Native DualSense mode: no virtual controller, games use the DualSense directly.");
+            }
+            else
             {
-                _gameLightbar = color;
-                _outputSignal.Set();
-            };
-
-            _pad = pad;
-            _padMode = _settings.Emulation;
-            Console.WriteLine($"Virtual {pad.Name} controller created.");
+                CreateVirtualPad();
+            }
         }
 
-        UpdateStatus(s => s with { Emulation = _pad!.Name });
+        UpdateStatus(s => s with { Emulation = EmulationName(_padMode) });
+        UpdateHiding();
+    }
+
+    public static string EmulationName(EmulationMode mode) => mode switch
+    {
+        EmulationMode.DualShock4 => "DualShock 4",
+        EmulationMode.Native => "native DualSense",
+        _ => "Xbox 360",
+    };
+
+    //Hidden while emulating so games don't see two controllers; visible in native mode
+    private void UpdateHiding()
+    {
+        if (_device == null)
+        {
+            return;
+        }
+
+        bool native = _padMode == EmulationMode.Native;
+
+        //HidHide and the device lookup can take a moment; keep the UI responsive
+        Task.Run(() =>
+        {
+            if (native)
+            {
+                CloakManager.ShowPS5Controller();
+            }
+            else
+            {
+                CloakManager.HidePS5Controller();
+            }
+        });
+    }
+
+    private void CreateVirtualPad()
+    {
+        IVirtualPad pad = ConnectPadWithRetry(_settings.Emulation);
+
+        pad.RumbleReceived += (large, small) =>
+        {
+            _rumbleLarge = large;
+            _rumbleSmall = small;
+            _outputSignal.Set();
+        };
+
+        pad.LightbarReceived += color =>
+        {
+            _gameLightbar = color;
+            _outputSignal.Set();
+        };
+
+        _pad = pad;
+        _padMode = _settings.Emulation;
+        Console.WriteLine($"Virtual {pad.Name} controller created.");
     }
 
     //The ViGEm driver can briefly refuse new controllers, e.g. right after boot or a driver install
@@ -206,7 +284,10 @@ public sealed class ControllerService : IDisposable
                 return;
             }
 
-            CloakManager.HidePS5Controller();
+            if (_padMode != EmulationMode.Native)
+            {
+                CloakManager.HidePS5Controller();
+            }
 
             try
             {
@@ -230,6 +311,8 @@ public sealed class ControllerService : IDisposable
             finally
             {
                 _device = null;
+                _latestInput = null;
+                _latestOutput = null;
                 device.Dispose();
                 _touchpad.ReleaseButtons();
                 _rumbleLarge = 0;
@@ -344,6 +427,9 @@ public sealed class ControllerService : IDisposable
             _pad?.Update(pad);
         }
 
+        _latestInput = state.Clone();
+        _latestOutput = pad;
+
         if (state.HasExtendedData)
         {
             UpdateBattery(state);
@@ -410,6 +496,25 @@ public sealed class ControllerService : IDisposable
                 lastSent = null;
             }
 
+            if (_padMode == EmulationMode.Native)
+            {
+                //Release our trigger resistance once, then leave the outputs to the game
+                if (lastSent != null && lastSent != DualSenseOutputState.Neutral)
+                {
+                    try
+                    {
+                        device.Send(DualSenseOutputState.Neutral);
+                    }
+                    catch
+                    {
+                        //Disconnect is handled by the input thread
+                    }
+                }
+
+                lastSent = DualSenseOutputState.Neutral;
+                continue;
+            }
+
             if (_settings.MicMuteButtonControlsWindows && _clock.ElapsedMilliseconds - lastMicPoll > MicPollIntervalMs)
             {
                 lastMicPoll = _clock.ElapsedMilliseconds;
@@ -463,12 +568,13 @@ public sealed class ControllerService : IDisposable
         }
 
         float rumble = s.RumbleStrength / 100f;
+        bool testRumble = _clock.ElapsedMilliseconds < _testRumbleUntilMs;
         bool micControl = s.MicMuteButtonControlsWindows;
 
         return new DualSenseOutputState
         {
-            RumbleLeft = (byte)(_rumbleLarge * rumble),
-            RumbleRight = (byte)(_rumbleSmall * rumble),
+            RumbleLeft = (byte)((testRumble ? 255 : _rumbleLarge) * rumble),
+            RumbleRight = (byte)((testRumble ? 255 : _rumbleSmall) * rumble),
             LightbarRed = (byte)(color.Red * brightness),
             LightbarGreen = (byte)(color.Green * brightness),
             LightbarBlue = (byte)(color.Blue * brightness),

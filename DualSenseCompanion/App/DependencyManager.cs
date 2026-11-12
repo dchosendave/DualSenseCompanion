@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.ServiceProcess;
+using System.Windows.Forms;
 using Nefarius.Drivers.HidHide;
 
 namespace DualSenseCompanion.App;

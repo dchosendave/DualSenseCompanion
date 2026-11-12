@@ -9,6 +9,9 @@ public enum EmulationMode
 {
     Xbox360,
     DualShock4,
+
+    //No virtual controller and the DualSense stays visible: for games with built-in DualSense support
+    Native,
 }
 
 public enum LightbarMode
@@ -102,6 +105,7 @@ public sealed class Settings
     public TriggerPreset LeftTriggerEffect { get; set; } = TriggerPreset.Off;
     public TriggerPreset RightTriggerEffect { get; set; } = TriggerPreset.Off;
     public GyroSettings Gyro { get; set; } = new GyroSettings();
+    public bool StartMinimized { get; set; }
     public TouchpadSettings Touchpad { get; set; } = new TouchpadSettings();
 
     private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions

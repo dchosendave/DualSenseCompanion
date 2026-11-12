@@ -26,6 +26,11 @@ public sealed class GyroAim
     private int _calSamples;
 
     public bool IsCalibrating => _calibrationTimeLeft > 0;
+
+    //Latest drift-corrected rotation rates in degrees per second (for display)
+    public float LastPitch { get; private set; }
+    public float LastYaw { get; private set; }
+    public float LastRoll { get; private set; }
     public event Action<string>? Message;
 
     //Collects one second of samples; the controller should lie still
@@ -73,6 +78,10 @@ public sealed class GyroAim
         float pitch = (s.GyroX - _biasX) * cal.PitchScale;
         float yaw = (s.GyroY - _biasY) * cal.YawScale;
         float roll = (s.GyroZ - _biasZ) * cal.RollScale;
+
+        LastPitch = pitch;
+        LastYaw = yaw;
+        LastRoll = roll;
 
         LearnBias(s, pitch, yaw, roll, dt);
 

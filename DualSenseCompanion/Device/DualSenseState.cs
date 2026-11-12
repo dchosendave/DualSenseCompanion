@@ -72,4 +72,6 @@ public sealed class DualSenseState
     public BatteryState Battery = BatteryState.Unknown;
 
     public bool IsPressed(DsButtons button) => (Buttons & button) != 0;
+
+    public DualSenseState Clone() => (DualSenseState)MemberwiseClone();
 }

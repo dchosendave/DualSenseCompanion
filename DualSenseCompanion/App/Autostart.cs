@@ -8,7 +8,9 @@ public static class Autostart
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
     private const string ValueName = "DualSenseCompanion";
 
-    private static string Command => $"\"{Environment.ProcessPath}\"";
+    public const string MinimizedArgument = "--minimized";
+
+    private static string Command => $"\"{Environment.ProcessPath}\" {MinimizedArgument}";
 
     public static bool IsEnabled
     {

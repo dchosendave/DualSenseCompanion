@@ -1,27 +1,42 @@
-﻿using DualSenseCompanion.App;
+﻿using System.Windows;
+using DualSenseCompanion.App;
+using DualSenseCompanion.UI;
+using DualSenseCompanion.UI.Pages;
 using Microsoft.Win32;
+using WinForms = System.Windows.Forms;
 
 namespace DualSenseCompanion;
 
 public static class Program
 {
+    private const string MutexName = @"Local\DualSenseCompanion";
+    private const string ShowEventName = @"Local\DualSenseCompanion.Show";
+
     [STAThread]
-    public static int Main()
+    public static int Main(string[] args)
     {
         Log.Initialize();
 
-        //Two copies would fight over the same controller
-        using var singleInstance = new Mutex(true, @"Local\DualSenseCompanion", out bool isFirstInstance);
+        //Two copies would fight over the same controller; a second launch just opens the window of the first
+        using var singleInstance = new Mutex(true, MutexName, out bool isFirstInstance);
 
         if (!isFirstInstance)
         {
-            MessageBox.Show("DualSense Companion is already running. Look for its icon in the system tray.",
-                "DualSense Companion", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                using var show = EventWaitHandle.OpenExisting(ShowEventName);
+                show.Set();
+            }
+            catch
+            {
+                //First instance is still starting up
+            }
+
             return 0;
         }
 
-        ApplicationConfiguration.Initialize();
-        Application.ThreadException += (s, e) => Console.WriteLine($"Unexpected error: {e.Exception}");
+        WinForms.Application.EnableVisualStyles();
+        WinForms.Application.SetHighDpiMode(WinForms.HighDpiMode.PerMonitorV2);
         AppDomain.CurrentDomain.UnhandledException += (s, e) => Console.WriteLine($"Fatal error: {e.ExceptionObject}");
 
         Console.WriteLine("DualSense Companion starting...");
@@ -47,8 +62,8 @@ public static class Program
         catch (Exception ex)
         {
             Console.WriteLine($"Could not create the virtual controller: {ex}");
-            MessageBox.Show($"Could not create the virtual controller.\n\n{ex.Message}\n\nMake sure the ViGEmBus driver is installed, then restart DualSense Companion.\n\nDetails: {Log.FilePath}",
-                "DualSense Companion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            WinForms.MessageBox.Show($"Could not create the virtual controller.\n\n{ex.Message}\n\nMake sure the ViGEmBus driver is installed, then restart DualSense Companion.\n\nDetails: {Log.FilePath}",
+                "DualSense Companion", WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Error);
             CloakManager.UnhidePS5Controller();
             return 1;
         }
@@ -61,7 +76,79 @@ public static class Program
         };
 
         service.Start();
-        Application.Run(new TrayApp(service));
+
+        var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+        app.Resources.MergedDictionaries.Add(new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/DualSenseCompanion;component/UI/Theme.xaml"),
+        });
+        app.DispatcherUnhandledException += (s, e) =>
+        {
+            Console.WriteLine($"Unexpected UI error: {e.Exception}");
+            e.Handled = true;
+        };
+
+        var window = new MainWindow(service);
+        using var tray = new TrayIcon(service, app.Dispatcher);
+        bool toldAboutTray = false;
+
+        void ShowWindow() => window.BringToFront();
+
+        tray.OpenRequested += ShowWindow;
+        tray.PageRequested += page =>
+        {
+            window.Navigate(page);
+            ShowWindow();
+        };
+        tray.SettingsChanged += window.OnSettingsReplaced;
+        tray.ExitRequested += () =>
+        {
+            window.AllowClose = true;
+            window.Close();
+            app.Shutdown();
+        };
+
+        SettingsPage.SettingsReloaded += window.OnSettingsReplaced;
+
+        window.HiddenToTray += () =>
+        {
+            if (!toldAboutTray)
+            {
+                toldAboutTray = true;
+                tray.ShowMessage("Still running in the tray so your controller keeps working. Right-click the icon to exit.");
+            }
+        };
+
+        //A second launch signals this event
+        using var showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ShowEventName);
+        var showThread = new Thread(() =>
+        {
+            while (showEvent.WaitOne())
+            {
+                if (app.Dispatcher.HasShutdownStarted)
+                {
+                    return;
+                }
+
+                app.Dispatcher.BeginInvoke(ShowWindow);
+            }
+        })
+        { IsBackground = true, Name = "Show window listener" };
+        showThread.Start();
+
+        bool startMinimized = settings.StartMinimized ||
+                              args.Contains(Autostart.MinimizedArgument, StringComparer.OrdinalIgnoreCase);
+
+        if (startMinimized)
+        {
+            tray.ShowMessage("Running in the system tray. Click the icon to open.");
+        }
+        else
+        {
+            window.Show();
+        }
+
+        app.Run();
 
         Console.WriteLine("Exiting...");
         service.Dispose();
