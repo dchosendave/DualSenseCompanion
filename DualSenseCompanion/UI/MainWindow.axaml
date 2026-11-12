@@ -5,16 +5,15 @@
         Width="1040" Height="700" MinWidth="860" MinHeight="560"
         WindowStartupLocation="CenterScreen"
         Icon="avares://DualSenseCompanion/icon_6Q2_icon.ico"
-        ExtendClientAreaToDecorationsHint="True"
-        TransparencyLevelHint="Mica"
-        TransparencyBackgroundFallback="{DynamicResource SidebarBrush}"
-        Background="Transparent"
+        WindowDecorations="BorderOnly"
+        Background="{DynamicResource PageBrush}"
+        TextOptions.TextRenderingMode="SubpixelAntialias"
         FontFamily="{StaticResource UiFont}"
         FontSize="13">
 
   <Grid ColumnDefinitions="210,*">
-    <!-- Sidebar: Windows 11 Mica shows through -->
-    <DockPanel Name="Sidebar" Background="Transparent">
+    <!-- Sidebar: solid, so text stays sharp -->
+    <DockPanel Name="Sidebar" Background="{DynamicResource SidebarBrush}">
       <StackPanel DockPanel.Dock="Top" Margin="20,16,16,14" PointerPressed="TitleBar_PointerPressed" Background="Transparent">
         <TextBlock FontFamily="{StaticResource DisplayFont}" FontSize="15">
           <Run Text="DualSense" FontWeight="SemiBold" /><Run Text=" Companion" Foreground="{DynamicResource TextSecondaryBrush}" />
@@ -51,9 +50,14 @@
       </StackPanel>
     </DockPanel>
 
-    <!-- Content: solid page color, with room at the top for the window buttons -->
+    <!-- Content, with the title bar strip and window buttons on top -->
     <Grid Grid.Column="1" Background="{DynamicResource PageBrush}" RowDefinitions="32,*">
       <Border Background="Transparent" PointerPressed="TitleBar_PointerPressed" />
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <Button Classes="chrome" Content="&#xE921;" Click="Minimize_Click" ToolTip.Tip="Minimize" AutomationProperties.Name="Minimize" />
+        <Button Name="MaximizeButton" Classes="chrome" Content="&#xE922;" Click="Maximize_Click" ToolTip.Tip="Maximize" AutomationProperties.Name="Maximize" />
+        <Button Classes="chrome close" Content="&#xE8BB;" Click="Close_Click" ToolTip.Tip="Close to tray" AutomationProperties.Name="Close to tray" />
+      </StackPanel>
       <ScrollViewer Name="Scroller" Grid.Row="1" Padding="24,0,20,16">
         <ContentControl Name="PageHost" MaxWidth="920" />
       </ScrollViewer>

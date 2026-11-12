@@ -183,6 +183,27 @@
     <Setter Property="HorizontalAlignment" Value="Left" />
   </Style>
 
+  <!-- Window buttons in the title bar strip -->
+  <Style Selector="Button.chrome">
+    <Setter Property="Width" Value="46" />
+    <Setter Property="Height" Value="32" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
+    <Setter Property="FontSize" Value="10" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.chrome:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+  </Style>
+  <Style Selector="Button.chrome.close:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#E81123" />
+    <Setter Property="Foreground" Value="#FFFFFF" />
+  </Style>
+
   <!-- Compact controls -->
   <Style Selector="Button">
     <Setter Property="FontSize" Value="12.5" />
